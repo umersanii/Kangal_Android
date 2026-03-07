@@ -1469,17 +1469,16 @@ class $SyncLogTableTable extends SyncLogTable
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
-  static const VerificationMeta _tableNameMeta = const VerificationMeta(
-    'tableName',
+  static const VerificationMeta _syncTableNameMeta = const VerificationMeta(
+    'syncTableName',
   );
   @override
-  late final GeneratedColumn<String> tableName = GeneratedColumn<String>(
+  late final GeneratedColumn<String> syncTableName = GeneratedColumn<String>(
     'table_name',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
-    $customConstraints: 'NOT NULL',
   );
   static const VerificationMeta _lastSyncedAtMeta = const VerificationMeta(
     'lastSyncedAt',
@@ -1502,7 +1501,12 @@ class $SyncLogTableTable extends SyncLogTable
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, tableName, lastSyncedAt, status];
+  List<GeneratedColumn> get $columns => [
+    id,
+    syncTableName,
+    lastSyncedAt,
+    status,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1520,11 +1524,14 @@ class $SyncLogTableTable extends SyncLogTable
     }
     if (data.containsKey('table_name')) {
       context.handle(
-        _tableNameMeta,
-        tableName.isAcceptableOrUnknown(data['table_name']!, _tableNameMeta),
+        _syncTableNameMeta,
+        syncTableName.isAcceptableOrUnknown(
+          data['table_name']!,
+          _syncTableNameMeta,
+        ),
       );
     } else if (isInserting) {
-      context.missing(_tableNameMeta);
+      context.missing(_syncTableNameMeta);
     }
     if (data.containsKey('last_synced_at')) {
       context.handle(
@@ -1558,7 +1565,7 @@ class $SyncLogTableTable extends SyncLogTable
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
-      tableName: attachedDatabase.typeMapping.read(
+      syncTableName: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}table_name'],
       )!,
@@ -1582,12 +1589,12 @@ class $SyncLogTableTable extends SyncLogTable
 class SyncLogTableData extends DataClass
     implements Insertable<SyncLogTableData> {
   final int id;
-  final String tableName;
+  final String syncTableName;
   final DateTime lastSyncedAt;
   final String status;
   const SyncLogTableData({
     required this.id,
-    required this.tableName,
+    required this.syncTableName,
     required this.lastSyncedAt,
     required this.status,
   });
@@ -1595,7 +1602,7 @@ class SyncLogTableData extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['table_name'] = Variable<String>(tableName);
+    map['table_name'] = Variable<String>(syncTableName);
     map['last_synced_at'] = Variable<DateTime>(lastSyncedAt);
     map['status'] = Variable<String>(status);
     return map;
@@ -1604,7 +1611,7 @@ class SyncLogTableData extends DataClass
   SyncLogTableCompanion toCompanion(bool nullToAbsent) {
     return SyncLogTableCompanion(
       id: Value(id),
-      tableName: Value(tableName),
+      syncTableName: Value(syncTableName),
       lastSyncedAt: Value(lastSyncedAt),
       status: Value(status),
     );
@@ -1617,7 +1624,7 @@ class SyncLogTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return SyncLogTableData(
       id: serializer.fromJson<int>(json['id']),
-      tableName: serializer.fromJson<String>(json['tableName']),
+      syncTableName: serializer.fromJson<String>(json['syncTableName']),
       lastSyncedAt: serializer.fromJson<DateTime>(json['lastSyncedAt']),
       status: serializer.fromJson<String>(json['status']),
     );
@@ -1627,7 +1634,7 @@ class SyncLogTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'tableName': serializer.toJson<String>(tableName),
+      'syncTableName': serializer.toJson<String>(syncTableName),
       'lastSyncedAt': serializer.toJson<DateTime>(lastSyncedAt),
       'status': serializer.toJson<String>(status),
     };
@@ -1635,19 +1642,21 @@ class SyncLogTableData extends DataClass
 
   SyncLogTableData copyWith({
     int? id,
-    String? tableName,
+    String? syncTableName,
     DateTime? lastSyncedAt,
     String? status,
   }) => SyncLogTableData(
     id: id ?? this.id,
-    tableName: tableName ?? this.tableName,
+    syncTableName: syncTableName ?? this.syncTableName,
     lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
     status: status ?? this.status,
   );
   SyncLogTableData copyWithCompanion(SyncLogTableCompanion data) {
     return SyncLogTableData(
       id: data.id.present ? data.id.value : this.id,
-      tableName: data.tableName.present ? data.tableName.value : this.tableName,
+      syncTableName: data.syncTableName.present
+          ? data.syncTableName.value
+          : this.syncTableName,
       lastSyncedAt: data.lastSyncedAt.present
           ? data.lastSyncedAt.value
           : this.lastSyncedAt,
@@ -1659,7 +1668,7 @@ class SyncLogTableData extends DataClass
   String toString() {
     return (StringBuffer('SyncLogTableData(')
           ..write('id: $id, ')
-          ..write('tableName: $tableName, ')
+          ..write('syncTableName: $syncTableName, ')
           ..write('lastSyncedAt: $lastSyncedAt, ')
           ..write('status: $status')
           ..write(')'))
@@ -1667,45 +1676,45 @@ class SyncLogTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, tableName, lastSyncedAt, status);
+  int get hashCode => Object.hash(id, syncTableName, lastSyncedAt, status);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is SyncLogTableData &&
           other.id == this.id &&
-          other.tableName == this.tableName &&
+          other.syncTableName == this.syncTableName &&
           other.lastSyncedAt == this.lastSyncedAt &&
           other.status == this.status);
 }
 
 class SyncLogTableCompanion extends UpdateCompanion<SyncLogTableData> {
   final Value<int> id;
-  final Value<String> tableName;
+  final Value<String> syncTableName;
   final Value<DateTime> lastSyncedAt;
   final Value<String> status;
   const SyncLogTableCompanion({
     this.id = const Value.absent(),
-    this.tableName = const Value.absent(),
+    this.syncTableName = const Value.absent(),
     this.lastSyncedAt = const Value.absent(),
     this.status = const Value.absent(),
   });
   SyncLogTableCompanion.insert({
     this.id = const Value.absent(),
-    required String tableName,
+    required String syncTableName,
     required DateTime lastSyncedAt,
     required String status,
-  }) : tableName = Value(tableName),
+  }) : syncTableName = Value(syncTableName),
        lastSyncedAt = Value(lastSyncedAt),
        status = Value(status);
   static Insertable<SyncLogTableData> custom({
     Expression<int>? id,
-    Expression<String>? tableName,
+    Expression<String>? syncTableName,
     Expression<DateTime>? lastSyncedAt,
     Expression<String>? status,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (tableName != null) 'table_name': tableName,
+      if (syncTableName != null) 'table_name': syncTableName,
       if (lastSyncedAt != null) 'last_synced_at': lastSyncedAt,
       if (status != null) 'status': status,
     });
@@ -1713,13 +1722,13 @@ class SyncLogTableCompanion extends UpdateCompanion<SyncLogTableData> {
 
   SyncLogTableCompanion copyWith({
     Value<int>? id,
-    Value<String>? tableName,
+    Value<String>? syncTableName,
     Value<DateTime>? lastSyncedAt,
     Value<String>? status,
   }) {
     return SyncLogTableCompanion(
       id: id ?? this.id,
-      tableName: tableName ?? this.tableName,
+      syncTableName: syncTableName ?? this.syncTableName,
       lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
       status: status ?? this.status,
     );
@@ -1731,8 +1740,8 @@ class SyncLogTableCompanion extends UpdateCompanion<SyncLogTableData> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (tableName.present) {
-      map['table_name'] = Variable<String>(tableName.value);
+    if (syncTableName.present) {
+      map['table_name'] = Variable<String>(syncTableName.value);
     }
     if (lastSyncedAt.present) {
       map['last_synced_at'] = Variable<DateTime>(lastSyncedAt.value);
@@ -1747,7 +1756,7 @@ class SyncLogTableCompanion extends UpdateCompanion<SyncLogTableData> {
   String toString() {
     return (StringBuffer('SyncLogTableCompanion(')
           ..write('id: $id, ')
-          ..write('tableName: $tableName, ')
+          ..write('syncTableName: $syncTableName, ')
           ..write('lastSyncedAt: $lastSyncedAt, ')
           ..write('status: $status')
           ..write(')'))
@@ -1765,6 +1774,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $TransactionsTableTable(this);
   late final $RulesTableTable rulesTable = $RulesTableTable(this);
   late final $SyncLogTableTable syncLogTable = $SyncLogTableTable(this);
+  late final TransactionsDao transactionsDao = TransactionsDao(
+    this as AppDatabase,
+  );
+  late final CategoriesDao categoriesDao = CategoriesDao(this as AppDatabase);
+  late final RulesDao rulesDao = RulesDao(this as AppDatabase);
+  late final SyncLogDao syncLogDao = SyncLogDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2998,14 +3013,14 @@ typedef $$RulesTableTableProcessedTableManager =
 typedef $$SyncLogTableTableCreateCompanionBuilder =
     SyncLogTableCompanion Function({
       Value<int> id,
-      required String tableName,
+      required String syncTableName,
       required DateTime lastSyncedAt,
       required String status,
     });
 typedef $$SyncLogTableTableUpdateCompanionBuilder =
     SyncLogTableCompanion Function({
       Value<int> id,
-      Value<String> tableName,
+      Value<String> syncTableName,
       Value<DateTime> lastSyncedAt,
       Value<String> status,
     });
@@ -3024,8 +3039,8 @@ class $$SyncLogTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get tableName => $composableBuilder(
-    column: $table.tableName,
+  ColumnFilters<String> get syncTableName => $composableBuilder(
+    column: $table.syncTableName,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3054,8 +3069,8 @@ class $$SyncLogTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get tableName => $composableBuilder(
-    column: $table.tableName,
+  ColumnOrderings<String> get syncTableName => $composableBuilder(
+    column: $table.syncTableName,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -3082,8 +3097,10 @@ class $$SyncLogTableTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get tableName =>
-      $composableBuilder(column: $table.tableName, builder: (column) => column);
+  GeneratedColumn<String> get syncTableName => $composableBuilder(
+    column: $table.syncTableName,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get lastSyncedAt => $composableBuilder(
     column: $table.lastSyncedAt,
@@ -3126,24 +3143,24 @@ class $$SyncLogTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                Value<String> tableName = const Value.absent(),
+                Value<String> syncTableName = const Value.absent(),
                 Value<DateTime> lastSyncedAt = const Value.absent(),
                 Value<String> status = const Value.absent(),
               }) => SyncLogTableCompanion(
                 id: id,
-                tableName: tableName,
+                syncTableName: syncTableName,
                 lastSyncedAt: lastSyncedAt,
                 status: status,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                required String tableName,
+                required String syncTableName,
                 required DateTime lastSyncedAt,
                 required String status,
               }) => SyncLogTableCompanion.insert(
                 id: id,
-                tableName: tableName,
+                syncTableName: syncTableName,
                 lastSyncedAt: lastSyncedAt,
                 status: status,
               ),

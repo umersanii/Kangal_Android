@@ -4,7 +4,7 @@ part 'sync_log_model.freezed.dart';
 part 'sync_log_model.g.dart';
 
 @freezed
-class SyncLogModel with _$SyncLogModel {
+abstract class SyncLogModel with _$SyncLogModel {
   const factory SyncLogModel({
     required int id,
     required String tableName,

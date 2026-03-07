@@ -1,20 +1,19 @@
-import 'package:kangal/data/database/daos/transactions_dao.dart';
 import 'package:kangal/data/models/transaction_model.dart';
 
 abstract class TransactionRepository {
-  Future<List<Transaction>> getAllTransactions(int limit, int offset);
-  Future<Transaction?> getTransactionById(int id);
-  Future<Transaction?> getTransactionByTransactionId(String txnId);
-  Future<int> insertTransaction(Transaction transaction);
-  Future<bool> updateTransaction(Transaction transaction);
+  Future<List<TransactionModel>> getAllTransactions(int limit, int offset);
+  Future<TransactionModel?> getTransactionById(int id);
+  Future<TransactionModel?> getTransactionByTransactionId(String txnId);
+  Future<int> insertTransaction(TransactionModel transaction);
+  Future<bool> updateTransaction(TransactionModel transaction);
   Future<int> deleteTransaction(int id);
-  Future<List<Transaction>> getTransactionsByDateRange(
+  Future<List<TransactionModel>> getTransactionsByDateRange(
     DateTime start,
     DateTime end,
   );
-  Future<List<Transaction>> getTransactionsBySource(String source);
-  Future<List<Transaction>> searchTransactions(String query);
-  Future<List<Transaction>> getUnsyncedTransactions();
+  Future<List<TransactionModel>> getTransactionsBySource(String source);
+  Future<List<TransactionModel>> searchTransactions(String query);
+  Future<List<TransactionModel>> getUnsyncedTransactions();
   Future<TransactionSummary> getSummary(DateTime startDate, DateTime endDate);
 }
 

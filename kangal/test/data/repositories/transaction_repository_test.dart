@@ -25,8 +25,11 @@ void main() {
   });
 
   test('getSummary calculates correct totals', () async {
+    final startDate = DateTime(2026, 1, 1);
+    final endDate = DateTime(2026, 1, 31);
+
     final transactions = [
-      Transaction(
+      TransactionModel(
         id: 1,
         amount: -100.0,
         date: DateTime.now(),
@@ -42,7 +45,7 @@ void main() {
         updatedAt: DateTime.now(),
         createdAt: DateTime.now(),
       ),
-      Transaction(
+      TransactionModel(
         id: 2,
         amount: 200.0,
         date: DateTime.now(),
@@ -61,10 +64,10 @@ void main() {
     ];
 
     when(
-      mockDao.getTransactionsByDateRange(any, any),
+      mockDao.getTransactionsByDateRange(startDate, endDate),
     ).thenAnswer((_) async => transactions);
 
-    final summary = await repository.getSummary(DateTime.now(), DateTime.now());
+    final summary = await repository.getSummary(startDate, endDate);
 
     expect(summary.totalSpent, 100.0);
     expect(summary.totalIncome, 200.0);

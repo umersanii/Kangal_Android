@@ -4,7 +4,7 @@ part 'rule_model.freezed.dart';
 part 'rule_model.g.dart';
 
 @freezed
-class RuleModel with _$RuleModel {
+abstract class RuleModel with _$RuleModel {
   const factory RuleModel({
     required int id,
     required String keyword,

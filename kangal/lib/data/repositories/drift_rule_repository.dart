@@ -8,16 +8,16 @@ class DriftRuleRepository implements RuleRepository {
   DriftRuleRepository(this._dao);
 
   @override
-  Future<List<Rule>> getAllRules() => _dao.getAllRules();
+  Future<List<RuleModel>> getAllRules() => _dao.getAllRules();
 
   @override
-  Future<Rule?> getRuleById(int id) => _dao.getRuleById(id);
+  Future<RuleModel?> getRuleById(int id) => _dao.getRuleById(id);
 
   @override
-  Future<int> insertRule(Rule rule) => _dao.insertRule(rule);
+  Future<int> insertRule(RuleModel rule) => _dao.insertRule(rule);
 
   @override
-  Future<bool> updateRule(Rule rule) => _dao.updateRule(rule);
+  Future<bool> updateRule(RuleModel rule) => _dao.updateRule(rule);
 
   @override
   Future<int> deleteRule(int id) => _dao.deleteRule(id);

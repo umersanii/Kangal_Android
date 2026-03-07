@@ -8,44 +8,44 @@ class DriftTransactionRepository implements TransactionRepository {
   DriftTransactionRepository(this._dao);
 
   @override
-  Future<List<Transaction>> getAllTransactions(int limit, int offset) =>
+  Future<List<TransactionModel>> getAllTransactions(int limit, int offset) =>
       _dao.getAllTransactions(limit, offset);
 
   @override
-  Future<Transaction?> getTransactionById(int id) =>
+  Future<TransactionModel?> getTransactionById(int id) =>
       _dao.getTransactionById(id);
 
   @override
-  Future<Transaction?> getTransactionByTransactionId(String txnId) =>
+  Future<TransactionModel?> getTransactionByTransactionId(String txnId) =>
       _dao.getTransactionByTransactionId(txnId);
 
   @override
-  Future<int> insertTransaction(Transaction transaction) =>
+  Future<int> insertTransaction(TransactionModel transaction) =>
       _dao.insertTransaction(transaction);
 
   @override
-  Future<bool> updateTransaction(Transaction transaction) =>
+  Future<bool> updateTransaction(TransactionModel transaction) =>
       _dao.updateTransaction(transaction);
 
   @override
   Future<int> deleteTransaction(int id) => _dao.deleteTransaction(id);
 
   @override
-  Future<List<Transaction>> getTransactionsByDateRange(
+  Future<List<TransactionModel>> getTransactionsByDateRange(
     DateTime start,
     DateTime end,
   ) => _dao.getTransactionsByDateRange(start, end);
 
   @override
-  Future<List<Transaction>> getTransactionsBySource(String source) =>
+  Future<List<TransactionModel>> getTransactionsBySource(String source) =>
       _dao.getTransactionsBySource(source);
 
   @override
-  Future<List<Transaction>> searchTransactions(String query) =>
+  Future<List<TransactionModel>> searchTransactions(String query) =>
       _dao.searchTransactions(query);
 
   @override
-  Future<List<Transaction>> getUnsyncedTransactions() =>
+  Future<List<TransactionModel>> getUnsyncedTransactions() =>
       _dao.getUnsyncedTransactions();
 
   @override

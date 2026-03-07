@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
+import 'package:drift/native.dart';
 
 import 'tables/transactions_table.dart';
 import 'tables/categories_table.dart';
@@ -11,6 +12,7 @@ import 'daos/transactions_dao.dart';
 import 'daos/categories_dao.dart';
 import 'daos/rules_dao.dart';
 import 'daos/sync_log_dao.dart';
+import '../repositories/drift_category_repository.dart';
 
 part 'app_database.g.dart';
 
@@ -23,6 +25,18 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    beforeOpen: (details) async {
+      await seedInitialData();
+    },
+  );
+
+  Future<void> seedInitialData() async {
+    final categoryRepository = DriftCategoryRepository(CategoriesDao(this));
+    await categoryRepository.seedDefaultCategories();
+  }
 }
 
 LazyDatabase _openConnection() {
