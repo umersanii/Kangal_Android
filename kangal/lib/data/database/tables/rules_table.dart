@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'categories_table.dart'; // Ensure CategoriesTable is imported
 
 class RulesTable extends Table {
   IntColumn get id => integer().autoIncrement()();

@@ -23,5 +23,6 @@ class TransactionModel with _$TransactionModel {
     required DateTime createdAt,
   }) = _TransactionModel;
 
-  factory TransactionModel.fromJson(Map<String, dynamic> json) => _$TransactionModelFromJson(json);
+  factory TransactionModel.fromJson(Map<String, dynamic> json) =>
+      _$TransactionModelFromJson(json);
 }

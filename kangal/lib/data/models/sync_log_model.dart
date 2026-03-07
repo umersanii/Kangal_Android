@@ -12,5 +12,6 @@ class SyncLogModel with _$SyncLogModel {
     required String status,
   }) = _SyncLogModel;
 
-  factory SyncLogModel.fromJson(Map<String, dynamic> json) => _$SyncLogModelFromJson(json);
+  factory SyncLogModel.fromJson(Map<String, dynamic> json) =>
+      _$SyncLogModelFromJson(json);
 }

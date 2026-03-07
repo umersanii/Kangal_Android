@@ -11,5 +11,6 @@ class RuleModel with _$RuleModel {
     required int categoryId,
   }) = _RuleModel;
 
-  factory RuleModel.fromJson(Map<String, dynamic> json) => _$RuleModelFromJson(json);
+  factory RuleModel.fromJson(Map<String, dynamic> json) =>
+      _$RuleModelFromJson(json);
 }

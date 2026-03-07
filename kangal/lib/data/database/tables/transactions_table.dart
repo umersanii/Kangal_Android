@@ -11,7 +11,8 @@ class TransactionsTable extends Table {
   TextColumn get transactionId => text().nullable().unique()();
   TextColumn get beneficiary => text().nullable()();
   TextColumn get subject => text().nullable()();
-  IntColumn get categoryId => integer().nullable().references(CategoriesTable, #id)();
+  IntColumn get categoryId =>
+      integer().nullable().references(CategoriesTable, #id)();
   TextColumn get note => text().nullable()();
   TextColumn get extra => text().nullable()();
   DateTimeColumn get syncedAt => dateTime().nullable()();

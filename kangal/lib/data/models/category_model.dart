@@ -13,5 +13,6 @@ class CategoryModel with _$CategoryModel {
     required bool isDefault,
   }) = _CategoryModel;
 
-  factory CategoryModel.fromJson(Map<String, dynamic> json) => _$CategoryModelFromJson(json);
+  factory CategoryModel.fromJson(Map<String, dynamic> json) =>
+      _$CategoryModelFromJson(json);
 }
