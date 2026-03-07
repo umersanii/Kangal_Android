@@ -7,21 +7,24 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('AppRouter', () {
-    testWidgets('initial location is /onboarding if onboarding_complete is false', (
+    testWidgets(
+      'initial location is /onboarding if onboarding_complete is false',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({'onboarding_complete': false});
+
+        final router = await AppRouter.createRouter();
+
+        await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(OnboardingScreen), findsOneWidget);
+        expect(find.byType(NavigationBar), findsNothing);
+      },
+    );
+
+    testWidgets('initial location is / if onboarding_complete is true', (
       tester,
     ) async {
-      SharedPreferences.setMockInitialValues({'onboarding_complete': false});
-
-      final router = await AppRouter.createRouter();
-
-      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(OnboardingScreen), findsOneWidget);
-      expect(find.byType(NavigationBar), findsNothing);
-    });
-
-    testWidgets('initial location is / if onboarding_complete is true', (tester) async {
       SharedPreferences.setMockInitialValues({'onboarding_complete': true});
 
       final router = await AppRouter.createRouter();

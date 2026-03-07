@@ -1,6 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:kangal/ui/add_transaction/add_transaction_screen.dart';
+import 'package:kangal/ui/dashboard/dashboard_screen.dart';
+import 'package:kangal/ui/onboarding/onboarding_screen.dart';
+import 'package:kangal/ui/settings/categories/categories_screen.dart';
+import 'package:kangal/ui/settings/email_setup/email_setup_screen.dart';
+import 'package:kangal/ui/settings/rules/rules_screen.dart';
+import 'package:kangal/ui/settings/settings_screen.dart';
+import 'package:kangal/ui/transactions/transaction_detail_screen.dart';
+import 'package:kangal/ui/transactions/transactions_screen.dart';
+
+export 'package:kangal/ui/add_transaction/add_transaction_screen.dart';
+export 'package:kangal/ui/dashboard/dashboard_screen.dart';
+export 'package:kangal/ui/onboarding/onboarding_screen.dart';
+export 'package:kangal/ui/settings/categories/categories_screen.dart';
+export 'package:kangal/ui/settings/email_setup/email_setup_screen.dart';
+export 'package:kangal/ui/settings/rules/rules_screen.dart';
+export 'package:kangal/ui/settings/settings_screen.dart';
+export 'package:kangal/ui/transactions/transaction_detail_screen.dart';
+export 'package:kangal/ui/transactions/transactions_screen.dart';
 
 class AppRouter {
   static Future<GoRouter> createRouter() async {
@@ -39,7 +58,8 @@ class AppRouter {
                   routes: [
                     GoRoute(
                       path: ':id',
-                      builder: (context, state) => const TransactionDetailScreen(),
+                      builder: (context, state) =>
+                          const TransactionDetailScreen(),
                     ),
                   ],
                 ),
@@ -109,105 +129,6 @@ class RootShellScaffold extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Dashboard')),
-    );
-  }
-}
-
-class TransactionsScreen extends StatelessWidget {
-  const TransactionsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Transactions')),
-    );
-  }
-}
-
-class TransactionDetailScreen extends StatelessWidget {
-  const TransactionDetailScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Transaction Detail')),
-    );
-  }
-}
-
-class AddTransactionScreen extends StatelessWidget {
-  const AddTransactionScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Add Transaction')),
-    );
-  }
-}
-
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
-    );
-  }
-}
-
-class EmailSetupScreen extends StatelessWidget {
-  const EmailSetupScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Email Setup')),
-    );
-  }
-}
-
-class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Categories')),
-    );
-  }
-}
-
-class RulesScreen extends StatelessWidget {
-  const RulesScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Rules')),
-    );
-  }
-}
-
-class OnboardingScreen extends StatelessWidget {
-  const OnboardingScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Onboarding')),
     );
   }
 }
