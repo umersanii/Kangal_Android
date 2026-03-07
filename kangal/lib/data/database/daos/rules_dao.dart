@@ -10,11 +10,15 @@ class RulesDao extends DatabaseAccessor<AppDatabase> with _$RulesDaoMixin {
 
   Future<List<Rule>> getAllRules() => select(rulesTable).get();
 
-  Future<Rule?> getRuleById(int id) => (select(rulesTable)..where((r) => r.id.equals(id))).getSingleOrNull();
+  Future<Rule?> getRuleById(int id) =>
+      (select(rulesTable)..where((r) => r.id.equals(id))).getSingleOrNull();
 
-  Future<int> insertRule(Insertable<Rule> companion) => into(rulesTable).insert(companion);
+  Future<int> insertRule(Insertable<Rule> companion) =>
+      into(rulesTable).insert(companion);
 
-  Future<bool> updateRule(Insertable<Rule> companion) => update(rulesTable).replace(companion);
+  Future<bool> updateRule(Insertable<Rule> companion) =>
+      update(rulesTable).replace(companion);
 
-  Future<int> deleteRule(int id) => (delete(rulesTable)..where((r) => r.id.equals(id))).go();
+  Future<int> deleteRule(int id) =>
+      (delete(rulesTable)..where((r) => r.id.equals(id))).go();
 }

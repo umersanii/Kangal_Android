@@ -8,7 +8,10 @@ part 'sync_log_dao.g.dart';
 class SyncLogDao extends DatabaseAccessor<AppDatabase> with _$SyncLogDaoMixin {
   SyncLogDao(AppDatabase db) : super(db);
 
-  Future<SyncLog?> getLastSync(String tableName) => (select(syncLogTable)..where((s) => s.tableName.equals(tableName))).getSingleOrNull();
+  Future<SyncLog?> getLastSync(String tableName) => (select(
+    syncLogTable,
+  )..where((s) => s.tableName.equals(tableName))).getSingleOrNull();
 
-  Future<int> upsertSyncLog(Insertable<SyncLog> companion) => into(syncLogTable).insertOnConflictUpdate(companion);
+  Future<int> upsertSyncLog(Insertable<SyncLog> companion) =>
+      into(syncLogTable).insertOnConflictUpdate(companion);
 }
