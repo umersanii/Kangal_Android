@@ -1,0 +1,435 @@
+Delivered-To: iamumersani@gmail.com
+Received: by 2002:a05:612c:4790:b0:56e:818f:a756 with SMTP id ly16csp2122867vqb;
+        Sat, 21 Feb 2026 09:04:13 -0800 (PST)
+X-Received: by 2002:a05:6000:1acd:b0:437:678a:5921 with SMTP id ffacd0b85a97d-4396f1531fdmr6479814f8f.1.1771693453130;
+        Sat, 21 Feb 2026 09:04:13 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1771693453; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Sccngo3dfe4jqdU/IJXMvWEOArQSR+0pzrNU8O22afYvkHbYgXV9VJ0gc9KU1L9/LK
+         f5c4JMUZDhBL+l69/bRB7qs+Rx6U5V55h9831WJ3qnNTfZtLcQk+pA0mi0IfyzRpDfVL
+         EHbAHIGZd92tl57AfkQdbTGe8Um/JMDq1aW9Cz47R9+SZNgE6ueKgORROfEmQuafP9lF
+         R7wBksI1n/Okdyemnde4NXVpI879JgYnQEnnaRytOFEYP33yqeq6paZys66dk0bTlJA9
+         mE2hO9JipTUwgGQuqX+3DSGJ40X7H0GqkgvwcMuYu3kneV6bb72y48aOpirXcyv8da+9
+         vLUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=mime-version:subject:message-id:to:reply-to:from:dkim-signature
+         :date;
+        bh=yIr6O2wmdoe4K6P5+rgURgQJDuFjKr2M3khGmPyPgis=;
+        fh=YhEffF3ZZ4SicYbNRL7Dj7r4LDKjsvJ8v/diMNwfvGM=;
+        b=k4jReTqT1Hw47ESYsDe8SFhbd2IoKPTpinCpI3vTcO9S1cXDUkH8mCx5oAFZ2VYlT+
+         8TZa7C8GDn8CbaUbU1DMB8A7LpbQ9dK+PPmE4YUz5g8bU4kP+C+l97LSLSjyGcur8TPU
+         bVDNuXYuPIac0JqoIUBFGU15ioyQ+hWXSO/NoZa+dPKSN88OQroThxVrLQrVCU50P9Ph
+         Rput9DHv6jXQYnnEdHPPcGHZE1/r+VlsU+08pupQbwUa/BMI5WIY8MMOdk2XWcG7cdJA
+         2B9PdIwmWdki1TdY3UBKzJRVsl1m+nAHtuv27amK/F4G2ltw05yaIvNYG82v5bN6QhVs
+         YDrw==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@nayapay.com header.s=default header.b=nk9W0orT;
+       spf=pass (google.com: domain of service@nayapay.com designates 103.139.62.182 as permitted sender) smtp.mailfrom=service@nayapay.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=nayapay.com
+Return-Path: <service@nayapay.com>
+Received: from smtp-gw.nayapay.com (smtp-gw.nayapay.com. [103.139.62.182])
+        by mx.google.com with ESMTPS id ffacd0b85a97d-43970ddf10asi5046192f8f.462.2026.02.21.09.04.12
+        for <iamumersani@gmail.com>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 21 Feb 2026 09:04:13 -0800 (PST)
+Received-SPF: pass (google.com: domain of service@nayapay.com designates 103.139.62.182 as permitted sender) client-ip=103.139.62.182;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@nayapay.com header.s=default header.b=nk9W0orT;
+       spf=pass (google.com: domain of service@nayapay.com designates 103.139.62.182 as permitted sender) smtp.mailfrom=service@nayapay.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=nayapay.com
+Date: Sat, 21 Feb 2026 22:04:11 +0500 (PKT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nayapay.com;
+	s=default; t=1771693451;
+	bh=TuYddW8rUmnX6sAgmaLKbwPNn87Qi5GazBEz/itutT8=;
+	h=From:Reply-To:To:Subject;
+	b=nk9W0orTaPAbbL0mKfprXcgwV/Fzl7ZY8ZrLdepLxg8z3mg24wArbsnCvruME2+pd
+	 TQq7HS8C+YWRGGHEqBT7Bw2N+aLDqNFwQ2RyOp1xIcCVHTfta+RAmJMHzpMGSYudho
+	 knXIaZJ1oJKUeBF4p7KIZ9ggP8rpylQmHfgQftdackq04KpU/52Eb/dpm6597Wmu+L
+	 rduiP7ILexmUPS68aIXF4EfjLa+udASbM63EHAZpR+xTZ6iiH8hPuXhpd2LR8kFtdZ
+	 3N009kArQDFbzudD4Fqzn31VIbCf7uYjbPawfKRvoFw5p/SnRO0AIR4hLP9iLO5udx
+	 5RL10DTt2rl1Q==
+From: NayaPay <service@nayapay.com>
+Reply-To: noreply@nayapay.com
+To: iamumersani@gmail.com
+Message-ID: <101226356.3854441.1771693451653@np-pri-notification-alma-02.nayapay.com>
+Subject: =?UTF-8?Q?You_sent_Rs._1,450_to_Muhammad_Umer_Ghafoor_=F0=9F=92=B8?=
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_3854438_1360123652.1771693451593"
+
+------=_Part_3854438_1360123652.1771693451593
+Content-Type: multipart/related; 
+	boundary="----=_Part_3854439_1556190112.1771693451593"
+
+------=_Part_3854439_1556190112.1771693451593
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_3854440_1163931648.1771693451593"
+
+------=_Part_3854440_1163931648.1771693451593
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+ 1,450 Muhammad Umer Ghafoor 6999e58a6fc5dc6850e070a0 21 Feb 2026, 10:04 PM umersanii umerghafoor 
+------=_Part_3854440_1163931648.1771693451593
+Content-Type: text/html;charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/htm=
+l4/strict.dtd"><html><head><meta http-equiv=3D"Content-Type" content=3D"tex=
+t/html; charset=3Dutf-8"/><meta name=3D"color-scheme" content=3D"light dark=
+"><meta name=3D"supported-color-schemes" content=3D"light dark"><title>Naya=
+Pay Email</title><style type=3D"text/css">@font-face{font-family:"DMSansMed=
+ium";src:url("https://nayapay.com/fonts/DM_Sans/static/DMSans-Medium.ttf") =
+format("truetype");font-weight:500;font-style:normal}@font-face{font-family=
+:"DMSansBold";src:url("https://nayapay.com/fonts/DM_Sans/static/DMSans-Bold=
+.ttf") format("truetype");font-weight:bold;font-style:normal}@media(min-wid=
+th:600px){.logo{width:148px !important}.title-text{font-size:28px !importan=
+t}.general-text{font-size:18px !important;line-height:24px !important}.gene=
+ral-text-2{font-size:16px !important;line-height:24px !important}.general-t=
+ext-3{font-size:14px !important;line-height:normal !important}.summary-titl=
+e{font-size:15px !important;line-height:normal !important}.summary-text{fon=
+t-size:14px !important;line-height:normal !important}.summary-amount{font-s=
+ize:18px !important;line-height:normal !important}.footer-text{font-size:10=
+px !important}.heading-emoji{font-size:20px !important}}:root{color-scheme:=
+light dark;supported-color-schemes:light dark}.body-bg-color{background-col=
+or:#fff !important}.trans-msg-bg-color{background-color:#f9f8f8 !important}=
+.footer-bg-color{background-color:#fafafa !important}.footer,.footer td,.fo=
+oter p,.footer span{color:#757575 !important;background-color:#fafafa !impo=
+rtant}.footer-text a{color:#0666eb !important}@media(prefers-color-scheme:d=
+ark){*{color:#fff !important}.body-bg-color{background-color:#1f2124 !impor=
+tant}.trans-msg-bg-color{background-color:#757575 !important}.footer-bg-col=
+or{background-color:#1f1f1f !important}.footer,.footer td,.footer p,.footer=
+ span{background-color:#1f1f1f !important;color:#757575 !important}.footer-=
+text a{color:#0666eb !important}}@media(prefers-color-scheme:light){.body-b=
+g-color{background-color:#fff !important}.trans-msg-bg-color{background-col=
+or:#f9f8f8 !important}.footer-bg-color{background-color:#fafafa !important}=
+.footer,.footer td,.footer p,.footer span{color:#757575 !important;backgrou=
+nd-color:#fafafa !important}.footer-text a{color:##0666eb !important}}</sty=
+le></head><body style=3D"margin: 0px; padding: 0px; background-color: #fff;=
+ width: 100%"><table align=3D"center" border=3D"0" cellpadding=3D"0" cellsp=
+acing=3D"0" role=3D"presentation" style=3D"background:#fff;background-color=
+:#fff;width:100%" class=3D"body-bg-color"><tbody><tr><td><div style=3D"marg=
+in:0px auto;max-width:600px;"><!--[if mso]><table width=3D"600px" style=3D"=
+width:600px;"><tr><td><![endif]--><table align=3D"center" border=3D"0" cell=
+padding=3D"0" cellspacing=3D"0" role=3D"presentation" style=3D"width:100%">=
+<tbody><tr><td style=3D"direction:ltr;font-size:0px;padding:0;text-align:ce=
+nter"><!-- LOGO --><div style=3D"margin:0px auto;max-width:600px;"><table a=
+lign=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"pr=
+esentation" style=3D"width:100%"><tbody><tr><td style=3D"direction:ltr;font=
+-size:0px;padding:0;text-align:center"><div style=3D"font-size:0;line-heigh=
+t:0;text-align:center;display:inline-block;width:100%;direction:ltr;margin:=
+auto;"><div style=3D"font-size:0px;text-align:center;direction:ltr;display:=
+inline-block;vertical-align:top;width:90%;margin-top: 25px;margin-bottom:18=
+px;"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presen=
+tation" style=3D"vertical-align:top" width=3D"100%"><tbody><tr><td align=3D=
+"center" style=3D"font-size:0px;padding:0;word-break:break-word;"><table bo=
+rder=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" style=
+=3D"border-collapse:collapse;border-spacing:0px"><tbody><tr><td style=3D"ma=
+x-width:200px;min-width:200px;width:200px" class=3D"logo"><img alt=3D"NayaP=
+ay" src=3D"https://attachment.nayapay.com:8443/fileUploader/download/UPLOAD=
+_DIRECTORY/EMAILASSETS/rebranding/np-logo.png" style=3D"border:0;display:bl=
+ock;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px=
+" width=3D"200" height=3D"auto"></td></tr></tbody></table></td></tr></tbody=
+></table></div></div></td></tr></tbody></table></div><!-- Heading Section -=
+-><div style=3D"background:#ffffff;background-color:#ffffff;margin:0px auto=
+;max-width:600px;margin-bottom:30px;" class=3D"body-bg-color"><table align=
+=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presen=
+tation" style=3D"background:#ffffff;background-color:#ffffff;width:100%" cl=
+ass=3D"body-bg-color"><tbody><tr><td style=3D"direction:ltr;font-size:0px;p=
+adding:0;text-align:center"><div style=3D"font-size:0px;text-align:left;dir=
+ection:ltr;display:inline-block;vertical-align:top;width:100%"><table borde=
+r=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"=
+100%" style=3D"width:100%"><tbody><tr><td style=3D"vertical-align:top;paddi=
+ng:0"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"prese=
+ntation" width=3D"100%" style=3D"width:100%"><tbody><tr><td align=3D"center=
+" style=3D"font-size:0px;padding:16px 24px 0px 24px;word-break:break-word">=
+<div class=3D"title-text" style=3D"font-family:DMSansBold, Helvetica, Tahom=
+a, Verdana, sans-serif;font-size:32px; font-style:normal;font-weight:900;le=
+tter-spacing:-0.2px;line-height:119%;text-align:center;color:#0a0a0a;width:=
+542px"><!--[if mso]><table width=3D"550px" style=3D"width:550px"><tr><td st=
+yle=3D"font-family:DMSansBold, Helvetica, Tahoma, Verdana, sans-serif;font-=
+size:28px; font-style:normal;font-weight:900;text-align:center;color:#0a0a0=
+a;padding-bottom:20px"><![endif]--> It's a good day to be Muhammad Umer Gha=
+foor! <!--[if mso]></td></tr></table><![endif]--></div></td></tr></tbody></=
+table></td></tr></tbody></table></div></td></tr></tbody></table></div><!-- =
+BANNER --><div style=3D"margin:0px auto;max-width:600px;"><table align=3D"c=
+enter" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentatio=
+n" style=3D"width:100%" width=3D"100%"><tbody><tr><td style=3D"direction:lt=
+r;font-size:0px;padding:0;text-align:center"><div style=3D"font-size:0px;te=
+xt-align:left;direction:ltr;display:inline-block;vertical-align:top;width:1=
+00%"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presen=
+tation" width=3D"100%" style=3D"width:100%;"><tbody><tr><td style=3D"vertic=
+al-align:top;padding:0"><table border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" role=3D"presentation" width=3D"100%" style=3D"width:100%;"><tbody><t=
+r><td align=3D"center" style=3D"font-size:0px;padding:0 0;word-break:break-=
+word;"><img src=3D"https://attachment.nayapay.com:8443/fileUploader/downloa=
+d/UPLOAD_DIRECTORY/EMAILASSETS/rebranding/header.png&v2" style=3D"border:0;=
+display:block;outline:none;text-decoration:none;height:auto;width:100%" wid=
+th=3D"600" height=3D"auto"><!-- <table border=3D"0" cellpadding=3D"0" cells=
+pacing=3D"0" role=3D"presentation" style=3D"border-collapse:collapse;border=
+-spacing:0px;background:green;background-color:green;" width=3D"100%" style=
+=3D"width:100%"><tbody><tr><td><img src=3D"https://attachment.nayapay.com:8=
+443/fileUploader/download/UPLOAD_DIRECTORY/EMAILASSETS/rebranding/header.pn=
+g&v2" style=3D"border:0;display:block;outline:none;text-decoration:none;hei=
+ght:auto;width:100%" width=3D"600" height=3D"auto"></td></tr></tbody></tabl=
+e> --></td></tr></tbody></table></td></tr></tbody></table></div></td></tr><=
+/tbody></table></div><!-- Receipt Card --><!--[if mso]><table width=3D"600p=
+x" style=3D"width:600px;"><tr><td><![endif]--><div style=3D"background:#fff=
+fff;background-color:#ffffff;margin:0px auto;max-width:600px" class=3D"body=
+-bg-color"><table align=3D"center" border=3D"0" cellpadding=3D"0" cellspaci=
+ng=3D"0" role=3D"presentation" style=3D"background:#ffffff;background-color=
+:#ffffff;width:100%" class=3D"body-bg-color"><tbody><tr><td style=3D"direct=
+ion:ltr;font-size:0px;padding:0;text-align:center"><div style=3D"font-size:=
+0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;w=
+idth:100%"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"=
+presentation" width=3D"100%"><tbody><tr><td style=3D"vertical-align:top;pad=
+ding:0px 24px;"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" rol=
+e=3D"presentation" width=3D"540" style=3D"width:540px;"><tbody><tr><td styl=
+e=3D"vertical-align:top; padding-top:49px;"><div style=3D"font-size:0px;tex=
+t-align:left;direction:ltr;display:inline-block;vertical-align:top;border-r=
+adius:10px; background:#F9F8F8;padding:20px 24px;background-color:#F9F8F8" =
+class=3D"trans-msg-bg-color"><!--[if mso]><table style=3D"background-color:=
+#F9F8F8;padding:20px 24px;"><tr><td><![endif]--><table border=3D"0" cellpad=
+ding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"492" style=3D"w=
+idth:492px;"><tbody><tr><td style=3D"max-width:44px; min-width:44px; width:=
+ 44px; text-align: center" align=3D"center" width=3D"44"><img src=3D"https:=
+//attachment.nayapay.com:8443/fileUploader/download/UPLOAD_DIRECTORY/EMAILA=
+SSETS/mg.png" style=3D"border-radius: 10px; width: 52px; height: 52px;" wid=
+th=3D"52" height=3D"52"/></td><td style=3D"max-width:209px;;min-width:209px=
+; width: 209px; text-align: left; padding: 0 0 0 24px; " align=3D"left" wid=
+th=3D"220"><p class=3D"summary-title" style=3D" margin: 0; padding: 0px 0px=
+ 6px 0; font-size: 18px; font-weight: 900; line-height: 22px; color: #0a0a0=
+a; font-family: DMSansBold,tahoma, Verdana, sans-serif;"><!--[if mso]><tabl=
+e width=3D"210" style=3D"width:210px;"><tr><td style=3D" font-size: 14px; f=
+ont-weight: 900; font-family: tahoma, Verdana, sans-serif;"><![endif]--> Mu=
+hammad Umer Ghafoor <!--[if mso]></td></tr></table><![endif]--></p><p class=
+=3D"summary-text" style=3D" margin: 0; padding: 0px 0px 4px 0; font-size: 1=
+6px; line-height: 22px; color: #0a0a0a; font-family: DMSansMedium,tahoma, V=
+erdana, sans-serif;"><!--[if mso]><table width=3D"210" style=3D"width:210px=
+;"><tr><td style=3D" font-size: 14px; font-weight: 400; font-family: tahoma=
+, Verdana, sans-serif;"><![endif]--> umerghafoor@nayapay <!--[if mso]></td>=
+</tr></table><![endif]--></p><p class=3D"summary-text" style=3D" margin: 0;=
+ padding: 0px; font-size: 14px; line-height: 22px; color: #6D6D6D; backgrou=
+nd-clip: text; font-family: DMSansMedium,tahoma, Verdana, sans-serif;"><!--=
+[if mso]><table width=3D"210" style=3D"width:210px;"><tr><td style=3D" font=
+-size: 14px; font-weight: 400; font-family: tahoma, Verdana, sans-serif;"><=
+![endif]--> 21 Feb 2026, 10:04 PM <!--[if mso]></td></tr></table><![endif]-=
+-></p></td><td style=3D"width: 224px; min-width: 224px; max-width: 224px;" =
+align=3D"right" width=3D"224"><div class=3D"summary-amount" style=3D" paddi=
+ng: 0px; font-size: 18px; font-weight: 900; line-height: 20px; color: red; =
+font-family: DMSansBold,tahoma, Verdana, sans-serif; "><!--[if mso]><table =
+width=3D"220px" style=3D"width:220px;"><tr><td style=3D" font-size: 18px; f=
+ont-weight: 900; font-family: tahoma, Verdana, sans-serif; text-align:right=
+; color: red;" align=3D"right"><![endif]--> - Rs. 1,450 <!--[if mso]></td><=
+/tr></table><![endif]--></div></td></tr></tbody></table><!--[if mso]></td><=
+/tr></table><![endif]--></div></td></tr></tbody></table></td></tr></tbody><=
+/table></div></td></tr></tbody></table></div><!--[if mso]></td></tr></table=
+><![endif]--><!-- CHAT BUBBLE --><!--[if mso]><table width=3D"600px" style=
+=3D"width:600px;"><tr><td><![endif]--><div style=3D"margin:0px auto;max-wid=
+th:600px;"><table align=3D"center" border=3D"0" cellpadding=3D"0" cellspaci=
+ng=3D"0" role=3D"presentation" style=3D"width:100%;"><tbody><tr><td style=
+=3D"direction:ltr;font-size:0px;padding:0;text-align:center"><div style=3D"=
+font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-a=
+lign:top;width:100%"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0=
+" role=3D"presentation" width=3D"100%"><tbody><tr><td style=3D"vertical-ali=
+gn:top;padding:0;"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" =
+role=3D"presentation" width=3D"100%"><tbody><tr><td align=3D"center" style=
+=3D"font-size:0px;padding:0;word-break:break-word;"><table border=3D"0" cel=
+lpadding=3D"0" cellspacing=3D"0" role=3D"presentation" style=3D"border-coll=
+apse:collapse;border-spacing:0px"><tbody><!-- Amount Details --><tr><td sty=
+le=3D"padding: 49px 30px 24px 30px; width: 540px; min-width: 540px; max-wid=
+th: 540px" width=3D"540" style=3D"background-color: #fff" class=3D"body-bg-=
+color"><!--[if mso]><table style=3D"padding: 49px 0px 24px 0px; width: 540p=
+x" width=3D"540"><tr><td><![endif]--><span class=3D"general-text-2" style=
+=3D" padding: 0px; font-size: 22px; line-height: 34px; font-family: DMSansB=
+old,tahoma,Verdana, sans-serif; color: #0a0a0a; font-weight: 900;"><!--[if =
+mso]><table><tr><td style=3D" padding: 0px; font-size: 16px; font-family: t=
+ahoma,Verdana, sans-serif; font-weight: 900;"><![endif]--> AMOUNT DETAILS <=
+!--[if mso]></td></tr></table><![endif]--></span><!--[if mso]></td></tr></t=
+able><![endif]--></td></tr><tr><td style=3D"padding: 0px 30px 24px 30px; wi=
+dth: 540px; min-width: 540px; max-width: 540px" width=3D"540" style=3D"back=
+ground-color: #fff" class=3D"body-bg-color"><table style=3D"width: 540px;te=
+xt-align: center;background-color: #fff; " border=3D"0" cellpadding=3D"0" c=
+ellspacing=3D"0" bgcolor=3D"#ffffff" width=3D"540" class=3D"body-bg-color">=
+<tr><td style=3D"max-width: 250px;min-width: 250px;width: 250px; text-align=
+: left" align=3D"left" width=3D"250" valign=3D"top"><p class=3D"general-tex=
+t-3" style=3D" margin: 0px; font-size: 20px; font-weight: 400; line-height:=
+ 28px; font-family: DMSansMedium,tahoma, Verdana, sans-serif; color: #0a0a0=
+a;"><!--[if mso]><table><tr><td style=3D" padding: 0px; font-size: 14px; fo=
+nt-family: tahoma,Verdana, sans-serif; font-weight: 400;"><![endif]--> Prin=
+cipal Amount <!--[if mso]></td></tr></table><![endif]--></p></td><td style=
+=3D"max-width: 265px;min-width: 265px;width: 265px; text-align: right; padd=
+ing-left:25px;" align=3D"right" width=3D"265" valign=3D"top"><p class=3D"ge=
+neral-text-3" style=3D" margin: 0px; font-size: 20px; font-weight: 400; lin=
+e-height: 28px; font-family: DMSansMedium,tahoma, Verdana, sans-serif; colo=
+r: #0a0a0a;"><!--[if mso]><table><tr><td style=3D" padding: 0px; font-size:=
+ 14px; font-family: tahoma,Verdana, sans-serif; font-weight: 400;text-align=
+:right" align=3D"right"><![endif]--> Rs. 1,450 <!--[if mso]></td></tr></tab=
+le><![endif]--></p></td></tr></table></td></tr><tr><td style=3D"padding: 0p=
+x 30px 24px 30px; width: 540px; min-width: 540px; max-width: 540px" width=
+=3D"540" style=3D"background-color: #fff" class=3D"body-bg-color"><table st=
+yle=3D"width: 540px;text-align: center;background-color: #fff; " border=3D"=
+0" cellpadding=3D"0" cellspacing=3D"0" bgcolor=3D"#ffffff" width=3D"540" cl=
+ass=3D"body-bg-color"><tr><td style=3D"max-width: 250px;min-width: 250px;wi=
+dth: 250px; text-align: left" align=3D"left" width=3D"250" valign=3D"top"><=
+p class=3D"general-text-3" style=3D" margin: 0px; font-size: 20px; font-wei=
+ght: 400; line-height: 28px; font-family: DMSansMedium,tahoma, Verdana, san=
+s-serif; color: #0a0a0a;"><!--[if mso]><table><tr><td style=3D" padding: 0p=
+x; font-size: 14px; font-family: tahoma,Verdana, sans-serif; font-weight: 4=
+00;"><![endif]--> Service Fee (Incl. Tax) <!--[if mso]></td></tr></table><!=
+[endif]--></p></td><td style=3D"max-width: 265px;min-width: 265px;width: 26=
+5px; text-align: right; padding-left:25px;" align=3D"right" width=3D"265" v=
+align=3D"top"><p class=3D"general-text-3" style=3D" margin: 0px; font-size:=
+ 20px; font-weight: 400; line-height: 28px; font-family: DMSansMedium,tahom=
+a, Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><tr><td style=
+=3D" padding: 0px; font-size: 14px; font-family: tahoma,Verdana, sans-serif=
+; font-weight: 400;text-align:right" align=3D"right"><![endif]--> Rs. 0 <!-=
+-[if mso]></td></tr></table><![endif]--></p></td></tr></table></td></tr><tr=
+><td style=3D"padding: 0px 30px 24px 30px; width: 540px; min-width: 540px; =
+max-width: 540px" width=3D"540" style=3D"background-color: #fff" class=3D"b=
+ody-bg-color"><table style=3D"width: 540px;text-align: center;background-co=
+lor: #fff; " border=3D"0" cellpadding=3D"0" cellspacing=3D"0" bgcolor=3D"#f=
+fffff" width=3D"540" class=3D"body-bg-color"><tr><td style=3D"max-width: 25=
+0px;min-width: 250px;width: 250px; text-align: left" align=3D"left" width=
+=3D"250" valign=3D"top"><p class=3D"general-text-3" style=3D" margin: 0px; =
+font-size: 20px; font-weight: 900; line-height: 28px; font-family: DMSansMe=
+dium,tahoma, Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><tr>=
+<td style=3D" padding: 0px; font-size: 14px; font-family: tahoma,Verdana, s=
+ans-serif; font-weight: 900;"><![endif]--> Amount Sent <!--[if mso]></td></=
+tr></table><![endif]--></p></td><td style=3D"max-width: 265px;min-width: 26=
+5px;width: 265px; text-align: right; padding-left:25px;" align=3D"right" wi=
+dth=3D"265" valign=3D"top"><p class=3D"general-text-3" style=3D" margin: 0p=
+x; font-size: 20px; font-weight: 900; line-height: 28px; font-family: DMSan=
+sMedium,tahoma, Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><=
+tr><td style=3D" padding: 0px; font-size: 14px; font-family: tahoma,Verdana=
+, sans-serif; font-weight: 900;text-align:right" align=3D"right"><![endif]-=
+-> Rs. 1,450 <!--[if mso]></td></tr></table><![endif]--></p></td></tr></tab=
+le></td></tr><!-- Transaction Details --><tr><td style=3D"padding: 49px 30p=
+x 24px 30px; width: 540px; min-width: 540px; max-width: 540px" width=3D"540=
+" style=3D"background-color: #fff" class=3D"body-bg-color"><!--[if mso]><ta=
+ble style=3D"padding: 49px 0px 24px 0px; width: 540px" width=3D"540"><tr><t=
+d><![endif]--><span class=3D"general-text-2" style=3D" padding: 0px; font-s=
+ize: 22px; line-height: 34px; font-family: DMSansBold,tahoma,Verdana, sans-=
+serif; color: #0a0a0a; font-weight: 900;"><!--[if mso]><table><tr><td style=
+=3D" padding: 0px; font-size: 16px; font-family: tahoma,Verdana, sans-serif=
+; font-weight: 900;"><![endif]--> TRANSACTION DETAILS <!--[if mso]></td></t=
+r></table><![endif]--></span><!--[if mso]></td></tr></table><![endif]--></t=
+d></tr><tr><td style=3D"padding: 0px 30px 24px 30px; width: 540px; min-widt=
+h: 540px; max-width: 540px" width=3D"540" style=3D"background-color: #fff" =
+class=3D"body-bg-color"><table style=3D"width: 540px;text-align: center;bac=
+kground-color: #fff; " border=3D"0" cellpadding=3D"0" cellspacing=3D"0" bgc=
+olor=3D"#ffffff" width=3D"540" class=3D"body-bg-color"><tr><td style=3D"max=
+-width: 250px;min-width: 250px;width: 250px; text-align: left" align=3D"lef=
+t" width=3D"250" valign=3D"top"><p class=3D"general-text-3" style=3D" margi=
+n: 0px; font-size: 20px; font-weight: 400; line-height: 28px; font-family: =
+DMSansMedium,tahoma, Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><ta=
+ble><tr><td style=3D" padding: 0px; font-size: 14px; font-family: tahoma,Ve=
+rdana, sans-serif; font-weight: 400;"><![endif]--> Transaction ID <!--[if m=
+so]></td></tr></table><![endif]--></p></td><td style=3D"max-width: 265px;mi=
+n-width: 265px;width: 265px; text-align: right; padding-left:25px;" align=
+=3D"right" width=3D"265" valign=3D"top"><p class=3D"general-text-3" style=
+=3D" margin: 0px; font-size: 20px; font-weight: 400; line-height: 28px; fon=
+t-family: DMSansMedium,tahoma, Verdana, sans-serif; color: #0a0a0a;"><!--[i=
+f mso]><table><tr><td style=3D" padding: 0px; font-size: 14px; font-family:=
+ tahoma,Verdana, sans-serif; font-weight: 400;text-align:right" align=3D"ri=
+ght"><![endif]--> 6999e58a6fc5dc6850e070a0 <!--[if mso]></td></tr></table><=
+![endif]--></p></td></tr></table></td></tr></tbody></table></td></tr></tbod=
+y></table></td></tr></tbody></table></div></td></tr></tbody></table></div><=
+!-- CTA --><!--[if mso]><table width=3D"600px" style=3D"width:600px;padding=
+: 30px 0px"><tr><td><![endif]--><table align=3D"center" border=3D"0" cellpa=
+dding=3D"0" cellspacing=3D"0" width=3D"600" style=3D"margin: 0 auto; paddin=
+g: 0 50px 0 51px;" class=3D"body-bg-color"><tr><td align=3D"center" style=
+=3D"padding: 30px 0 16px 0;"><!--[if mso]><v:roundrect xmlns:v=3D"urn:schem=
+as-microsoft-com:vml" xmlns:w=3D"urn:schemas-microsoft-com:office:word" hre=
+f=3D"https://www.nayapay.com/inapp/viewpayments" style=3D"height:48px;v-tex=
+t-anchor:middle;width:280px;" arcsize=3D"10%" stroke=3D"f" fillcolor=3D"#ff=
+5018"><w:anchorlock/><center style=3D"color:#ffffff;font-family:Verdana,san=
+s-serif;font-size:17px;font-weight:700;"> View your transactions </center><=
+/v:roundrect><![endif]--><!--[if !mso]><!-- --><a href=3D"https://www.nayap=
+ay.com/inapp/viewpayments" style=3D" display: inline-block; background:#ff5=
+018; background-image: linear-gradient(#ff5018, #ff5018); font-family: 'DMS=
+ansMedium', sans-serif; font-size: 18px; font-weight: 700; line-height: 48p=
+x; text-align: center; text-decoration: none; border-radius: 8px; padding: =
+5px 65px; min-width: 189px; color: #fff; border: 1px solid transparent; " d=
+ata-ogsc=3D"dark" class=3D"button-container"><span style=3D"background:#000=
+; mix-blend-mode:screen; color: #fff;"><span style=3D"background:#000; mix-=
+blend-mode:difference; color: #fff;"><span style=3D"color: #fff">View your =
+transactions</span></span></span></a><!--<![endif]--></td></tr></table><!--=
+[if mso]></td></tr></table><![endif]--><!-- FOOTER --><div style=3D"margin:=
+0px auto;max-width:600px;margin-top:60px" class=3D"footer"><table align=3D"=
+center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentati=
+on" style=3D"width:100%"><tbody><tr><td style=3D"direction:ltr;font-size:0p=
+x;padding:56px 35px 56px;text-align:center;background:#FAFAFA"><div style=
+=3D"font-size:0px;text-align:left;direction:ltr;display:inline-block;vertic=
+al-align:top;width:100%"><table border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" role=3D"presentation" width=3D"100%"><tbody><tr><td style=3D"vertica=
+l-align:top;padding:0"><table border=3D"0" cellpadding=3D"0" cellspacing=3D=
+"0" role=3D"presentation" width=3D"100%"><tbody><tr><td style=3D"font-size:=
+0px;word-break:break-word"><div style=3D"margin:0px auto;max-width:652px"><=
+table align=3D"left" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=
+=3D"presentation" style=3D"width:100%"><tbody><tr><td style=3D"direction:lt=
+r;font-size:0px;padding:0;text-align:center"><div style=3D"font-size:0px;te=
+xt-align:left;direction:ltr;display:inline-block;vertical-align:top;width:1=
+00%"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presen=
+tation" width=3D"100%"><tbody><tr><td style=3D"vertical-align:top;padding:0=
+"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentat=
+ion" width=3D"100%"><tbody><tr><td><!--[if mso]><table><tr><td style=3D"mar=
+gin-right:16px;>"<![endif]--><a border=3D"0" style=3D"color:#0666eb;margin-=
+right:16px;text-decoration:none;width:20px;height:20px;" href=3D"https://ww=
+w.instagram.com/nayapay/" rel=3D"noreferrer" target=3D"_blank"><img alt=3D"=
+INSTAGRAM" width=3D"20" height=3D"20" src=3D"https://attachment.nayapay.com=
+:8443/fileUploader/download/UPLOAD_DIRECTORY/EMAILASSETS/rebranding/insta.p=
+ng&v2"></a><!--[if mso]></td><td style=3D"margin-right:16px;>"<![endif]--><=
+a border=3D"0" style=3D"color:#0666eb;margin-right:16px;text-decoration:non=
+e" href=3D"https://www.facebook.com/nayapaypk" rel=3D"noreferrer" target=3D=
+"_blank"><img alt=3D"FACEBOOK" width=3D"20" height=3D"20" src=3D"https://at=
+tachment.nayapay.com:8443/fileUploader/download/UPLOAD_DIRECTORY/EMAILASSET=
+S/rebranding/fb.png&v2"></a><!--[if mso]></td><td style=3D"margin-right:16p=
+x;>"<![endif]--><a border=3D"0" style=3D"color:#0666eb;margin-right:16px;te=
+xt-decoration:none" href=3D"https://twitter.com/nayapaypk" rel=3D"noreferre=
+r" target=3D"_blank"><img alt=3D"" width=3D"20" height=3D"20" src=3D"https:=
+//attachment.nayapay.com:8443/fileUploader/download/UPLOAD_DIRECTORY/EMAILA=
+SSETS/rebranding/x.png&v2"></a><!--[if mso]></td><td style=3D"margin-right:=
+16px;>"<![endif]--><a border=3D"0" style=3D"color:#0666eb;margin-right:16px=
+;text-decoration:none;" href=3D"https://www.linkedin.com/company/nayapay" r=
+el=3D"noreferrer" target=3D"_blank"><img alt=3D"" width=3D"20" height=3D"20=
+" src=3D"https://attachment.nayapay.com:8443/fileUploader/download/UPLOAD_D=
+IRECTORY/EMAILASSETS/rebranding/linkedin.png&v2"></a><!--[if mso]></td></tr=
+></table><![endif]--></td></tr></tbody></table></td></tr></tbody></table></=
+div></td></tr></tbody></table></div></td></tr><tr><td style=3D"font-size:0p=
+x;word-break:break-word"><div style=3D"margin:0px auto;max-width:652px"><ta=
+ble align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=
+=3D"presentation" style=3D"width:100%"><tbody><tr><td style=3D"direction:lt=
+r;font-size:0px;padding:0;text-align:center"><div style=3D"font-size:0px;te=
+xt-align:left;direction:ltr;display:inline-block;vertical-align:top;width:1=
+00%"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presen=
+tation" width=3D"100%"><tbody><tr><td style=3D"vertical-align:top;padding:0=
+"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentat=
+ion" width=3D"100%"><tbody><tr><td align=3D"left" style=3D"font-size:0px;pa=
+dding:16px 0;word-break:break-word"><div style=3D"font-family:DMSansMedium,=
+ Helvetica, Verdana, sans-serif;font-size:14px;line-height:143%;text-align:=
+left;color:#75808a"><p class=3D"footer-text" style=3D"font-size:13px;">Do n=
+ot reply to this email. Responses to this email are not monitored. </p><p c=
+lass=3D"footer-text" style=3D"font-size:13px;">NayaPay (Private) Limited is=
+ authorised and regulated by the State Bank of Pakistan as an Electronic Mo=
+ney Institution.</p><p class=3D"footer-text"><a class=3D"footer-text" href=
+=3D"tel:021111222719" style=3D"text-decoration: none; font-size: 13px;color=
+:#0666EB">(021) 111-222-729</a> | <a class=3D"footer-text" href=3D"https://=
+www.nayapay.com" target=3D"_blank" style=3D"text-decoration: none; font-siz=
+e: 13px;color:#0666EB">www.nayapay.com</a> | <a class=3D"footer-text" href=
+=3D"mailto:support@nayapay.com" style=3D"text-decoration: none; font-size: =
+13px ;color:#0666EB">support@nayapay.com</a></p><p class=3D"footer-text" st=
+yle=3D"font-size:13px;">NayaPay, its employees or agents will never ask you=
+ for your password, MPIN, OTP or debit card PIN, via call, email, SMS, web =
+links or social media. For security purposes, please do not share this sens=
+itive information with anyone.</p></div></td></tr></tbody></table></td></tr=
+></tbody></table></div></td></tr></tbody></table></div></td></tr></tbody></=
+table></td></tr></tbody></table></div></td></tr></tbody></table></div></td>=
+</tr></tbody></table><!--[if mso]></td></tr></table><![endif]--></div></td>=
+</tr></tbody></table></body></html>
+------=_Part_3854440_1163931648.1771693451593--
+
+------=_Part_3854439_1556190112.1771693451593--
+
+------=_Part_3854438_1360123652.1771693451593--

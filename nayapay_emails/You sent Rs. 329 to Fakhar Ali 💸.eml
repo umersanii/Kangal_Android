@@ -1,0 +1,523 @@
+Delivered-To: iamumersani@gmail.com
+Received: by 2002:a05:612c:69e:b0:56e:818f:a756 with SMTP id fs30csp655675vqb;
+        Wed, 4 Mar 2026 21:33:46 -0800 (PST)
+X-Received: by 2002:a05:6000:40c9:b0:439:c4ea:41a0 with SMTP id ffacd0b85a97d-439c8025d0fmr8625432f8f.59.1772688826675;
+        Wed, 04 Mar 2026 21:33:46 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772688826; cv=none;
+        d=google.com; s=arc-20240605;
+        b=huiJbBN/Xf6xucoWTXV7Dg2sokwzwHlgGY2s3YevsS8SpUcoWDdmf8gM8fKa6PXE2/
+         nbeAeL3ivjvlW7ZGQOexZnCMIa6WTCFAP9goUDxm3RmBJgSDUT89jhZiBjmC1+xpsjcD
+         5lIdF6/IQWqj2tmG2F81JREi+C61l1Yo1AqQywgSrZi1hXsiCzCsJmdMEv41C38xC0mR
+         pwxs2VWNFX45jCRuMLzYAj1xDfXrr9ArsS9934Ytby5kd7roh5kSlgv87bPri2UCnw7R
+         UHEP6CvLa9ZnO6vEl4duxnMpLpwgV5+QDfL7nuv7weJH15Q3XrTEdCE+RtRd9QJmGxGX
+         H4sg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=mime-version:subject:message-id:to:reply-to:from:dkim-signature
+         :date;
+        bh=Hpn2UIRhYtEYeTM4rI+dqBieXN/vyM3zXyLlkqAy9dk=;
+        fh=YhEffF3ZZ4SicYbNRL7Dj7r4LDKjsvJ8v/diMNwfvGM=;
+        b=a64Z2pWVL/OcKl/oMwUVYabPKD6xPiPifyyelK5ZspMRgVgu3B1zCMTrWOVyaHN5BN
+         vTBarl0cnUWo/Hl2UUiTVpD9jnCnAQ/SJVM/woGuV05+73MTv633GaHjEHM9JQnaA6Ie
+         cKUMNvV4ev8qALVTSdNwUE9USeCuPE8NLMRCVoWkMbh6lWXxXiK1p26AuHLHgifVIfvJ
+         pwyU2HuRMFOt7jxbIwDxTN9QWSfbOZWPenCxubdv339ZdmpPNSrDIWGMc6mD6zzMSYmc
+         AH1dUvHQHl+vhFzWEdsMeaKjwe8MWMlG/NbeAHlHlEMaHMrfETBNjI1ZVWIL7nVcPIb2
+         i9ZA==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@nayapay.com header.s=default header.b="gi/QClp0";
+       spf=pass (google.com: domain of service@nayapay.com designates 103.139.62.181 as permitted sender) smtp.mailfrom=service@nayapay.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=nayapay.com
+Return-Path: <service@nayapay.com>
+Received: from smtp-gw.nayapay.com (smtp-gw.nayapay.com. [103.139.62.181])
+        by mx.google.com with ESMTPS id ffacd0b85a97d-439ae47e5e3si28196768f8f.443.2026.03.04.21.33.46
+        for <iamumersani@gmail.com>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 04 Mar 2026 21:33:46 -0800 (PST)
+Received-SPF: pass (google.com: domain of service@nayapay.com designates 103.139.62.181 as permitted sender) client-ip=103.139.62.181;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@nayapay.com header.s=default header.b="gi/QClp0";
+       spf=pass (google.com: domain of service@nayapay.com designates 103.139.62.181 as permitted sender) smtp.mailfrom=service@nayapay.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=nayapay.com
+Date: Thu, 5 Mar 2026 10:33:45 +0500 (PKT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nayapay.com;
+	s=default; t=1772688825;
+	bh=6SjZtdyYMuAHMD3xu+2dBr/w1yj8s44HK52HQ/xgDhU=;
+	h=Date:From:Reply-To:To:Subject;
+	b=gi/QClp0UO5UiIz70Xt7USNVWG9A3juBwqUzc3Z/T8cG3uNCy2GjF+cXJVXU/yVO0
+	 gjWOhY8b1slU6FSvrMI5Rqg9xGcdma+bX03ORpFnhUEuDIdKZbCS851r4s5JR3idnU
+	 S1phrscTbrfD6feI/7ieUP3lsF4cfl4TbDAEqsasXU1lWcZuO34n0BF7nSqTISL1zu
+	 tF8XcRgZ6MnzCtUSr7p260OSHZVI2JyPYx3CiiWQhmh/4vmIwz70PeKSpWzIzOf3kZ
+	 meaVtkQgKyLI15Bv1hCDok+fWpQkezyByhHyldo5fmSDtPQQ7DqQ0DATpCokAQH+il
+	 d79oc9nzerHlQ==
+From: NayaPay <service@nayapay.com>
+Reply-To: noreply@nayapay.com
+To: iamumersani@gmail.com
+Message-ID: <1839672675.396686.1772688825365@np-pri-notification-alma-01.nayapay.com>
+Subject: =?UTF-8?Q?You_sent_Rs._329_to_Fakhar_Ali_=F0=9F=92=B8?=
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_396683_1587262642.1772688825305"
+
+------=_Part_396683_1587262642.1772688825305
+Content-Type: multipart/related; 
+	boundary="----=_Part_396684_95174542.1772688825305"
+
+------=_Part_396684_95174542.1772688825305
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_396685_982543944.1772688825305"
+
+------=_Part_396685_982543944.1772688825305
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+ 
+------=_Part_396685_982543944.1772688825305
+Content-Type: text/html;charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html; charset=
+=3Dutf-8"/><meta name=3D"color-scheme" content=3D"light dark"><meta name=3D=
+"supported-color-schemes" content=3D"light dark"><title>NayaPay Email</titl=
+e><style type=3D"text/css">@font-face{font-family:"DMSansMedium";src:url("h=
+ttps://nayapay.com/fonts/DM_Sans/static/DMSans-Medium.ttf") format("truetyp=
+e");font-weight:500;font-style:normal}@font-face{font-family:"DMSansBold";s=
+rc:url("https://nayapay.com/fonts/DM_Sans/static/DMSans-Bold.ttf") format("=
+truetype");font-weight:bold;font-style:normal}@media(min-width:600px){.logo=
+{width:148px !important}.title-text{font-size:28px !important}.general-text=
+{font-size:18px !important;line-height:24px !important}.general-text-2{font=
+-size:16px !important;line-height:24px !important}.general-text-3{font-size=
+:14px !important;line-height:normal !important}.summary-title{font-size:15p=
+x !important;line-height:normal !important}.summary-text{font-size:14px !im=
+portant;line-height:normal !important}.summary-amount{font-size:18px !impor=
+tant;line-height:normal !important}.footer-text{font-size:10px !important}.=
+heading-emoji{font-size:20px !important}}:root{color-scheme:light dark;supp=
+orted-color-schemes:light dark}.body-bg-color{background-color:#fff !import=
+ant}.trans-msg-bg-color{background-color:#f9f8f8 !important}.footer-bg-colo=
+r{background-color:#fafafa !important}.footer,.footer td,.footer p,.footer =
+span{color:#757575 !important;background-color:#fafafa !important}.footer-t=
+ext a{color:#0666eb !important}@media(prefers-color-scheme:dark){*{color:#f=
+ff !important}.body-bg-color{background-color:#1f2124 !important}.trans-msg=
+-bg-color{background-color:#757575 !important}.footer-bg-color{background-c=
+olor:#1f1f1f !important}.footer,.footer td,.footer p,.footer span{backgroun=
+d-color:#1f1f1f !important;color:#757575 !important}.footer-text a{color:#0=
+666eb !important}}@media(prefers-color-scheme:light){.body-bg-color{backgro=
+und-color:#fff !important}.trans-msg-bg-color{background-color:#f9f8f8 !imp=
+ortant}.footer-bg-color{background-color:#fafafa !important}.footer,.footer=
+ td,.footer p,.footer span{color:#757575 !important;background-color:#fafaf=
+a !important}.footer-text a{color:##0666eb !important}}</style></head><body=
+ style=3D"margin: 0px; padding: 0px; background-color: #fff; width: 100%"><=
+table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" rol=
+e=3D"presentation" style=3D"background:#fff;background-color:#fff;width:100=
+%" class=3D"body-bg-color"><tbody><tr><td><div style=3D"margin:0px auto;max=
+-width:600px;"><!--[if mso]><table width=3D"600px" style=3D"width:600px;"><=
+tr><td><![endif]--><table align=3D"center" border=3D"0" cellpadding=3D"0" c=
+ellspacing=3D"0" role=3D"presentation" style=3D"width:100%"><tbody><tr><td =
+style=3D"direction:ltr;font-size:0px;padding:0;text-align:center"><!-- LOGO=
+ --><div style=3D"margin:0px auto;max-width:600px;"><table align=3D"center"=
+ border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" sty=
+le=3D"width:100%"><tbody><tr><td style=3D"direction:ltr;font-size:0px;paddi=
+ng:0;text-align:center"><div style=3D"font-size:0;line-height:0;text-align:=
+center;display:inline-block;width:100%;direction:ltr;margin:auto;"><div sty=
+le=3D"font-size:0px;text-align:center;direction:ltr;display:inline-block;ve=
+rtical-align:top;width:90%;margin-top: 25px;margin-bottom:18px;"><table bor=
+der=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" style=
+=3D"vertical-align:top" width=3D"100%"><tbody><tr><td align=3D"center" styl=
+e=3D"font-size:0px;padding:0;word-break:break-word;"><table border=3D"0" ce=
+llpadding=3D"0" cellspacing=3D"0" role=3D"presentation" style=3D"border-col=
+lapse:collapse;border-spacing:0px"><tbody><tr><td style=3D"max-width:200px;=
+min-width:200px;width:200px" class=3D"logo"><img alt=3D"NayaPay" src=3D"htt=
+ps://attachment.nayapay.com:8443/fileUploader/download/UPLOAD_DIRECTORY/EMA=
+ILASSETS/rebranding/np-logo.png" style=3D"border:0;display:block;outline:no=
+ne;text-decoration:none;height:auto;width:100%;font-size:13px" width=3D"200=
+" height=3D"auto"></td></tr></tbody></table></td></tr></tbody></table></div=
+></div></td></tr></tbody></table></div><!-- Heading Section --><!-- BANNER =
+--><div style=3D"margin:0px auto;max-width:600px;"><table align=3D"center" =
+border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" styl=
+e=3D"width:100%" width=3D"100%"><tbody><tr><td style=3D"direction:ltr;font-=
+size:0px;padding:0;text-align:center"><div style=3D"font-size:0px;text-alig=
+n:left;direction:ltr;display:inline-block;vertical-align:top;width:100%"><t=
+able border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation"=
+ width=3D"100%" style=3D"width:100%;"><tbody><tr><td style=3D"vertical-alig=
+n:top;padding:0"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" ro=
+le=3D"presentation" width=3D"100%" style=3D"width:100%;"><tbody><tr><td ali=
+gn=3D"center" style=3D"font-size:0px;padding:0 0;word-break:break-word;"><i=
+mg src=3D"https://attachment.nayapay.com:8443/fileUploader/download/UPLOAD_=
+DIRECTORY/EMAILASSETS/rebranding/header.png" style=3D"border:0;display:bloc=
+k;outline:none;text-decoration:none;height:auto;width:100%" width=3D"600" h=
+eight=3D"auto"><!-- <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0"=
+ role=3D"presentation" style=3D"border-collapse:collapse;border-spacing:0px=
+;background:green;background-color:green;" width=3D"100%" style=3D"width:10=
+0%"><tbody><tr><td><img src=3D"https://attachment.nayapay.com:8443/fileUplo=
+ader/download/UPLOAD_DIRECTORY/EMAILASSETS/rebranding/header.png&v2" style=
+=3D"border:0;display:block;outline:none;text-decoration:none;height:auto;wi=
+dth:100%" width=3D"600" height=3D"auto"></td></tr></tbody></table> --></td>=
+</tr></tbody></table></td></tr></tbody></table></div></td></tr></tbody></ta=
+ble></div><!-- BODY --><!-- Username --><!--[if mso]><!-- Message --><!-- R=
+eceipt Card --><!--[if mso]><table width=3D"600px" style=3D"width:600px;"><=
+tr><td><![endif]--><div style=3D"background:#ffffff;background-color:#fffff=
+f;margin:0px auto;max-width:600px;" class=3D"body-bg-color"><table align=3D=
+"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentat=
+ion" style=3D"background:#ffffff;background-color:#ffffff;width:100%" class=
+=3D"body-bg-color"><tbody><tr><td style=3D"direction:ltr;font-size:0px;padd=
+ing:0;text-align:center"><div style=3D"font-size:0px;text-align:left;direct=
+ion:ltr;display:inline-block;vertical-align:top;width:100%"><table border=
+=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"1=
+00%"><tbody><tr><td style=3D"vertical-align:top;padding:0px 24px;"><table b=
+order=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" width=
+=3D"100%" style=3D"width:100%;"><tbody><tr><td style=3D"vertical-align:top;=
+ padding-top:49px;"><div style=3D"font-size:0px;text-align:left;direction:l=
+tr;display:inline-block;vertical-align:top; background:#F9F8F8;padding:20px=
+ 24px;background-color:#F9F8F8" class=3D"trans-msg-bg-color"><!--[if mso]><=
+table style=3D"background-color:#F9F8F8;padding:20px 24px;"><tr><td><![endi=
+f]--><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presen=
+tation" width=3D"100%" style=3D"width:100%;"><tbody><tr><td style=3D"max-wi=
+dth:44px; min-width:44px; width: 44px; text-align: center" align=3D"center"=
+ width=3D"44"><img src=3D"https://attachment.nayapay.com:8443/fileUploader/=
+get-view?fileId=3DUPLOAD_DIRECTORY/BANKICONS/TMBL.png" style=3D"border-radi=
+us: 10px; width: 52px; height: 52px;" width=3D"52" height=3D"52"/></td><td =
+style=3D" width: 243px; text-align: left; padding: 0 0 0 24px; " align=3D"l=
+eft" width=3D"243"><p class=3D"summary-title" style=3D" margin: 0; padding:=
+ 0px 0px 6px 0; font-size: 18px; font-weight: 900; line-height: 22px; color=
+: #0a0a0a; font-family: DMSansBold,tahoma, Verdana, sans-serif;"><!--[if ms=
+o]><table width=3D"210" style=3D"width:210px;"><tr><td style=3D" font-size:=
+ 14px; font-weight: 900; font-family: tahoma, Verdana, sans-serif;"><![endi=
+f]--> Fakhar Ali <!--[if mso]></td></tr></table><![endif]--></p><p class=3D=
+"summary-text" style=3D" margin: 0; padding: 0px 0px 4px 0; font-size: 16px=
+; line-height: 22px; color: #0a0a0a; font-family: DMSansMedium,tahoma, Verd=
+ana, sans-serif;"><!--[if mso]><table width=3D"210" style=3D"width:210px;">=
+<tr><td style=3D" font-size: 14px; font-weight: 400; font-family: tahoma, V=
+erdana, sans-serif;"><![endif]--> easypaisa Bank-2637 <!--[if mso]></td></t=
+r></table><![endif]--></p><p class=3D"summary-text" style=3D" margin: 0; pa=
+dding: 0px; font-size: 14px; line-height: 22px; color: #6D6D6D; background-=
+clip: text; font-family: DMSansMedium,tahoma, Verdana, sans-serif;"><!--[if=
+ mso]><table width=3D"210" style=3D"width:210px;"><tr><td style=3D" font-si=
+ze: 14px; font-weight: 400; font-family: tahoma, Verdana, sans-serif;"><![e=
+ndif]--> 05 Mar 2026, 10:33 AM <!--[if mso]></td></tr></table><![endif]--><=
+/p></td><td style=3D"width: 190px; min-width: 190px; max-width: 190px;" ali=
+gn=3D"right" width=3D"190"><div class=3D"summary-amount" style=3D" padding:=
+ 0px; font-size: 18px; font-weight: 900; line-height: 20px; color: #ef4136;=
+ font-family: DMSansBold,tahoma, Verdana, sans-serif; "><!--[if mso]><table=
+ width=3D"220px" style=3D"width:220px;"><tr><td style=3D" font-size: 18px; =
+font-weight: 900; font-family: tahoma, Verdana, sans-serif; text-align:righ=
+t; color: #ef4136;" align=3D"right"><![endif]--> - Rs. 329 <!--[if mso]></t=
+d></tr></table><![endif]--></div></td></tr></tbody></table><!--[if mso]></t=
+d></tr></table><![endif]--></div></td></tr></tbody></table></td></tr></tbod=
+y></table></div></td></tr></tbody></table></div><!--[if mso]></td></tr></ta=
+ble><![endif]--><!-- TXN DETAILS --><div style=3D"margin:0px auto;max-width=
+:600px;"><table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" role=3D"presentation" style=3D"width:100%"><tbody><tr><td style=3D"d=
+irection:ltr;font-size:0px;padding:0;text-align:center"><div style=3D"font-=
+size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:=
+top;width:100%"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" rol=
+e=3D"presentation" width=3D"100%"><tbody><tr><td style=3D"vertical-align:to=
+p;padding:0"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=
+=3D"presentation" width=3D"100%"><tbody><tr><td align=3D"center" style=3D"f=
+ont-size:0px;padding:0 0;word-break:break-word"><table border=3D"0" cellpad=
+ding=3D"0" cellspacing=3D"0" role=3D"presentation" style=3D"border-collapse=
+:collapse;border-spacing:0px"><tbody><tr><td style=3D"padding: 49px 30px 24=
+px 30px; width: 540px; min-width: 540px; max-width: 540px" width=3D"540" st=
+yle=3D"background-color: #fff" class=3D"body-bg-color"><!--[if mso]><table =
+style=3D"padding: 49px 0px 24px 0px; width: 540px" width=3D"540"><tr><td><!=
+[endif]--><span class=3D"general-text-2" style=3D"padding: 0px; font-size: =
+22px; line-height: 34px; font-family: DMSansBold,tahoma,Verdana, sans-serif=
+; color: #0a0a0a; font-weight: 900;"><!--[if mso]><table><tr><td style=3D"p=
+adding: 0px; font-size: 16px; font-family: tahoma,Verdana, sans-serif; font=
+-weight: 900;"><![endif]-->AMOUNT DETAILS<!--[if mso]></td></tr></table><![=
+endif]--></span><!--[if mso]></td></tr></table><![endif]--></td></tr><tr><t=
+d style=3D"padding: 0px 30px 24px 30px; width: 540px; min-width: 540px; max=
+-width: 540px" width=3D"540" style=3D"background-color: #fff" class=3D"body=
+-bg-color"><table style=3D"width: 540px;text-align: center;background-color=
+: #fff; " border=3D"0" cellpadding=3D"0" cellspacing=3D"0" bgcolor=3D"#ffff=
+ff" width=3D"540" class=3D"body-bg-color"><tr><td style=3D"max-width: 250px=
+;min-width: 250px;width: 250px; text-align: left" align=3D"left" width=3D"2=
+50" valign=3D"top"><p class=3D"general-text-3" style=3D"margin: 0px; font-s=
+ize: 20px; font-weight: 400; line-height: 28px; font-family: DMSansMedium,t=
+ahoma, Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><tr><td st=
+yle=3D"padding: 0px; font-size: 14px; font-family: tahoma,Verdana, sans-ser=
+if; font-weight: 400;"><![endif]-->Amount Sent<!--[if mso]></td></tr></tabl=
+e><![endif]--></p></td><td style=3D"max-width: 265px;min-width: 265px;width=
+: 265px; text-align: right; padding-left:25px;" align=3D"right" width=3D"26=
+5" valign=3D"top"><p class=3D"general-text-3" style=3D"margin: 0px; font-si=
+ze: 20px; font-weight: 400; line-height: 28px; font-family: DMSansMedium,ta=
+homa, Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><tr><td sty=
+le=3D"padding: 0px; font-size: 14px; font-family: tahoma,Verdana, sans-seri=
+f; font-weight: 400;text-align:right" align=3D"right"><![endif]-->Rs. 329<!=
+--[if mso]></td></tr></table><![endif]--></p></td></tr></table></td></tr><t=
+r><td style=3D"padding: 0px 30px 24px 30px; width: 540px; min-width: 540px;=
+ max-width: 540px" width=3D"540" style=3D"background-color: #fff" class=3D"=
+body-bg-color"><table style=3D"width: 540px;text-align: center;background-c=
+olor: #fff; " border=3D"0" cellpadding=3D"0" cellspacing=3D"0" bgcolor=3D"#=
+ffffff" width=3D"540" class=3D"body-bg-color"><tr><td style=3D"max-width: 2=
+50px;min-width: 250px;width: 250px; text-align: left" align=3D"left" width=
+=3D"250" valign=3D"top"><p class=3D"general-text-3" style=3D"margin: 0px; f=
+ont-size: 20px; font-weight: 400; line-height: 28px; font-family: DMSansMed=
+ium,tahoma, Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><tr><=
+td style=3D"padding: 0px; font-size: 14px; font-family: tahoma,Verdana, san=
+s-serif; font-weight: 400;"><![endif]-->Service Fee (Incl. Tax)<!--[if mso]=
+></td></tr></table><![endif]--></p></td><td style=3D"max-width: 265px;min-w=
+idth: 265px;width: 265px; text-align: right; padding-left:25px;" align=3D"r=
+ight" width=3D"265" valign=3D"top"><p class=3D"general-text-3" style=3D"mar=
+gin: 0px; font-size: 20px; font-weight: 400; line-height: 28px; font-family=
+: DMSansMedium,tahoma, Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><=
+table><tr><td style=3D"padding: 0px; font-size: 14px; font-family: tahoma,V=
+erdana, sans-serif; font-weight: 400;text-align:right" align=3D"right"><![e=
+ndif]-->Rs. 0<!--[if mso]></td></tr></table><![endif]--></p></td></tr></tab=
+le></td></tr><tr><td style=3D"padding: 0px 30px 24px 30px; width: 540px; mi=
+n-width: 540px; max-width: 540px" width=3D"540" style=3D"background-color: =
+#fff" class=3D"body-bg-color"><table style=3D"width: 540px;text-align: cent=
+er;background-color: #fff; " border=3D"0" cellpadding=3D"0" cellspacing=3D"=
+0" bgcolor=3D"#ffffff" width=3D"540" class=3D"body-bg-color"><tr><td style=
+=3D"max-width: 250px;min-width: 250px;width: 250px; text-align: left" align=
+=3D"left" width=3D"250" valign=3D"top"><p class=3D"general-text-3" style=3D=
+"margin: 0px; font-size: 20px; font-weight: 400; line-height: 28px; font-fa=
+mily: DMSansMedium,tahoma, Verdana, sans-serif; color: #0a0a0a;"><!--[if ms=
+o]><table><tr><td style=3D"padding: 0px; font-size: 14px; font-family: taho=
+ma,Verdana, sans-serif; font-weight: 400;"><![endif]-->Total Amount<!--[if =
+mso]></td></tr></table><![endif]--></p></td><td style=3D"max-width: 265px;m=
+in-width: 265px;width: 265px; text-align: right; padding-left:25px;" align=
+=3D"right" width=3D"265" valign=3D"top"><p class=3D"general-text-3" style=
+=3D"margin: 0px; font-size: 20px; font-weight: 400; line-height: 28px; font=
+-family: DMSansMedium,tahoma, Verdana, sans-serif; color: #0a0a0a;"><!--[if=
+ mso]><table><tr><td style=3D"padding: 0px; font-size: 14px; font-family: t=
+ahoma,Verdana, sans-serif; font-weight: 400;text-align:right" align=3D"righ=
+t"><![endif]-->Rs. 329<!--[if mso]></td></tr></table><![endif]--></p></td><=
+/tr></table></td></tr><tr><td style=3D"padding: 49px 30px 24px 30px; width:=
+ 540px; min-width: 540px; max-width: 540px" width=3D"540" style=3D"backgrou=
+nd-color: #fff" class=3D"body-bg-color"><!--[if mso]><table style=3D"paddin=
+g: 49px 0px 24px 0px; width: 540px" width=3D"540"><tr><td><![endif]--><span=
+ class=3D"general-text-2" style=3D"padding: 0px; font-size: 22px; line-heig=
+ht: 34px; font-family: DMSansBold,tahoma,Verdana, sans-serif; color: #0a0a0=
+a; font-weight: 900;"><!--[if mso]><table><tr><td style=3D"padding: 0px; fo=
+nt-size: 16px; font-family: tahoma,Verdana, sans-serif; font-weight: 900;">=
+<![endif]-->TRANSACTION DETAILS<!--[if mso]></td></tr></table><![endif]--><=
+/span><!--[if mso]></td></tr></table><![endif]--></td></tr><tr><td style=3D=
+"padding: 0px 30px 24px 30px; width: 540px; min-width: 540px; max-width: 54=
+0px" width=3D"540" style=3D"background-color: #fff" class=3D"body-bg-color"=
+><table style=3D"width: 540px;text-align: center;background-color: #fff; " =
+border=3D"0" cellpadding=3D"0" cellspacing=3D"0" bgcolor=3D"#ffffff" width=
+=3D"540" class=3D"body-bg-color"><tr><td style=3D"max-width: 250px;min-widt=
+h: 250px;width: 250px; text-align: left" align=3D"left" width=3D"250" valig=
+n=3D"top"><p class=3D"general-text-3" style=3D"margin: 0px; font-size: 20px=
+; font-weight: 400; line-height: 28px; font-family: DMSansMedium,tahoma, Ve=
+rdana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><tr><td style=3D"pa=
+dding: 0px; font-size: 14px; font-family: tahoma,Verdana, sans-serif; font-=
+weight: 400;"><![endif]-->Transaction ID<!--[if mso]></td></tr></table><![e=
+ndif]--></p></td><td style=3D"max-width: 265px;min-width: 265px;width: 265p=
+x; text-align: right; padding-left:25px;" align=3D"right" width=3D"265" val=
+ign=3D"top"><p class=3D"general-text-3" style=3D"margin: 0px; font-size: 20=
+px; font-weight: 400; line-height: 28px; font-family: DMSansMedium,tahoma, =
+Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><tr><td style=3D"=
+padding: 0px; font-size: 14px; font-family: tahoma,Verdana, sans-serif; fon=
+t-weight: 400;text-align:right" align=3D"right"><![endif]-->69a915b83fdee53=
+824a35dbc<!--[if mso]></td></tr></table><![endif]--></p></td></tr></table><=
+/td></tr><tr><td style=3D"padding: 49px 30px 24px 30px; width: 540px; min-w=
+idth: 540px; max-width: 540px" width=3D"540" style=3D"background-color: #ff=
+f" class=3D"body-bg-color"><!--[if mso]><table style=3D"padding: 49px 0px 2=
+4px 0px; width: 540px" width=3D"540"><tr><td><![endif]--><span class=3D"gen=
+eral-text-2" style=3D"padding: 0px; font-size: 22px; line-height: 34px; fon=
+t-family: DMSansBold,tahoma,Verdana, sans-serif; color: #0a0a0a; font-weigh=
+t: 900;"><!--[if mso]><table><tr><td style=3D"padding: 0px; font-size: 16px=
+; font-family: tahoma,Verdana, sans-serif; font-weight: 900;"><![endif]-->A=
+DDITIONAL INFORMATION<!--[if mso]></td></tr></table><![endif]--></span><!--=
+[if mso]></td></tr></table><![endif]--></td></tr><tr><td style=3D"padding: =
+0px 30px 24px 30px; width: 540px; min-width: 540px; max-width: 540px" width=
+=3D"540" style=3D"background-color: #fff" class=3D"body-bg-color"><table st=
+yle=3D"width: 540px;text-align: center;background-color: #fff; " border=3D"=
+0" cellpadding=3D"0" cellspacing=3D"0" bgcolor=3D"#ffffff" width=3D"540" cl=
+ass=3D"body-bg-color"><tr><td style=3D"max-width: 250px;min-width: 250px;wi=
+dth: 250px; text-align: left" align=3D"left" width=3D"250" valign=3D"top"><=
+p class=3D"general-text-3" style=3D"margin: 0px; font-size: 20px; font-weig=
+ht: 400; line-height: 28px; font-family: DMSansMedium,tahoma, Verdana, sans=
+-serif; color: #0a0a0a;"><!--[if mso]><table><tr><td style=3D"padding: 0px;=
+ font-size: 14px; font-family: tahoma,Verdana, sans-serif; font-weight: 400=
+;"><![endif]-->Destination Acc. Title<!--[if mso]></td></tr></table><![endi=
+f]--></p></td><td style=3D"max-width: 265px;min-width: 265px;width: 265px; =
+text-align: right; padding-left:25px;" align=3D"right" width=3D"265" valign=
+=3D"top"><p class=3D"general-text-3" style=3D"margin: 0px; font-size: 20px;=
+ font-weight: 400; line-height: 28px; font-family: DMSansMedium,tahoma, Ver=
+dana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><tr><td style=3D"pad=
+ding: 0px; font-size: 14px; font-family: tahoma,Verdana, sans-serif; font-w=
+eight: 400;text-align:right" align=3D"right"><![endif]-->Fakhar Ali<!--[if =
+mso]></td></tr></table><![endif]--></p></td></tr></table></td></tr><tr><td =
+style=3D"padding: 0px 30px 24px 30px; width: 540px; min-width: 540px; max-w=
+idth: 540px" width=3D"540" style=3D"background-color: #fff" class=3D"body-b=
+g-color"><table style=3D"width: 540px;text-align: center;background-color: =
+#fff; " border=3D"0" cellpadding=3D"0" cellspacing=3D"0" bgcolor=3D"#ffffff=
+" width=3D"540" class=3D"body-bg-color"><tr><td style=3D"max-width: 250px;m=
+in-width: 250px;width: 250px; text-align: left" align=3D"left" width=3D"250=
+" valign=3D"top"><p class=3D"general-text-3" style=3D"margin: 0px; font-siz=
+e: 20px; font-weight: 400; line-height: 28px; font-family: DMSansMedium,tah=
+oma, Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><tr><td styl=
+e=3D"padding: 0px; font-size: 14px; font-family: tahoma,Verdana, sans-serif=
+; font-weight: 400;"><![endif]-->Destination Bank<!--[if mso]></td></tr></t=
+able><![endif]--></p></td><td style=3D"max-width: 265px;min-width: 265px;wi=
+dth: 265px; text-align: right; padding-left:25px;" align=3D"right" width=3D=
+"265" valign=3D"top"><p class=3D"general-text-3" style=3D"margin: 0px; font=
+-size: 20px; font-weight: 400; line-height: 28px; font-family: DMSansMedium=
+,tahoma, Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><tr><td =
+style=3D"padding: 0px; font-size: 14px; font-family: tahoma,Verdana, sans-s=
+erif; font-weight: 400;text-align:right" align=3D"right"><![endif]-->easypa=
+isa Bank<!--[if mso]></td></tr></table><![endif]--></p></td></tr></table></=
+td></tr><tr><td style=3D"padding: 0px 30px 24px 30px; width: 540px; min-wid=
+th: 540px; max-width: 540px" width=3D"540" style=3D"background-color: #fff"=
+ class=3D"body-bg-color"><table style=3D"width: 540px;text-align: center;ba=
+ckground-color: #fff; " border=3D"0" cellpadding=3D"0" cellspacing=3D"0" bg=
+color=3D"#ffffff" width=3D"540" class=3D"body-bg-color"><tr><td style=3D"ma=
+x-width: 250px;min-width: 250px;width: 250px; text-align: left" align=3D"le=
+ft" width=3D"250" valign=3D"top"><p class=3D"general-text-3" style=3D"margi=
+n: 0px; font-size: 20px; font-weight: 400; line-height: 28px; font-family: =
+DMSansMedium,tahoma, Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><ta=
+ble><tr><td style=3D"padding: 0px; font-size: 14px; font-family: tahoma,Ver=
+dana, sans-serif; font-weight: 400;"><![endif]-->Destination Acc. Number<!-=
+-[if mso]></td></tr></table><![endif]--></p></td><td style=3D"max-width: 26=
+5px;min-width: 265px;width: 265px; text-align: right; padding-left:25px;" a=
+lign=3D"right" width=3D"265" valign=3D"top"><p class=3D"general-text-3" sty=
+le=3D"margin: 0px; font-size: 20px; font-weight: 400; line-height: 28px; fo=
+nt-family: DMSansMedium,tahoma, Verdana, sans-serif; color: #0a0a0a;"><!--[=
+if mso]><table><tr><td style=3D"padding: 0px; font-size: 14px; font-family:=
+ tahoma,Verdana, sans-serif; font-weight: 400;text-align:right" align=3D"ri=
+ght"><![endif]-->=E2=97=8F=E2=97=8F=E2=97=8F=E2=97=8F2637<!--[if mso]></td>=
+</tr></table><![endif]--></p></td></tr></table></td></tr><tr><td style=3D"p=
+adding: 0px 30px 24px 30px; width: 540px; min-width: 540px; max-width: 540p=
+x" width=3D"540" style=3D"background-color: #fff" class=3D"body-bg-color"><=
+table style=3D"width: 540px;text-align: center;background-color: #fff; " bo=
+rder=3D"0" cellpadding=3D"0" cellspacing=3D"0" bgcolor=3D"#ffffff" width=3D=
+"540" class=3D"body-bg-color"><tr><td style=3D"max-width: 250px;min-width: =
+250px;width: 250px; text-align: left" align=3D"left" width=3D"250" valign=
+=3D"top"><p class=3D"general-text-3" style=3D"margin: 0px; font-size: 20px;=
+ font-weight: 400; line-height: 28px; font-family: DMSansMedium,tahoma, Ver=
+dana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><tr><td style=3D"pad=
+ding: 0px; font-size: 14px; font-family: tahoma,Verdana, sans-serif; font-w=
+eight: 400;"><![endif]-->Source Acc. Title<!--[if mso]></td></tr></table><!=
+[endif]--></p></td><td style=3D"max-width: 265px;min-width: 265px;width: 26=
+5px; text-align: right; padding-left:25px;" align=3D"right" width=3D"265" v=
+align=3D"top"><p class=3D"general-text-3" style=3D"margin: 0px; font-size: =
+20px; font-weight: 400; line-height: 28px; font-family: DMSansMedium,tahoma=
+, Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><tr><td style=
+=3D"padding: 0px; font-size: 14px; font-family: tahoma,Verdana, sans-serif;=
+ font-weight: 400;text-align:right" align=3D"right"><![endif]-->Muhammad Um=
+er<!--[if mso]></td></tr></table><![endif]--></p></td></tr></table></td></t=
+r><tr><td style=3D"padding: 0px 30px 24px 30px; width: 540px; min-width: 54=
+0px; max-width: 540px" width=3D"540" style=3D"background-color: #fff" class=
+=3D"body-bg-color"><table style=3D"width: 540px;text-align: center;backgrou=
+nd-color: #fff; " border=3D"0" cellpadding=3D"0" cellspacing=3D"0" bgcolor=
+=3D"#ffffff" width=3D"540" class=3D"body-bg-color"><tr><td style=3D"max-wid=
+th: 250px;min-width: 250px;width: 250px; text-align: left" align=3D"left" w=
+idth=3D"250" valign=3D"top"><p class=3D"general-text-3" style=3D"margin: 0p=
+x; font-size: 20px; font-weight: 400; line-height: 28px; font-family: DMSan=
+sMedium,tahoma, Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><=
+tr><td style=3D"padding: 0px; font-size: 14px; font-family: tahoma,Verdana,=
+ sans-serif; font-weight: 400;"><![endif]-->Channel<!--[if mso]></td></tr><=
+/table><![endif]--></p></td><td style=3D"max-width: 265px;min-width: 265px;=
+width: 265px; text-align: right; padding-left:25px;" align=3D"right" width=
+=3D"265" valign=3D"top"><p class=3D"general-text-3" style=3D"margin: 0px; f=
+ont-size: 20px; font-weight: 400; line-height: 28px; font-family: DMSansMed=
+ium,tahoma, Verdana, sans-serif; color: #0a0a0a;"><!--[if mso]><table><tr><=
+td style=3D"padding: 0px; font-size: 14px; font-family: tahoma,Verdana, san=
+s-serif; font-weight: 400;text-align:right" align=3D"right"><![endif]-->Raa=
+st<!--[if mso]></td></tr></table><![endif]--></p></td></tr></table></td></t=
+r></tbody></table></td></tr></tbody></table></td></tr></tbody></table></div=
+></td></tr></tbody></table></div><!-- CTA --><!--[if mso]><table width=3D"6=
+00px" style=3D"width:600px;padding: 30px 0px"><tr><td><![endif]--><table al=
+ign=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"60=
+0" style=3D"margin: 0 auto; padding: 0 50px 0 51px;" class=3D"body-bg-color=
+"><tr><td align=3D"center" style=3D"padding: 30px 0 16px 0;"><!--[if mso]><=
+v:roundrect xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:w=3D"urn:schema=
+s-microsoft-com:office:word" href=3D"https://www.nayapay.com/inapp/viewpaym=
+ents" style=3D"height:48px;v-text-anchor:middle;width:280px;" arcsize=3D"10=
+%" stroke=3D"f" fillcolor=3D"#ff5018"><w:anchorlock/><center style=3D"color=
+:#ffffff;font-family:Verdana,sans-serif;font-size:17px;font-weight:700;"> V=
+iew your transactions </center></v:roundrect><![endif]--><!--[if !mso]><!--=
+ --><a href=3D"https://www.nayapay.com/inapp/viewpayments" style=3D" displa=
+y: inline-block; background:#ff5018; background-image: linear-gradient(#ff5=
+018, #ff5018); font-family: 'DMSansMedium', sans-serif; font-size: 18px; fo=
+nt-weight: 700; line-height: 48px; text-align: center; text-decoration: non=
+e; border-radius: 8px; padding: 5px 65px; min-width: 189px; color: #fff; bo=
+rder: 1px solid transparent; " data-ogsc=3D"dark" class=3D"button-container=
+"><span style=3D"background:#000; mix-blend-mode:screen; color: #fff;"><spa=
+n style=3D"background:#000; mix-blend-mode:difference; color: #fff;"><span =
+style=3D"color: #fff">View your transactions</span></span></span></a><!--<!=
+[endif]--></td></tr></table><!--[if mso]></td></tr></table><![endif]--><!--=
+ Signature --><!-- FOOTER --><div style=3D"margin:0px auto;max-width:600px;=
+margin-top:60px" class=3D"footer"><table align=3D"center" border=3D"0" cell=
+padding=3D"0" cellspacing=3D"0" role=3D"presentation" style=3D"width:100%">=
+<tbody><tr><td style=3D"direction:ltr;font-size:0px;padding:56px 35px 56px;=
+text-align:center;background:#FAFAFA"><div style=3D"font-size:0px;text-alig=
+n:left;direction:ltr;display:inline-block;vertical-align:top;width:100%"><t=
+able border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation"=
+ width=3D"100%"><tbody><tr><td style=3D"vertical-align:top;padding:0"><tabl=
+e border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" wi=
+dth=3D"100%"><tbody><tr><td style=3D"font-size:0px;word-break:break-word"><=
+div style=3D"margin:0px auto;max-width:652px"><table align=3D"left" border=
+=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" style=3D"w=
+idth:100%"><tbody><tr><td style=3D"direction:ltr;font-size:0px;padding:0;te=
+xt-align:center"><div style=3D"font-size:0px;text-align:left;direction:ltr;=
+display:inline-block;vertical-align:top;width:100%"><table border=3D"0" cel=
+lpadding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"100%"><tbod=
+y><tr><td style=3D"vertical-align:top;padding:0"><table border=3D"0" cellpa=
+dding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"100%"><tbody><=
+tr><td><!--[if mso]><table><tr><td style=3D"margin-right:16px;>"<![endif]--=
+><a border=3D"0" style=3D"color:#0666eb;margin-right:16px;text-decoration:n=
+one;width:20px;height:20px;" href=3D"https://www.instagram.com/nayapay/" re=
+l=3D"noreferrer" target=3D"_blank"><img alt=3D"INSTAGRAM" width=3D"20" heig=
+ht=3D"20" src=3D"https://attachment.nayapay.com:8443/fileUploader/download/=
+UPLOAD_DIRECTORY/EMAILASSETS/rebranding/insta.png&v2"></a><!--[if mso]></td=
+><td style=3D"margin-right:16px;>"<![endif]--><a border=3D"0" style=3D"colo=
+r:#0666eb;margin-right:16px;text-decoration:none" href=3D"https://www.faceb=
+ook.com/nayapaypk" rel=3D"noreferrer" target=3D"_blank"><img alt=3D"FACEBOO=
+K" width=3D"20" height=3D"20" src=3D"https://attachment.nayapay.com:8443/fi=
+leUploader/download/UPLOAD_DIRECTORY/EMAILASSETS/rebranding/fb.png&v2"></a>=
+<!--[if mso]></td><td style=3D"margin-right:16px;>"<![endif]--><a border=3D=
+"0" style=3D"color:#0666eb;margin-right:16px;text-decoration:none" href=3D"=
+https://twitter.com/nayapaypk" rel=3D"noreferrer" target=3D"_blank"><img al=
+t=3D"" width=3D"20" height=3D"20" src=3D"https://attachment.nayapay.com:844=
+3/fileUploader/download/UPLOAD_DIRECTORY/EMAILASSETS/rebranding/x.png&v2"><=
+/a><!--[if mso]></td><td style=3D"margin-right:16px;>"<![endif]--><a border=
+=3D"0" style=3D"color:#0666eb;margin-right:16px;text-decoration:none;" href=
+=3D"https://www.linkedin.com/company/nayapay" rel=3D"noreferrer" target=3D"=
+_blank"><img alt=3D"" width=3D"20" height=3D"20" src=3D"https://attachment.=
+nayapay.com:8443/fileUploader/download/UPLOAD_DIRECTORY/EMAILASSETS/rebrand=
+ing/linkedin.png&v2"></a><!--[if mso]></td></tr></table><![endif]--></td></=
+tr></tbody></table></td></tr></tbody></table></div></td></tr></tbody></tabl=
+e></div></td></tr><tr><td style=3D"font-size:0px;word-break:break-word"><di=
+v style=3D"margin:0px auto;max-width:652px"><table align=3D"center" border=
+=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" style=3D"w=
+idth:100%"><tbody><tr><td style=3D"direction:ltr;font-size:0px;padding:0;te=
+xt-align:center"><div style=3D"font-size:0px;text-align:left;direction:ltr;=
+display:inline-block;vertical-align:top;width:100%"><table border=3D"0" cel=
+lpadding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"100%"><tbod=
+y><tr><td style=3D"vertical-align:top;padding:0"><table border=3D"0" cellpa=
+dding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"100%"><tbody><=
+tr><td align=3D"left" style=3D"font-size:0px;padding:16px 0;word-break:brea=
+k-word"><div style=3D"font-family:DMSansMedium, Helvetica, Verdana, sans-se=
+rif;font-size:14px;line-height:143%;text-align:left;color:#75808a"><p class=
+=3D"footer-text" style=3D"font-size:13px;">Do not reply to this email. Resp=
+onses to this email are not monitored. </p><p class=3D"footer-text" style=
+=3D"font-size:13px;">NayaPay (Private) Limited is authorised and regulated =
+by the State Bank of Pakistan as an Electronic Money Institution.</p><p cla=
+ss=3D"footer-text"><a class=3D"footer-text" href=3D"tel:(021) 111-222-729" =
+style=3D"text-decoration: none; font-size: 13px;color:#0666EB">(021) 111-22=
+2-729</a> | <a class=3D"footer-text" href=3D"https://www.nayapay.com" targe=
+t=3D"_blank" style=3D"text-decoration: none; font-size: 13px;color:#0666EB"=
+>www.nayapay.com</a> | <a class=3D"footer-text" href=3D"mailto:support@naya=
+pay.com" style=3D"text-decoration: none; font-size: 13px ;color:#0666EB">su=
+pport@nayapay.com</a></p><p class=3D"footer-text" style=3D"font-size:13px;"=
+>NayaPay, its employees or agents will never ask you for your password, MPI=
+N, OTP or debit card PIN, via call, email, SMS, web links or social media. =
+For security purposes, please do not share this sensitive information with =
+anyone.</p></div></td></tr></tbody></table></td></tr></tbody></table></div>=
+</td></tr></tbody></table></div></td></tr></tbody></table></td></tr></tbody=
+></table></div></td></tr></tbody></table></div></td></tr></tbody></table><!=
+--[if mso]></td></tr></table><![endif]--></div></td></tr></tbody></table><s=
+cript defer src=3D"https://static.cloudflareinsights.com/beacon.min.js/vcd1=
+5cbe7772f49c399c6a5babf22c1241717689176015" integrity=3D"sha512-ZpsOmlRQV6y=
+907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ=
+=3D=3D" data-cf-beacon=3D'{"rayId":"93c00e037c98ce6f","serverTiming":{"name=
+":{"cfExtPri":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}},"=
+version":"2025.4.0-1-g37f21b1","token":"47074903b0044e61bd53550aaf856729"}'=
+ crossorigin=3D"anonymous"></script></body></html>
+------=_Part_396685_982543944.1772688825305--
+
+------=_Part_396684_95174542.1772688825305--
+
+------=_Part_396683_1587262642.1772688825305--
