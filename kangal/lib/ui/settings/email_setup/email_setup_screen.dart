@@ -5,6 +5,9 @@ class EmailSetupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: const Text('Email Setup')));
+    return Scaffold(
+      appBar: AppBar(title: const Text('Email Setup')),
+      body: const Center(child: Text('Email Setup UI coming soon')),
+    );
   }
 }

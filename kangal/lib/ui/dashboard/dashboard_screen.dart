@@ -5,6 +5,9 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: const Text('Dashboard')));
+    return Scaffold(
+      appBar: AppBar(title: const Text('Dashboard')),
+      body: const Center(child: Text('Dashboard UI coming soon')),
+    );
   }
 }

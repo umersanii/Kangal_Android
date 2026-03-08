@@ -5,6 +5,9 @@ class RulesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: const Text('Rules')));
+    return Scaffold(
+      appBar: AppBar(title: const Text('Rules')),
+      body: const Center(child: Text('Rules UI coming soon')),
+    );
   }
 }
