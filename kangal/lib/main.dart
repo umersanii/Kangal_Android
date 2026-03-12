@@ -9,6 +9,7 @@ import 'package:kangal/data/repositories/rule_repository.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
 import 'package:kangal/data/repositories/sms_import_repository.dart';
 import 'package:kangal/data/repositories/sms_import_repository_impl.dart';
+import 'package:kangal/data/services/background_sync_service.dart';
 import 'package:kangal/data/services/hbl_sms_service.dart';
 import 'package:kangal/data/services/sms_inbox_service.dart';
 import 'package:kangal/data/services/sms_permission_service.dart';
@@ -17,6 +18,9 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize background sync service for email sync tasks
+  await BackgroundSyncService.initializeBackgroundSync();
 
   final appDatabase = AppDatabase();
   final transactionRepository = DriftTransactionRepository(
@@ -48,6 +52,7 @@ Future<void> main() async {
         Provider<SmsInboxService>.value(value: smsInboxService),
         Provider<HblSmsService>.value(value: hblSmsService),
         Provider<SmsImportRepository>.value(value: smsImportRepository),
+        Provider<BackgroundSyncService>.value(value: BackgroundSyncService()),
       ],
       child: KangalApp(router: router),
     ),
