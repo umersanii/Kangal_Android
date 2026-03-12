@@ -34,8 +34,8 @@ class SmsPermissionService {
   SmsPermissionService({
     PermissionHandler? handler,
     Future<bool> Function()? openSettings,
-  })  : _handler = handler ?? _DefaultPermissionHandler(Permission.sms),
-        _openSettings = openSettings ?? _defaultOpenSettings;
+  }) : _handler = handler ?? _DefaultPermissionHandler(Permission.sms),
+       _openSettings = openSettings ?? _defaultOpenSettings;
 
   /// Requests the SMS permission from the user.
   ///

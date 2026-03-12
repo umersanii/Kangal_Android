@@ -8,6 +8,8 @@ plugins {
 android {
     namespace = "com.umersani.kangal"
     compileSdk = 36
+    // explicitly specify build-tools version to avoid mismatched diagnostics
+    buildToolsVersion = "33.0.2"
 
     ndkVersion = flutter.ndkVersion
 
