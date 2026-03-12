@@ -10,7 +10,8 @@
         "drift",
         "flutter",
         "path",
-        "path_provider"
+        "path_provider",
+        "telephony"
       ],
       "devDependencies": [
         "build_runner",
@@ -111,6 +112,14 @@
       "name": "path",
       "version": "1.9.1",
       "dependencies": []
+    },
+    {
+      "name": "telephony",
+      "version": "0.2.0",
+      "dependencies": [
+        "flutter",
+        "platform"
+      ]
     },
     {
       "name": "path_provider",
@@ -609,6 +618,11 @@
       ]
     },
     {
+      "name": "platform",
+      "version": "3.1.6",
+      "dependencies": []
+    },
+    {
       "name": "path_provider_windows",
       "version": "2.3.0",
       "dependencies": [
@@ -799,11 +813,6 @@
       "dependencies": [
         "meta"
       ]
-    },
-    {
-      "name": "platform",
-      "version": "3.1.6",
-      "dependencies": []
     },
     {
       "name": "xdg_directories",

@@ -8,6 +8,7 @@ dependencies:
     sdk: flutter
   drift: ^1.7.0
   path_provider: ^2.0.11
+  telephony: ^0.2.0
   path: ^1.8.3
 
 dev_dependencies:
