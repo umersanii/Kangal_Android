@@ -47,3 +47,5 @@
 - Keep changes minimal and layered; avoid bypassing repositories/DAOs from UI.
 - Do not rewrite generated files manually unless the task explicitly asks for it.
 - Prefer updating existing route/repository/model patterns rather than introducing a parallel architecture.
+
+- Don't use -q flags for flutter tests
