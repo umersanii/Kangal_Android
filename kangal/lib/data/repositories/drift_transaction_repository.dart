@@ -1,5 +1,7 @@
 import 'package:kangal/data/database/daos/transactions_dao.dart';
 import 'package:kangal/data/models/transaction_model.dart';
+import 'package:kangal/data/models/daily_spend.dart';
+import 'package:kangal/data/models/category_spend.dart';
 import 'transaction_repository.dart';
 
 class DriftTransactionRepository implements TransactionRepository {
@@ -74,5 +76,15 @@ class DriftTransactionRepository implements TransactionRepository {
       netBalance: totalIncome - totalSpent,
       transactionCount: transactions.length,
     );
+  }
+
+  @override
+  Future<List<DailySpend>> getDailySpend(DateTime startDate, DateTime endDate) {
+    throw UnimplementedError('Implemented in TASK-031');
+  }
+
+  @override
+  Future<List<CategorySpend>> getCategorySpend(DateTime startDate, DateTime endDate) {
+    throw UnimplementedError('Implemented in TASK-031');
   }
 }

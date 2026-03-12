@@ -1,5 +1,8 @@
 import 'package:kangal/data/models/transaction_model.dart';
 
+import 'package:kangal/data/models/daily_spend.dart';
+import 'package:kangal/data/models/category_spend.dart';
+
 abstract class TransactionRepository {
   Future<List<TransactionModel>> getAllTransactions(int limit, int offset);
   Future<TransactionModel?> getTransactionById(int id);
@@ -15,6 +18,8 @@ abstract class TransactionRepository {
   Future<List<TransactionModel>> searchTransactions(String query);
   Future<List<TransactionModel>> getUnsyncedTransactions();
   Future<TransactionSummary> getSummary(DateTime startDate, DateTime endDate);
+  Future<List<DailySpend>> getDailySpend(DateTime startDate, DateTime endDate);
+  Future<List<CategorySpend>> getCategorySpend(DateTime startDate, DateTime endDate);
 }
 
 class TransactionSummary {

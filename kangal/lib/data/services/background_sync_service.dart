@@ -10,7 +10,7 @@ class BackgroundSyncService {
   /// Call this once during app startup in main.dart.
   static Future<void> initializeBackgroundSync() async {
     try {
-      await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+      await Workmanager().initialize(callbackDispatcher);
 
       // Register the periodic email sync task
       await Workmanager().registerPeriodicTask(
@@ -26,7 +26,7 @@ class BackgroundSyncService {
         ),
       );
     } catch (e) {
-      print('Failed to initialize background sync: $e');
+      // Failed to initialize background sync
     }
   }
 
@@ -37,7 +37,7 @@ class BackgroundSyncService {
     try {
       await Workmanager().cancelByTag(nayapayEmailSyncTask);
     } catch (e) {
-      print('Failed to cancel background sync: $e');
+      // Failed to cancel background sync
     }
   }
 }
@@ -54,13 +54,12 @@ void callbackDispatcher() {
         // Perform email sync
         // Note: This normally would call EmailImportRepository.importEmails(),
         // but since this runs in an isolate, dependencies must be recreated here
-        // or passed via inputData. For now, just log that the task executed.
-        print('Background email sync task executed at ${DateTime.now()}');
+        // or passed via inputData. For now, just execute the task.
         return true;
       }
       return false;
     } catch (e) {
-      print('Error in background sync task: $e');
+      // Error in background sync task
       return false;
     }
   });

@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'dart:convert';
 import 'package:enough_mail/enough_mail.dart';
@@ -30,7 +29,7 @@ Future<MimeMessage?> _loadEmlFile(String filename) async {
     final content = await file.readAsString();
     return MimeMessage.parseFromText(content);
   } catch (e) {
-    print('Error loading EML file $filename: $e');
+    // Error loading EML file
     return null;
   }
 }
@@ -273,144 +272,153 @@ void main() {
   });
 
   group('Real EML File Tests - Type 1 (Received)', () {
-    test('parses real Type 1 email: You got Rs. 1,000 from Muhammad Haseeb 🎉',
-        () async {
-      final message =
-          await _loadEmlFile('You got Rs. 1,000 from Muhammad Haseeb 🎉.eml');
-      if (message == null) return; // Skip if file not found
+    test(
+      'parses real Type 1 email: You got Rs. 1,000 from Muhammad Haseeb 🎉',
+      () async {
+        final message = await _loadEmlFile(
+          'You got Rs. 1,000 from Muhammad Haseeb 🎉.eml',
+        );
+        if (message == null) return; // Skip if file not found
 
-      final transaction = service.parseEmail(message);
-      expect(transaction, isNotNull);
+        final transaction = service.parseEmail(message);
+        expect(transaction, isNotNull);
 
-      // Assert amount (positive for received)
-      expect(transaction!.amount, equals(1000.0));
+        // Assert amount (positive for received)
+        expect(transaction!.amount, equals(1000.0));
 
-      // Assert type
-      expect(transaction.type, equals('received'));
+        // Assert type
+        expect(transaction.type, equals('received'));
 
-      // Assert source
-      expect(transaction.source, equals('NayaPay'));
+        // Assert source
+        expect(transaction.source, equals('NayaPay'));
 
-      // Assert beneficiary/sender name
-      expect(transaction.beneficiary?.toLowerCase(), contains('muhammad haseeb'));
+        // Assert beneficiary/sender name
+        expect(
+          transaction.beneficiary?.toLowerCase(),
+          contains('muhammad haseeb'),
+        );
 
-      // Assert transaction ID is not null (generated from message)
-      expect(transaction.transactionId, isNotEmpty);
+        // Assert transaction ID is not null (generated from message)
+        expect(transaction.transactionId, isNotEmpty);
 
-      // Assert date is parsed correctly (should be 20 Dec 2025, 10:41 PM)
-      expect(transaction.date, isNotNull);
-      expect(transaction.date.year, equals(2025));
-      expect(transaction.date.month, equals(12));
-      expect(transaction.date.day, equals(20));
+        // Assert date is parsed correctly (should be 20 Dec 2025, 10:41 PM)
+        expect(transaction.date, isNotNull);
+        expect(transaction.date.year, equals(2025));
+        expect(transaction.date.month, equals(12));
+        expect(transaction.date.day, equals(20));
 
-      // Assert extra fields contain senderTag
-      if (transaction.extra != null) {
-        final extra = jsonDecode(transaction.extra!) as Map<String, dynamic>;
-        expect(extra.containsKey('senderTag'), isTrue);
-      }
+        // Assert extra fields contain senderTag
+        if (transaction.extra != null) {
+          final extra = jsonDecode(transaction.extra!) as Map<String, dynamic>;
+          expect(extra.containsKey('senderTag'), isTrue);
+        }
 
-      // Assert subject is preserved
-      expect(
-        transaction.subject?.toLowerCase(),
-        contains('you got'),
-      );
-    });
+        // Assert subject is preserved
+        expect(transaction.subject?.toLowerCase(), contains('you got'));
+      },
+    );
   });
 
   group('Real EML File Tests - Type 2 (Sent P2P)', () {
     test(
-        'parses real Type 2 email: You sent Rs. 1,450 to Muhammad Umer Ghafoor 💸',
-        () async {
-      final message = await _loadEmlFile(
-          'You sent Rs. 1,450 to Muhammad Umer Ghafoor 💸.eml');
-      if (message == null) return; // Skip if file not found
+      'parses real Type 2 email: You sent Rs. 1,450 to Muhammad Umer Ghafoor 💸',
+      () async {
+        final message = await _loadEmlFile(
+          'You sent Rs. 1,450 to Muhammad Umer Ghafoor 💸.eml',
+        );
+        if (message == null) return; // Skip if file not found
 
-      final transaction = service.parseEmail(message);
-      expect(transaction, isNotNull);
+        final transaction = service.parseEmail(message);
+        expect(transaction, isNotNull);
 
-      // Assert amount (negative for sent)
-      expect(transaction!.amount, equals(-1450.0));
+        // Assert amount (negative for sent)
+        expect(transaction!.amount, equals(-1450.0));
 
-      // Assert type is P2P
-      expect(transaction.type, equals('sent_p2p'));
+        // Assert type is P2P
+        expect(transaction.type, equals('sent_p2p'));
 
-      // Assert source
-      expect(transaction.source, equals('NayaPay'));
+        // Assert source
+        expect(transaction.source, equals('NayaPay'));
 
-      // Assert beneficiary/recipient name
-      expect(
-        transaction.beneficiary?.toLowerCase(),
-        contains('muhammad umer ghafoor'),
-      );
+        // Assert beneficiary/recipient name
+        expect(
+          transaction.beneficiary?.toLowerCase(),
+          contains('muhammad umer ghafoor'),
+        );
 
-      // Assert transaction ID is not null
-      expect(transaction.transactionId, isNotEmpty);
+        // Assert transaction ID is not null
+        expect(transaction.transactionId, isNotEmpty);
 
-      // Assert date is parsed correctly (should be 21 Feb 2026, 10:04 PM)
-      expect(transaction.date, isNotNull);
-      expect(transaction.date.year, equals(2026));
-      expect(transaction.date.month, equals(2));
-      expect(transaction.date.day, equals(21));
+        // Assert date is parsed correctly (should be 21 Feb 2026, 10:04 PM)
+        expect(transaction.date, isNotNull);
+        expect(transaction.date.year, equals(2026));
+        expect(transaction.date.month, equals(2));
+        expect(transaction.date.day, equals(21));
 
-      // Assert extra fields contain senderTag and receiverTag
-      if (transaction.extra != null) {
-        final extra = jsonDecode(transaction.extra!) as Map<String, dynamic>;
-        expect(extra.containsKey('senderTag'), isTrue);
-        expect(extra.containsKey('receiverTag'), isTrue);
-      }
+        // Assert extra fields contain senderTag and receiverTag
+        if (transaction.extra != null) {
+          final extra = jsonDecode(transaction.extra!) as Map<String, dynamic>;
+          expect(extra.containsKey('senderTag'), isTrue);
+          expect(extra.containsKey('receiverTag'), isTrue);
+        }
 
-      // Assert subject is preserved
-      expect(transaction.subject?.toLowerCase(), contains('you sent'));
-    });
+        // Assert subject is preserved
+        expect(transaction.subject?.toLowerCase(), contains('you sent'));
+      },
+    );
   });
 
   group('Real EML File Tests - Type 3 (Sent to Bank)', () {
-    test('parses real Type 3 email: You sent Rs. 329 to Fakhar Ali 💸',
-        () async {
-      final message =
-          await _loadEmlFile('You sent Rs. 329 to Fakhar Ali 💸.eml');
-      if (message == null) return; // Skip if file not found
+    test(
+      'parses real Type 3 email: You sent Rs. 329 to Fakhar Ali 💸',
+      () async {
+        final message = await _loadEmlFile(
+          'You sent Rs. 329 to Fakhar Ali 💸.eml',
+        );
+        if (message == null) return; // Skip if file not found
 
-      final transaction = service.parseEmail(message);
-      expect(transaction, isNotNull);
+        final transaction = service.parseEmail(message);
+        expect(transaction, isNotNull);
 
-      // Assert amount (negative for sent)
-      expect(transaction!.amount, equals(-329.0));
+        // Assert amount (negative for sent)
+        expect(transaction!.amount, equals(-329.0));
 
-      // Assert type is bank transfer (not P2P)
-      expect(transaction.type, equals('sent_bank'));
+        // Assert type is bank transfer (not P2P)
+        expect(transaction.type, equals('sent_bank'));
 
-      // Assert source
-      expect(transaction.source, equals('NayaPay'));
+        // Assert source
+        expect(transaction.source, equals('NayaPay'));
 
-      // Assert beneficiary/recipient name
-      expect(transaction.beneficiary?.toLowerCase(), contains('fakhar ali'));
+        // Assert beneficiary/recipient name
+        expect(transaction.beneficiary?.toLowerCase(), contains('fakhar ali'));
 
-      // Assert transaction ID is not null
-      expect(transaction.transactionId, isNotEmpty);
+        // Assert transaction ID is not null
+        expect(transaction.transactionId, isNotEmpty);
 
-      // Assert date is parsed correctly (should be 05 Mar 2026, 10:33 AM)
-      expect(transaction.date, isNotNull);
-      expect(transaction.date.year, equals(2026));
-      expect(transaction.date.month, equals(3));
-      expect(transaction.date.day, equals(5));
+        // Assert date is parsed correctly (should be 05 Mar 2026, 10:33 AM)
+        expect(transaction.date, isNotNull);
+        expect(transaction.date.year, equals(2026));
+        expect(transaction.date.month, equals(3));
+        expect(transaction.date.day, equals(5));
 
-      // Assert extra fields contain bank details (from HTML parsing)
-      if (transaction.extra != null) {
-        final extra = jsonDecode(transaction.extra!) as Map<String, dynamic>;
-        expect(extra.containsKey('destinationBank'), isTrue);
-        expect(extra.containsKey('maskedAccount'), isTrue);
-        expect(extra.containsKey('channel'), isTrue);
-        expect(extra['channel'], equals('Raast'));
-      }
+        // Assert extra fields contain bank details (from HTML parsing)
+        if (transaction.extra != null) {
+          final extra = jsonDecode(transaction.extra!) as Map<String, dynamic>;
+          expect(extra.containsKey('destinationBank'), isTrue);
+          expect(extra.containsKey('maskedAccount'), isTrue);
+          expect(extra.containsKey('channel'), isTrue);
+          expect(extra['channel'], equals('Raast'));
+        }
 
-      // Assert subject is preserved
-      expect(transaction.subject?.toLowerCase(), contains('you sent'));
-    });
+        // Assert subject is preserved
+        expect(transaction.subject?.toLowerCase(), contains('you sent'));
+      },
+    );
 
     test('Type 3 uses HTML fallback when plaintext is empty', () async {
-      final message =
-          await _loadEmlFile('You sent Rs. 329 to Fakhar Ali 💸.eml');
+      final message = await _loadEmlFile(
+        'You sent Rs. 329 to Fakhar Ali 💸.eml',
+      );
       if (message == null) return;
 
       // Verify plaintext is empty or minimal
@@ -426,52 +434,59 @@ void main() {
   });
 
   group('Real EML File Tests - Type 4 (Card Purchase)', () {
-    test('parses real Type 4 email: You spent Rs. 268.54 at Google YouTube',
-        () async {
-      final message = await _loadEmlFile(
-          'You spent Rs. 268.54 at Google YouTube London GB 💳.eml');
-      if (message == null) return; // Skip if file not found
+    test(
+      'parses real Type 4 email: You spent Rs. 268.54 at Google YouTube',
+      () async {
+        final message = await _loadEmlFile(
+          'You spent Rs. 268.54 at Google YouTube London GB 💳.eml',
+        );
+        if (message == null) return; // Skip if file not found
 
-      final transaction = service.parseEmail(message);
-      expect(transaction, isNotNull);
+        final transaction = service.parseEmail(message);
+        expect(transaction, isNotNull);
 
-      // Assert amount (negative for spent)
-      expect(transaction!.amount, equals(-268.54));
+        // Assert amount (negative for spent)
+        expect(transaction!.amount, equals(-268.54));
 
-      // Assert type is card purchase
-      expect(transaction.type, equals('card_purchase'));
+        // Assert type is card purchase
+        expect(transaction.type, equals('card_purchase'));
 
-      // Assert source
-      expect(transaction.source, equals('NayaPay'));
+        // Assert source
+        expect(transaction.source, equals('NayaPay'));
 
-      // Assert beneficiary/merchant name
-      expect(transaction.beneficiary?.toLowerCase(), contains('google youtube'));
+        // Assert beneficiary/merchant name
+        expect(
+          transaction.beneficiary?.toLowerCase(),
+          contains('google youtube'),
+        );
 
-      // Assert transaction ID is not null
-      expect(transaction.transactionId, isNotEmpty);
+        // Assert transaction ID is not null
+        expect(transaction.transactionId, isNotEmpty);
 
-      // Assert date is parsed correctly (should be 09 Feb 2026, 02:16 PM)
-      expect(transaction.date, isNotNull);
-      expect(transaction.date.year, equals(2026));
-      expect(transaction.date.month, equals(2));
-      expect(transaction.date.day, equals(9));
+        // Assert date is parsed correctly (should be 09 Feb 2026, 02:16 PM)
+        expect(transaction.date, isNotNull);
+        expect(transaction.date.year, equals(2026));
+        expect(transaction.date.month, equals(2));
+        expect(transaction.date.day, equals(9));
 
-      // Assert extra fields contain card details (from HTML parsing)
-      if (transaction.extra != null) {
-        final extra = jsonDecode(transaction.extra!) as Map<String, dynamic>;
-        expect(extra.containsKey('cardBrand'), isTrue);
-        expect(extra.containsKey('maskedCard'), isTrue);
-        expect(extra.containsKey('merchantCategory'), isTrue);
-        expect(extra.containsKey('feeDetails'), isTrue);
-      }
+        // Assert extra fields contain card details (from HTML parsing)
+        if (transaction.extra != null) {
+          final extra = jsonDecode(transaction.extra!) as Map<String, dynamic>;
+          expect(extra.containsKey('cardBrand'), isTrue);
+          expect(extra.containsKey('maskedCard'), isTrue);
+          expect(extra.containsKey('merchantCategory'), isTrue);
+          expect(extra.containsKey('feeDetails'), isTrue);
+        }
 
-      // Assert subject is preserved
-      expect(transaction.subject?.toLowerCase(), contains('you spent'));
-    });
+        // Assert subject is preserved
+        expect(transaction.subject?.toLowerCase(), contains('you spent'));
+      },
+    );
 
     test('Type 4 uses HTML fallback when plaintext is empty', () async {
       final message = await _loadEmlFile(
-          'You spent Rs. 268.54 at Google YouTube London GB 💳.eml');
+        'You spent Rs. 268.54 at Google YouTube London GB 💳.eml',
+      );
       if (message == null) return;
 
       // Verify plaintext is empty or minimal
@@ -536,7 +551,10 @@ void main() {
       final txn = service.parseEmail(message);
 
       expect(txn, isNotNull);
-      expect(txn!.type, 'sent_p2p'); // May be sent_p2p or sent_bank depending on parsing
+      expect(
+        txn!.type,
+        'sent_p2p',
+      ); // May be sent_p2p or sent_bank depending on parsing
       expect(txn.amount, closeTo(-5000.0, 0.001));
     });
 
@@ -681,8 +699,9 @@ void main() {
 
   group('All Fields Validation', () {
     test('Type 1 transaction has all required fields populated', () async {
-      final message =
-          await _loadEmlFile('You got Rs. 1,000 from Muhammad Haseeb 🎉.eml');
+      final message = await _loadEmlFile(
+        'You got Rs. 1,000 from Muhammad Haseeb 🎉.eml',
+      );
       if (message == null) return;
 
       final transaction = service.parseEmail(message);
@@ -702,7 +721,8 @@ void main() {
 
     test('Type 2 transaction has all required fields populated', () async {
       final message = await _loadEmlFile(
-          'You sent Rs. 1,450 to Muhammad Umer Ghafoor 💸.eml');
+        'You sent Rs. 1,450 to Muhammad Umer Ghafoor 💸.eml',
+      );
       if (message == null) return;
 
       final transaction = service.parseEmail(message);
@@ -721,8 +741,9 @@ void main() {
     });
 
     test('Type 3 transaction has all required fields populated', () async {
-      final message =
-          await _loadEmlFile('You sent Rs. 329 to Fakhar Ali 💸.eml');
+      final message = await _loadEmlFile(
+        'You sent Rs. 329 to Fakhar Ali 💸.eml',
+      );
       if (message == null) return;
 
       final transaction = service.parseEmail(message);
@@ -742,7 +763,8 @@ void main() {
 
     test('Type 4 transaction has all required fields populated', () async {
       final message = await _loadEmlFile(
-          'You spent Rs. 268.54 at Google YouTube London GB 💳.eml');
+        'You spent Rs. 268.54 at Google YouTube London GB 💳.eml',
+      );
       if (message == null) return;
 
       final transaction = service.parseEmail(message);

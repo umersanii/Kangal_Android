@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:enough_mail/enough_mail.dart';
-import 'package:html/parser.dart' as html_parser;
 import 'package:intl/intl.dart';
 
 import '../models/transaction_model.dart';
@@ -53,9 +52,7 @@ class NayaPayEmailService {
         if (parsed != null) {
           txId = parsed['txnId'] as String;
           txDate = parsed['date'] as DateTime;
-          extra = {
-            'senderTag': parsed['senderTag'],
-          };
+          extra = {'senderTag': parsed['senderTag']};
         }
       }
 
@@ -191,21 +188,17 @@ class NayaPayEmailService {
     if (parts.length < 5) return null;
 
     try {
-      // Extract parts: amount, name, txnId, date, time, senderTag
-      final amountStr = parts[0];
-      final name = parts[1];
+      // Extract parts: txnId, date, time, senderTag
+      // Skip: amount (parts[0]), name (parts[1]) - not needed for expense tracking
       final txnId = parts[2];
-      final dateStr = '${parts[3]} ${parts[4]}'; // e.g., "20 Dec 2025, 10:41 PM"
+      final dateStr =
+          '${parts[3]} ${parts[4]}'; // e.g., "20 Dec 2025, 10:41 PM"
       final senderTag = parts.length > 5 ? parts.sublist(5).join(' ') : '';
 
       // Parse date
       final date = _dateFormatPlaintext.parse(dateStr);
 
-      return {
-        'txnId': txnId,
-        'date': date,
-        'senderTag': senderTag,
-      };
+      return {'txnId': txnId, 'date': date, 'senderTag': senderTag};
     } catch (e) {
       return null;
     }
@@ -224,11 +217,11 @@ class NayaPayEmailService {
     if (parts.length < 6) return null;
 
     try {
-      // Extract parts: amount, name, txnId, date, time, senderTag, receiverTag(s)
-      final amountStr = parts[0];
-      final name = parts[1];
+      // Extract parts: txnId, date, time, senderTag, receiverTag(s)
+      // Skip: amount (parts[0]), name (parts[1]) - not needed for expense tracking
       final txnId = parts[2];
-      final dateStr = '${parts[3]} ${parts[4]}'; // e.g., "21 Feb 2026, 10:04 PM"
+      final dateStr =
+          '${parts[3]} ${parts[4]}'; // e.g., "21 Feb 2026, 10:04 PM"
       final senderTag = parts[5];
       final receiverTag = parts.length > 6 ? parts.sublist(6).join(' ') : '';
 
@@ -252,15 +245,17 @@ class NayaPayEmailService {
   /// Or null if parsing fails.
   static Map<String, dynamic>? _parseType3Html(String html) {
     try {
-      final doc = html_parser.parse(html);
-
       // Try to extract transaction ID using regex
-      var txnIdMatch = RegExp(r'(?:Transaction|Txn|ID|TXN ID)[:\s]+([a-f0-9]{24,})').firstMatch(html);
+      var txnIdMatch = RegExp(
+        r'(?:Transaction|Txn|ID|TXN ID)[:\s]+([a-f0-9]{24,})',
+      ).firstMatch(html);
       final txnId = txnIdMatch?.group(1) ?? '';
       if (txnId.isEmpty) return null;
 
       // Try to extract date - look for pattern "dd MMM yyyy, hh:mm a"
-      var dateMatch = RegExp(r'(\d{1,2}\s+[A-Za-z]{3}\s+\d{4},\s+\d{1,2}:\d{2}\s+(?:AM|PM))').firstMatch(html);
+      var dateMatch = RegExp(
+        r'(\d{1,2}\s+[A-Za-z]{3}\s+\d{4},\s+\d{1,2}:\d{2}\s+(?:AM|PM))',
+      ).firstMatch(html);
       DateTime? date;
       if (dateMatch != null) {
         try {
@@ -271,7 +266,10 @@ class NayaPayEmailService {
       }
 
       // Extract bank name, account mask, and channel
-      var bankMatch = RegExp(r'(?:bank|Bank|destination)[:\s]*([^<\n]+?)(?:\s+●|<|$)', multiLine: true).firstMatch(html);
+      var bankMatch = RegExp(
+        r'(?:bank|Bank|destination)[:\s]*([^<\n]+?)(?:\s+●|<|$)',
+        multiLine: true,
+      ).firstMatch(html);
       final bank = bankMatch?.group(1)?.trim() ?? 'Raast';
 
       var accountMatch = RegExp(r'(●{1,4}\d{4})').firstMatch(html);
@@ -283,11 +281,7 @@ class NayaPayEmailService {
         'channel': 'Raast',
       };
 
-      return {
-        'txnId': txnId,
-        'date': date ?? DateTime.now(),
-        'extra': extra,
-      };
+      return {'txnId': txnId, 'date': date ?? DateTime.now(), 'extra': extra};
     } catch (e) {
       return null;
     }
@@ -300,12 +294,16 @@ class NayaPayEmailService {
   static Map<String, dynamic>? _parseType4Html(String html) {
     try {
       // Extract transaction ID using regex
-      var txnIdMatch = RegExp(r'(?:Transaction|Txn|ID|TXN ID)[:\s]+([a-f0-9]{24,})').firstMatch(html);
+      var txnIdMatch = RegExp(
+        r'(?:Transaction|Txn|ID|TXN ID)[:\s]+([a-f0-9]{24,})',
+      ).firstMatch(html);
       final txnId = txnIdMatch?.group(1) ?? '';
       if (txnId.isEmpty) return null;
 
       // Try to extract date - look for pattern "dd MMM yyyy, hh:mm a"
-      var dateMatch = RegExp(r'(\d{1,2}\s+[A-Za-z]{3}\s+\d{4},\s+\d{1,2}:\d{2}\s+(?:AM|PM))').firstMatch(html);
+      var dateMatch = RegExp(
+        r'(\d{1,2}\s+[A-Za-z]{3}\s+\d{4},\s+\d{1,2}:\d{2}\s+(?:AM|PM))',
+      ).firstMatch(html);
       DateTime? date;
       if (dateMatch != null) {
         try {
@@ -316,25 +314,42 @@ class NayaPayEmailService {
       }
 
       // Extract card info (e.g., "Visa ●●●●0268")
-      var cardMatch = RegExp(r'(Visa|Mastercard|Amex)\s+(●{1,4}\d{4})').firstMatch(html);
+      var cardMatch = RegExp(
+        r'(Visa|Mastercard|Amex)\s+(●{1,4}\d{4})',
+      ).firstMatch(html);
       final cardBrand = cardMatch?.group(1) ?? 'Card';
       final maskedCard = cardMatch?.group(2) ?? '';
 
       // Extract merchant category
-      var categoryMatch = RegExp(r'(?:Category|Merchant Category)[:\s]*([^<\n]+?)(?:<|$)', multiLine: true).firstMatch(html);
+      var categoryMatch = RegExp(
+        r'(?:Category|Merchant Category)[:\s]*([^<\n]+?)(?:<|$)',
+        multiLine: true,
+      ).firstMatch(html);
       final merchantCategory = categoryMatch?.group(1)?.trim() ?? '';
 
       // Extract fees breakdown using regex
-      var baseFeeMatch = RegExp(r'(?:Base Fee|base)[:\s]*Rs\.\s*([\d,]+\.?\d*)').firstMatch(html);
-      final baseFee = baseFeeMatch != null ? _parseAmount(baseFeeMatch.group(1)!) : 0.0;
+      var baseFeeMatch = RegExp(
+        r'(?:Base Fee|base)[:\s]*Rs\.\s*([\d,]+\.?\d*)',
+      ).firstMatch(html);
+      final baseFee = baseFeeMatch != null
+          ? _parseAmount(baseFeeMatch.group(1)!)
+          : 0.0;
 
-      var intlFeeMatch = RegExp(r'(?:International Fee|intl fee)[:\s]*Rs\.\s*([\d,]+\.?\d*)').firstMatch(html);
-      final intlFee = intlFeeMatch != null ? _parseAmount(intlFeeMatch.group(1)!) : 0.0;
+      var intlFeeMatch = RegExp(
+        r'(?:International Fee|intl fee)[:\s]*Rs\.\s*([\d,]+\.?\d*)',
+      ).firstMatch(html);
+      final intlFee = intlFeeMatch != null
+          ? _parseAmount(intlFeeMatch.group(1)!)
+          : 0.0;
 
-      var sstMatch = RegExp(r'(?:SST|Sales Tax)[:\s]*Rs\.\s*([\d,]+\.?\d*)').firstMatch(html);
+      var sstMatch = RegExp(
+        r'(?:SST|Sales Tax)[:\s]*Rs\.\s*([\d,]+\.?\d*)',
+      ).firstMatch(html);
       final sst = sstMatch != null ? _parseAmount(sstMatch.group(1)!) : 0.0;
 
-      var fxMatch = RegExp(r'(?:FX Fee|forex)[:\s]*Rs\.\s*([\d,]+\.?\d*)').firstMatch(html);
+      var fxMatch = RegExp(
+        r'(?:FX Fee|forex)[:\s]*Rs\.\s*([\d,]+\.?\d*)',
+      ).firstMatch(html);
       final fxFee = fxMatch != null ? _parseAmount(fxMatch.group(1)!) : 0.0;
 
       var extra = {
@@ -349,11 +364,7 @@ class NayaPayEmailService {
         },
       };
 
-      return {
-        'txnId': txnId,
-        'date': date ?? DateTime.now(),
-        'extra': extra,
-      };
+      return {'txnId': txnId, 'date': date ?? DateTime.now(), 'extra': extra};
     } catch (e) {
       return null;
     }

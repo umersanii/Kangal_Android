@@ -1,3 +1,5 @@
+import 'package:kangal/data/models/category_spend.dart';
+import 'package:kangal/data/models/daily_spend.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kangal/data/models/rule_model.dart';
 import 'package:kangal/data/models/transaction_model.dart';
@@ -157,6 +159,16 @@ class _FakeTransactionRepository implements TransactionRepository {
 
   @override
   Future<TransactionSummary> getSummary(DateTime startDate, DateTime endDate) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<DailySpend>> getDailySpend(DateTime startDate, DateTime endDate) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<CategorySpend>> getCategorySpend(DateTime startDate, DateTime endDate) {
     throw UnimplementedError();
   }
 }
