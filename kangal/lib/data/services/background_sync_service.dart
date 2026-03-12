@@ -6,14 +6,11 @@ class BackgroundSyncService {
   static const Duration syncFrequency = Duration(minutes: 30);
 
   /// Initializes the Workmanager and registers the periodic email sync task.
-  /// 
+  ///
   /// Call this once during app startup in main.dart.
   static Future<void> initializeBackgroundSync() async {
     try {
-      await Workmanager().initialize(
-        callbackDispatcher,
-        isInDebugMode: false,
-      );
+      await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
 
       // Register the periodic email sync task
       await Workmanager().registerPeriodicTask(
@@ -34,7 +31,7 @@ class BackgroundSyncService {
   }
 
   /// Cancels all background sync tasks.
-  /// 
+  ///
   /// Useful for cleanup or when user signs out.
   static Future<void> cancelBackgroundSync() async {
     try {
@@ -46,7 +43,7 @@ class BackgroundSyncService {
 }
 
 /// Top-level callback function for Workmanager.
-/// 
+///
 /// This function is called by the Android system when the periodic task triggers.
 /// It must be a top-level function (not a method) for Workmanager to find it.
 @pragma('vm:entry-point')
