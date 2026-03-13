@@ -7,10 +7,7 @@ import 'package:kangal/ui/core/theme.dart';
 class SpendBarChart extends StatelessWidget {
   final List<DailySpend> dailySpend;
 
-  const SpendBarChart({
-    super.key,
-    required this.dailySpend,
-  });
+  const SpendBarChart({super.key, required this.dailySpend});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +40,8 @@ class SpendBarChart extends StatelessWidget {
             barTouchData: BarTouchData(
               enabled: true,
               touchTooltipData: BarTouchTooltipData(
-                getTooltipColor: (group) => Theme.of(context).colorScheme.surfaceContainerHighest,
+                getTooltipColor: (group) =>
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
                 getTooltipItem: (group, groupIndex, rod, rodIndex) {
                   final spend = dailySpend[groupIndex];
                   final formatter = NumberFormat.currency(
@@ -53,8 +51,8 @@ class SpendBarChart extends StatelessWidget {
                   return BarTooltipItem(
                     '${DateFormat('MMM d').format(spend.date)}\n',
                     Theme.of(context).textTheme.bodySmall!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                     children: <TextSpan>[
                       TextSpan(
                         text: formatter.format(spend.totalSpent),
@@ -78,11 +76,16 @@ class SpendBarChart extends StatelessWidget {
                     if (index < 0 || index >= dailySpend.length) {
                       return const SizedBox.shrink();
                     }
-                    
+
                     // Show fewer labels if there are many days
-                    if (dailySpend.length > 14 && index % 3 != 0 && index != dailySpend.length - 1) {
+                    if (dailySpend.length > 14 &&
+                        index % 3 != 0 &&
+                        index != dailySpend.length - 1) {
                       return const SizedBox.shrink();
-                    } else if (dailySpend.length > 7 && dailySpend.length <= 14 && index % 2 != 0 && index != dailySpend.length - 1) {
+                    } else if (dailySpend.length > 7 &&
+                        dailySpend.length <= 14 &&
+                        index % 2 != 0 &&
+                        index != dailySpend.length - 1) {
                       return const SizedBox.shrink();
                     }
 
@@ -92,9 +95,9 @@ class SpendBarChart extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
                         text,
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              fontSize: 10,
-                            ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.labelSmall?.copyWith(fontSize: 10),
                       ),
                     );
                   },
@@ -109,7 +112,7 @@ class SpendBarChart extends StatelessWidget {
                     if (value == 0 || value == topY) {
                       return const SizedBox.shrink();
                     }
-                    
+
                     String text;
                     if (value >= 100000) {
                       text = '${(value / 1000).toStringAsFixed(0)}k';
@@ -121,14 +124,14 @@ class SpendBarChart extends StatelessWidget {
                     } else {
                       text = value.toStringAsFixed(0);
                     }
-                    
+
                     return Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Text(
                         text,
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              fontSize: 10,
-                            ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.labelSmall?.copyWith(fontSize: 10),
                         textAlign: TextAlign.right,
                       ),
                     );
@@ -147,7 +150,9 @@ class SpendBarChart extends StatelessWidget {
               drawVerticalLine: false,
               horizontalInterval: maxY > 0 ? (maxY / 4) : 25,
               getDrawingHorizontalLine: (value) => FlLine(
-                color: Theme.of(context).colorScheme.outlineVariant.withOpacity(0.5),
+                color: Theme.of(
+                  context,
+                ).colorScheme.outlineVariant.withOpacity(0.5),
                 strokeWidth: 1,
                 dashArray: [5, 5],
               ),
@@ -174,7 +179,9 @@ class SpendBarChart extends StatelessWidget {
                     toY: spend.totalSpent,
                     color: AppTheme.expenseColor,
                     width: dailySpend.length > 20 ? 8 : 16,
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(4),
+                    ),
                   ),
                 ],
               );
