@@ -7,6 +7,7 @@ import 'package:kangal/data/repositories/sms_import_repository.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
 import 'package:kangal/data/services/hbl_sms_service.dart';
 import 'package:kangal/data/services/sms_inbox_service.dart';
+import 'package:kangal/data/services/auto_categorisation_service.dart';
 import 'package:telephony/telephony.dart';
 
 class SmsImportRepositoryImpl implements SmsImportRepository {
@@ -14,16 +15,19 @@ class SmsImportRepositoryImpl implements SmsImportRepository {
   final HblSmsService _hblSmsService;
   final TransactionRepository _transactionRepository;
   final RuleRepository _ruleRepository;
+  final AutoCategorisationService _autoCategorisationService;
 
   SmsImportRepositoryImpl({
     required SmsInboxService smsInboxService,
     required HblSmsService hblSmsService,
     required TransactionRepository transactionRepository,
     required RuleRepository ruleRepository,
+    required AutoCategorisationService autoCategorisationService,
   }) : _smsInboxService = smsInboxService,
        _hblSmsService = hblSmsService,
        _transactionRepository = transactionRepository,
-       _ruleRepository = ruleRepository;
+       _ruleRepository = ruleRepository,
+       _autoCategorisationService = autoCategorisationService;
 
   @override
   Future<int> importHistoricalSms() async {
@@ -71,29 +75,12 @@ class SmsImportRepositoryImpl implements SmsImportRepository {
     }
 
     final rules = preloadedRules ?? await _ruleRepository.getAllRules();
-    final categoryId = _resolveCategoryId(parsedTransaction, rules);
+    final categoryId = _autoCategorisationService.applyCategoryRules(parsedTransaction, rules) ?? parsedTransaction.categoryId;
     final transactionToInsert = parsedTransaction.copyWith(
       categoryId: categoryId,
     );
 
     await _transactionRepository.insertTransaction(transactionToInsert);
     return true;
-  }
-
-  int? _resolveCategoryId(TransactionModel transaction, List<RuleModel> rules) {
-    final beneficiary = transaction.beneficiary?.trim();
-    if (beneficiary == null || beneficiary.isEmpty) {
-      return transaction.categoryId;
-    }
-
-    final target = beneficiary.toLowerCase();
-    for (final rule in rules) {
-      final keyword = rule.keyword.trim().toLowerCase();
-      if (keyword.isNotEmpty && target.contains(keyword)) {
-        return rule.categoryId;
-      }
-    }
-
-    return transaction.categoryId;
   }
 }

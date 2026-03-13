@@ -6,6 +6,7 @@ import 'package:kangal/data/repositories/transaction_repository.dart';
 import 'package:kangal/data/services/imap_service.dart';
 import 'package:kangal/data/services/nayapay_email_service.dart';
 import 'package:kangal/data/services/secure_storage_service.dart';
+import 'package:kangal/data/services/auto_categorisation_service.dart';
 import 'package:enough_mail/enough_mail.dart';
 
 abstract class ImapServiceInterface {
@@ -53,6 +54,7 @@ class EmailImportRepositoryImpl implements EmailImportRepository {
   final TransactionRepository _transactionRepository;
   final RuleRepository _ruleRepository;
   final SecureStorageService _secureStorageService;
+  final AutoCategorisationService _autoCategorisationService;
   final ImapServiceFactory _imapServiceFactory;
 
   EmailImportRepositoryImpl({
@@ -60,71 +62,60 @@ class EmailImportRepositoryImpl implements EmailImportRepository {
     required TransactionRepository transactionRepository,
     required RuleRepository ruleRepository,
     required SecureStorageService secureStorageService,
+    required AutoCategorisationService autoCategorisationService,
     ImapServiceFactory? imapServiceFactory,
   })  : _nayaPayEmailService = nayaPayEmailService,
         _transactionRepository = transactionRepository,
         _ruleRepository = ruleRepository,
         _secureStorageService = secureStorageService,
+        _autoCategorisationService = autoCategorisationService,
         _imapServiceFactory = imapServiceFactory ?? _defaultImapServiceFactory;
 
   @override
   Future<int> importEmails() async {
-    // Read credentials from secure storage
     final credentials = await _secureStorageService.getEmailCredentials();
     if (credentials == null) {
       throw Exception('Email credentials not configured');
     }
 
-    // Create IMAP service with stored credentials
     final imapService = _imapServiceFactory(
       credentials.email,
       credentials.appPassword,
     );
 
     try {
-      // Connect to IMAP
       await imapService.connect();
-
-      // Fetch NayaPay emails from last 90 days
       final emails = await imapService.fetchNayaPayEmails(daysBack: 90);
-
-      // Preload all rules for efficient categorisation
       final rules = await _ruleRepository.getAllRules();
 
       var importedCount = 0;
 
       for (final email in emails) {
-        // Parse the email
         final parsedTransaction = _nayaPayEmailService.parseEmail(email);
         if (parsedTransaction == null) {
           continue;
         }
 
-        // Check for deduplication by transactionId
         final transactionId = parsedTransaction.transactionId;
         if (transactionId != null && transactionId.isNotEmpty) {
           final existing = await _transactionRepository
               .getTransactionByTransactionId(transactionId);
           if (existing != null) {
-            // Transaction already imported, skip
             continue;
           }
         }
 
-        // Apply auto-categorisation rules
-        final categoryId = _resolveCategoryId(parsedTransaction, rules);
+        final categoryId = _autoCategorisationService.applyCategoryRules(parsedTransaction, rules) ?? parsedTransaction.categoryId;
         final transactionToInsert = parsedTransaction.copyWith(
           categoryId: categoryId,
         );
 
-        // Insert the transaction
         await _transactionRepository.insertTransaction(transactionToInsert);
         importedCount++;
       }
 
       return importedCount;
     } finally {
-      // Always disconnect
       await imapService.disconnect();
     }
   }
@@ -142,25 +133,5 @@ class EmailImportRepositoryImpl implements EmailImportRepository {
     );
 
     return imapService.testConnection();
-  }
-
-  /// Resolves the category ID for a transaction by checking if any rules
-  /// match the transaction's beneficiary. Returns the matched category ID
-  /// or the transaction's current categoryId if no rule matches.
-  int? _resolveCategoryId(TransactionModel transaction, List<RuleModel> rules) {
-    final beneficiary = transaction.beneficiary?.trim();
-    if (beneficiary == null || beneficiary.isEmpty) {
-      return transaction.categoryId;
-    }
-
-    final target = beneficiary.toLowerCase();
-    for (final rule in rules) {
-      final keyword = rule.keyword.trim().toLowerCase();
-      if (keyword.isNotEmpty && target.contains(keyword)) {
-        return rule.categoryId;
-      }
-    }
-
-    return transaction.categoryId;
   }
 }

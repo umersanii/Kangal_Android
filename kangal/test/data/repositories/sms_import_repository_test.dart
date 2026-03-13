@@ -8,6 +8,7 @@ import 'package:kangal/data/repositories/sms_import_repository_impl.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
 import 'package:kangal/data/services/hbl_sms_service.dart';
 import 'package:kangal/data/services/sms_inbox_service.dart';
+import 'package:kangal/data/services/auto_categorisation_service.dart';
 import 'package:telephony/telephony.dart';
 
 SmsMessage _makeSms({
@@ -224,7 +225,7 @@ void main() {
       smsInboxService: inbox,
       hblSmsService: parser,
       transactionRepository: transactions,
-      ruleRepository: rules,
+      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
     );
 
     final count = await repository.importHistoricalSms();
@@ -251,7 +252,7 @@ void main() {
       smsInboxService: inbox,
       hblSmsService: parser,
       transactionRepository: transactions,
-      ruleRepository: rules,
+      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
     );
 
     final count = await repository.importHistoricalSms();
@@ -282,7 +283,7 @@ void main() {
       smsInboxService: inbox,
       hblSmsService: parser,
       transactionRepository: transactions,
-      ruleRepository: rules,
+      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
     );
 
     final count = await repository.importHistoricalSms();
@@ -302,7 +303,7 @@ void main() {
       smsInboxService: inbox,
       hblSmsService: parser,
       transactionRepository: transactions,
-      ruleRepository: rules,
+      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
     );
 
     final count = await repository.importHistoricalSms();

@@ -3,6 +3,7 @@ import 'package:kangal/data/models/daily_spend.dart';
 import 'package:enough_mail/enough_mail.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kangal/data/models/rule_model.dart';
+import 'package:kangal/data/services/auto_categorisation_service.dart';
 import 'package:kangal/data/models/transaction_model.dart';
 import 'package:kangal/data/repositories/email_import_repository_impl.dart';
 import 'package:kangal/data/repositories/rule_repository.dart';
@@ -251,7 +252,7 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules,
+      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );
@@ -291,7 +292,7 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules,
+      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );
@@ -330,7 +331,7 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules,
+      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );
@@ -353,7 +354,7 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules,
+      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );
@@ -372,7 +373,7 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules,
+      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );
@@ -396,7 +397,7 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules,
+      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );
@@ -417,7 +418,7 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules,
+      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );
@@ -445,7 +446,7 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules,
+      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );

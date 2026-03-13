@@ -17,6 +17,7 @@ import 'package:kangal/data/services/nayapay_email_service.dart';
 import 'package:kangal/data/services/secure_storage_service.dart';
 import 'package:kangal/data/services/sms_inbox_service.dart';
 import 'package:kangal/data/services/sms_permission_service.dart';
+import 'package:kangal/data/services/auto_categorisation_service.dart';
 import 'package:kangal/routing/app_router.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +35,8 @@ Future<void> main() async {
   final ruleRepository = DriftRuleRepository(appDatabase.rulesDao);
   final router = await AppRouter.createRouter();
 
+  final autoCategorisationService = AutoCategorisationService();
+
   // SMS-related services and import repository for HBL parsing
   final smsPermissionService = SmsPermissionService();
   final smsInboxService = SmsInboxService();
@@ -43,6 +46,7 @@ Future<void> main() async {
     hblSmsService: hblSmsService,
     transactionRepository: transactionRepository,
     ruleRepository: ruleRepository,
+    autoCategorisationService: autoCategorisationService,
   );
 
   // Email-related services and import repository for NayaPay parsing
@@ -53,6 +57,7 @@ Future<void> main() async {
     transactionRepository: transactionRepository,
     ruleRepository: ruleRepository,
     secureStorageService: secureStorageService,
+    autoCategorisationService: autoCategorisationService,
   );
 
   runApp(
@@ -70,6 +75,7 @@ Future<void> main() async {
         Provider<NayaPayEmailService>.value(value: nayaPayEmailService),
         Provider<EmailImportRepository>.value(value: emailImportRepository),
         Provider<BackgroundSyncService>.value(value: BackgroundSyncService()),
+        Provider<AutoCategorisationService>.value(value: autoCategorisationService),
       ],
       child: KangalApp(router: router),
     ),
