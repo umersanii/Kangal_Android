@@ -118,6 +118,12 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     return rows.map(_toModel).toList();
   }
 
+  Future<int> reassignCategory(int oldCategoryId, int newCategoryId) async {
+    return (update(transactionsTable)
+          ..where((t) => t.categoryId.equals(oldCategoryId)))
+        .write(TransactionsTableCompanion(categoryId: Value(newCategoryId)));
+  }
+
   Future<List<DailySpend>> getDailySpend(DateTime start, DateTime end) async {
     final rows = await getTransactionsByDateRange(start, end);
     final map = <DateTime, double>{};

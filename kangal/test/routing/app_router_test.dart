@@ -35,6 +35,7 @@ class FakeTransactionRepository implements TransactionRepository {
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+  @override Future<int> reassignCategory(int oldCategoryId, int newCategoryId) async => 0;
 }
 
 void main() {

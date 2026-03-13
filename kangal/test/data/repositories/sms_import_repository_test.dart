@@ -171,6 +171,7 @@ class _FakeTransactionRepository implements TransactionRepository {
   Future<List<CategorySpend>> getCategorySpend(DateTime startDate, DateTime endDate) {
     throw UnimplementedError();
   }
+  @override Future<int> reassignCategory(int oldCategoryId, int newCategoryId) async => 0;
 }
 
 class _FakeRuleRepository implements RuleRepository {

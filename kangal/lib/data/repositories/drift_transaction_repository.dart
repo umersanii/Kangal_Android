@@ -90,4 +90,9 @@ class DriftTransactionRepository implements TransactionRepository {
   ) {
     return _dao.getCategorySpend(startDate, endDate);
   }
+
+  @override
+  Future<int> reassignCategory(int oldCategoryId, int newCategoryId) {
+    return _dao.reassignCategory(oldCategoryId, newCategoryId);
+  }
 }

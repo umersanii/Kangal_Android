@@ -23,6 +23,7 @@ abstract class TransactionRepository {
     DateTime startDate,
     DateTime endDate,
   );
+  Future<int> reassignCategory(int oldCategoryId, int newCategoryId);
 }
 
 class TransactionSummary {
