@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:kangal/ui/dashboard/dashboard_view_model.dart';
+import 'package:kangal/data/repositories/transaction_repository.dart';
 import 'package:kangal/ui/add_transaction/add_transaction_screen.dart';
 import 'package:kangal/ui/dashboard/dashboard_screen.dart';
 import 'package:kangal/ui/onboarding/onboarding_screen.dart';
@@ -46,7 +49,10 @@ class AppRouter {
               routes: [
                 GoRoute(
                   path: '/',
-                  builder: (context, state) => const DashboardScreen(),
+                  builder: (context, state) => ChangeNotifierProvider(
+                    create: (context) => DashboardViewModel(context.read<TransactionRepository>()),
+                    child: const DashboardScreen(),
+                  ),
                 ),
               ],
             ),

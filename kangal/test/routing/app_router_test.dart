@@ -2,6 +2,32 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:kangal/routing/app_router.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:kangal/data/repositories/transaction_repository.dart';
+import 'package:kangal/data/models/daily_spend.dart';
+import 'package:kangal/data/models/category_spend.dart';
+import 'package:kangal/data/models/transaction_model.dart';
+import 'package:mockito/mockito.dart';
+
+class FakeTransactionRepository implements TransactionRepository {
+  @override
+  Future<TransactionSummary> getSummary(DateTime start, DateTime end) async {
+    return TransactionSummary(totalSpent: 0, totalIncome: 0, netBalance: 0, transactionCount: 0);
+  }
+
+  @override
+  Future<List<DailySpend>> getDailySpend(DateTime start, DateTime end) async {
+    return [];
+  }
+
+  @override
+  Future<List<CategorySpend>> getCategorySpend(DateTime start, DateTime end) async {
+    return [];
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +40,12 @@ void main() {
 
         final router = await AppRouter.createRouter();
 
-        await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+        await tester.pumpWidget(
+          Provider<TransactionRepository>.value(
+            value: FakeTransactionRepository(),
+            child: MaterialApp.router(routerConfig: router),
+          ),
+        );
         await tester.pumpAndSettle();
 
         expect(find.byType(OnboardingScreen), findsOneWidget);
@@ -29,13 +60,18 @@ void main() {
 
       final router = await AppRouter.createRouter();
 
-      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pumpWidget(
+        Provider<TransactionRepository>.value(
+          value: FakeTransactionRepository(),
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(DashboardScreen), findsOneWidget);
       expect(find.byType(NavigationBar), findsOneWidget);
-      expect(find.text('Transactions'), findsOneWidget);
-      expect(find.text('Settings'), findsOneWidget);
+      expect(find.text('Transactions'), findsWidgets);
+      expect(find.text('Settings'), findsWidgets);
     });
   });
 }
