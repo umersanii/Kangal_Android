@@ -19,7 +19,10 @@ abstract class TransactionRepository {
   Future<List<TransactionModel>> getUnsyncedTransactions();
   Future<TransactionSummary> getSummary(DateTime startDate, DateTime endDate);
   Future<List<DailySpend>> getDailySpend(DateTime startDate, DateTime endDate);
-  Future<List<CategorySpend>> getCategorySpend(DateTime startDate, DateTime endDate);
+  Future<List<CategorySpend>> getCategorySpend(
+    DateTime startDate,
+    DateTime endDate,
+  );
 }
 
 class TransactionSummary {

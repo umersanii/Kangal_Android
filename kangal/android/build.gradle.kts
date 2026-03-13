@@ -22,3 +22,13 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
+
+subprojects {
+    if (project.name == "telephony") {
+        project.plugins.withId("com.android.library") {
+            project.extensions.configure<com.android.build.gradle.LibraryExtension>("android") {
+                namespace = "com.shounakmulay.telephony"
+            }
+        }
+    }
+}

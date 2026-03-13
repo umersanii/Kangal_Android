@@ -118,10 +118,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     return rows.map(_toModel).toList();
   }
 
-  Future<List<DailySpend>> getDailySpend(
-    DateTime start,
-    DateTime end,
-  ) async {
+  Future<List<DailySpend>> getDailySpend(DateTime start, DateTime end) async {
     final rows = await getTransactionsByDateRange(start, end);
     final map = <DateTime, double>{};
     for (final row in rows) {
@@ -131,7 +128,9 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
       }
     }
     final sortedKeys = map.keys.toList()..sort();
-    return sortedKeys.map((k) => DailySpend(date: k, totalSpent: map[k]!)).toList();
+    return sortedKeys
+        .map((k) => DailySpend(date: k, totalSpent: map[k]!))
+        .toList();
   }
 
   Future<List<CategorySpend>> getCategorySpend(
@@ -154,9 +153,9 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
       String? color;
 
       if (categoryId != null) {
-        final catRow = await (select(categoriesTable)
-              ..where((c) => c.id.equals(categoryId)))
-            .getSingleOrNull();
+        final catRow = await (select(
+          categoriesTable,
+        )..where((c) => c.id.equals(categoryId))).getSingleOrNull();
         if (catRow != null) {
           categoryName = catRow.name;
           emoji = catRow.emoji;
@@ -164,13 +163,15 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
         }
       }
 
-      result.add(CategorySpend(
-        categoryId: categoryId,
-        categoryName: categoryName,
-        emoji: emoji,
-        color: color,
-        totalSpent: entry.value,
-      ));
+      result.add(
+        CategorySpend(
+          categoryId: categoryId,
+          categoryName: categoryName,
+          emoji: emoji,
+          color: color,
+          totalSpent: entry.value,
+        ),
+      );
     }
     result.sort((a, b) => b.totalSpent.compareTo(a.totalSpent));
     return result;
