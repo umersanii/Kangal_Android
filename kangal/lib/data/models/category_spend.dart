@@ -1,8 +1,8 @@
 class CategorySpend {
-  final int categoryId;
-  final String categoryName;
-  final String emoji;
-  final String color;
+  final int? categoryId;
+  final String? categoryName;
+  final String? emoji;
+  final String? color;
   final double totalSpent;
 
   CategorySpend({

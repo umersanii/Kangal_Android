@@ -80,11 +80,14 @@ class DriftTransactionRepository implements TransactionRepository {
 
   @override
   Future<List<DailySpend>> getDailySpend(DateTime startDate, DateTime endDate) {
-    throw UnimplementedError('Implemented in TASK-031');
+    return _dao.getDailySpend(startDate, endDate);
   }
 
   @override
-  Future<List<CategorySpend>> getCategorySpend(DateTime startDate, DateTime endDate) {
-    throw UnimplementedError('Implemented in TASK-031');
+  Future<List<CategorySpend>> getCategorySpend(
+    DateTime startDate,
+    DateTime endDate,
+  ) {
+    return _dao.getCategorySpend(startDate, endDate);
   }
 }

@@ -2,6 +2,8 @@ import 'package:drift/drift.dart';
 import '../app_database.dart';
 import '../tables/transactions_table.dart';
 import '../../models/transaction_model.dart';
+import '../../models/daily_spend.dart';
+import '../../models/category_spend.dart';
 
 part 'transactions_dao.g.dart';
 
@@ -114,6 +116,64 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
       transactionsTable,
     )..where((t) => t.syncedAt.isNull())).get();
     return rows.map(_toModel).toList();
+  }
+
+  Future<List<DailySpend>> getDailySpend(
+    DateTime start,
+    DateTime end,
+  ) async {
+    final rows = await getTransactionsByDateRange(start, end);
+    final map = <DateTime, double>{};
+    for (final row in rows) {
+      if (row.amount < 0) {
+        final d = DateTime(row.date.year, row.date.month, row.date.day);
+        map[d] = (map[d] ?? 0) + row.amount.abs();
+      }
+    }
+    final sortedKeys = map.keys.toList()..sort();
+    return sortedKeys.map((k) => DailySpend(date: k, totalSpent: map[k]!)).toList();
+  }
+
+  Future<List<CategorySpend>> getCategorySpend(
+    DateTime start,
+    DateTime end,
+  ) async {
+    final rows = await getTransactionsByDateRange(start, end);
+    final map = <int?, double>{};
+    for (final row in rows) {
+      if (row.amount < 0) {
+        map[row.categoryId] = (map[row.categoryId] ?? 0) + row.amount.abs();
+      }
+    }
+
+    final result = <CategorySpend>[];
+    for (final entry in map.entries) {
+      final categoryId = entry.key;
+      String? categoryName;
+      String? emoji;
+      String? color;
+
+      if (categoryId != null) {
+        final catRow = await (select(categoriesTable)
+              ..where((c) => c.id.equals(categoryId)))
+            .getSingleOrNull();
+        if (catRow != null) {
+          categoryName = catRow.name;
+          emoji = catRow.emoji;
+          color = catRow.color;
+        }
+      }
+
+      result.add(CategorySpend(
+        categoryId: categoryId,
+        categoryName: categoryName,
+        emoji: emoji,
+        color: color,
+        totalSpent: entry.value,
+      ));
+    }
+    result.sort((a, b) => b.totalSpent.compareTo(a.totalSpent));
+    return result;
   }
 
   TransactionModel _toModel(TransactionsTableData row) {
