@@ -21,9 +21,7 @@ void main() {
         createdAt: DateTime.now(),
         beneficiary: null,
       );
-      final rules = [
-        const RuleModel(id: 1, keyword: 'spotify', categoryId: 2),
-      ];
+      final rules = [const RuleModel(id: 1, keyword: 'spotify', categoryId: 2)];
 
       final result = service.applyCategoryRules(transaction, rules);
 
@@ -40,9 +38,7 @@ void main() {
         createdAt: DateTime.now(),
         beneficiary: 'Netflix',
       );
-      final rules = [
-        const RuleModel(id: 1, keyword: 'Netflix', categoryId: 3),
-      ];
+      final rules = [const RuleModel(id: 1, keyword: 'Netflix', categoryId: 3)];
 
       final result = service.applyCategoryRules(transaction, rules);
 
@@ -59,9 +55,7 @@ void main() {
         createdAt: DateTime.now(),
         beneficiary: 'UBER TRIP',
       );
-      final rules = [
-        const RuleModel(id: 1, keyword: 'uber', categoryId: 4),
-      ];
+      final rules = [const RuleModel(id: 1, keyword: 'uber', categoryId: 4)];
 
       final result = service.applyCategoryRules(transaction, rules);
 
@@ -97,15 +91,13 @@ void main() {
         createdAt: DateTime.now(),
         beneficiary: 'Unknown Merchant',
       );
-      final rules = [
-        const RuleModel(id: 1, keyword: 'spotify', categoryId: 2),
-      ];
+      final rules = [const RuleModel(id: 1, keyword: 'spotify', categoryId: 2)];
 
       final result = service.applyCategoryRules(transaction, rules);
 
       expect(result, isNull);
     });
-    
+
     test('returns first matching rule', () {
       final transaction = TransactionModel(
         id: 1,

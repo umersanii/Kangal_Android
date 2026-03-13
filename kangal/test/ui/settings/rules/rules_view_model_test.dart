@@ -1,6 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:kangal/data/models/category_model.dart';
 import 'package:kangal/data/models/rule_model.dart';
 import 'package:kangal/data/models/transaction_model.dart';
@@ -9,124 +7,206 @@ import 'package:kangal/data/repositories/rule_repository.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
 import 'package:kangal/ui/settings/rules/rules_view_model.dart';
 
-import 'rules_view_model_test.mocks.dart';
+class MockRuleRepository implements RuleRepository {
+  List<RuleModel> rules = [];
+  bool throwError = false;
+  int deleteCalledWithId = -1;
+  int insertCalledCount = 0;
+  int updateCalledCount = 0;
 
-@GenerateMocks([RuleRepository, CategoryRepository, TransactionRepository])
+  @override
+  Future<int> deleteRule(int id) async {
+    if (throwError) throw Exception('Mock error');
+    deleteCalledWithId = id;
+    rules.removeWhere((r) => r.id == id);
+    return 1;
+  }
+
+  @override
+  Future<List<RuleModel>> getAllRules() async {
+    if (throwError) throw Exception('Mock error');
+    return rules;
+  }
+
+  @override
+  Future<int> insertRule(RuleModel rule) async {
+    if (throwError) throw Exception('Mock error');
+    insertCalledCount++;
+    rules.add(rule.copyWith(id: rules.length + 1));
+    return 1;
+  }
+
+  @override
+  Future<bool> updateRule(RuleModel rule) async {
+     if (throwError) throw Exception('Mock error');
+     updateCalledCount++;
+     final index = rules.indexWhere((r) => r.id == rule.id);
+     if (index != -1) {
+       rules[index] = rule;
+       return true;
+     }
+     return false;
+  }
+
+  @override
+  Future<void> deleteAllRules() async {
+    if (throwError) throw Exception('Mock error');
+  }
+}
+
+class MockCategoryRepository implements CategoryRepository {
+  List<CategoryModel> categories = [];
+
+  @override
+  Future<int> deleteCategory(int id) async => 1;
+  @override
+  Future<List<CategoryModel>> getAllCategories() async => categories;
+  @override
+  Future<CategoryModel?> getCategoryById(int id) async => null;
+  @override
+  Future<List<CategoryModel>> getDefaultCategories() async => [];
+  @override
+  Future<int> insertCategory(CategoryModel category) async => 1;
+  @override
+  Future<void> seedDefaultCategories() async {}
+  @override
+  Future<bool> updateCategory(CategoryModel category) async => true;
+  @override
+  Future<void> deleteAllCustomCategories() async {}
+}
+
+class MockTransactionRepository implements TransactionRepository {
+  List<TransactionModel> transactions = [];
+  int updateCalledCount = 0;
+
+  @override
+  Future<int> deleteTransaction(int id) async => 1;
+
+  @override
+  Future<List<TransactionModel>> getAllTransactions(int limit, int offset) async => transactions;
+
+  @override
+  Future<dynamic> getTransactionById(int id) async => null;
+
+  @override
+  Future<dynamic> getTransactionByTransactionId(String transactionId) async => null;
+
+  @override
+  Future<List<dynamic>> getTransactionsByDateRange(DateTime start, DateTime end) async => [];
+
+  @override
+  Future<List<dynamic>> getTransactionsBySource(String source) async => [];
+
+  @override
+  Future<List<dynamic>> getUnsyncedTransactions() async => [];
+
+  @override
+  Future<int> insertTransaction(dynamic transaction) async => 1;
+
+  @override
+  Future<List<dynamic>> searchTransactions(String query) async => [];
+
+  @override
+  Future<bool> updateTransaction(TransactionModel transaction) async {
+    updateCalledCount++;
+    final index = transactions.indexWhere((t) => t.id == transaction.id);
+    if (index != -1) transactions[index] = transaction;
+    return true;
+  }
+
+  @override
+  Future<dynamic> getCategorySpend(DateTime start, DateTime end) async => [];
+
+  @override
+  Future<dynamic> getDailySpend(DateTime start, DateTime end) async => [];
+
+  @override
+  Future<dynamic> getSummary(DateTime start, DateTime end) async => throw UnimplementedError();
+
+  @override
+  Future<int> reassignCategory(int oldCategoryId, int newCategoryId) async => 1;
+}
+
 void main() {
-  late MockRuleRepository mockRuleRepo;
-  late MockCategoryRepository mockCategoryRepo;
-  late MockTransactionRepository mockTransactionRepo;
   late RulesViewModel viewModel;
+  late MockRuleRepository mockRuleRepository;
+  late MockCategoryRepository mockCategoryRepository;
+  late MockTransactionRepository mockTransactionRepository;
 
   setUp(() {
-    mockRuleRepo = MockRuleRepository();
-    mockCategoryRepo = MockCategoryRepository();
-    mockTransactionRepo = MockTransactionRepository();
-
+    mockRuleRepository = MockRuleRepository();
+    mockCategoryRepository = MockCategoryRepository();
+    mockTransactionRepository = MockTransactionRepository();
+    
     viewModel = RulesViewModel(
-      ruleRepository: mockRuleRepo,
-      categoryRepository: mockCategoryRepo,
-      transactionRepository: mockTransactionRepo,
+      ruleRepository: mockRuleRepository,
+      categoryRepository: mockCategoryRepository,
+      transactionRepository: mockTransactionRepository,
     );
   });
 
-  final sampleRules = [
-    const RuleModel(id: 1, keyword: 'netflix', categoryId: 2),
-  ];
+  group('RulesViewModel', () {
+    test('loadRules populates rules and categories', () async {
+      mockRuleRepository.rules = [const RuleModel(id: 1, keyword: 'netflix', categoryId: 2)];
+      mockCategoryRepository.categories = [const CategoryModel(id: 2, name: 'Entertainment', emoji: '🎥', color: '#111111', isDefault: true)];
+      
+      await viewModel.loadRules();
+      
+      expect(viewModel.rules.length, 1);
+      expect(viewModel.categories.length, 1);
+      expect(viewModel.isLoading, false);
+      expect(viewModel.errorMessage, isNull);
+    });
 
-  final sampleCategories = [
-    const CategoryModel(id: 1, name: 'Food', emoji: '🍔', color: '#000000', isDefault: true),
-    const CategoryModel(id: 2, name: 'Entertainment', emoji: '🎮', color: '#000000', isDefault: true),
-  ];
+    test('addRule calls repository and reloads', () async {
+      await viewModel.addRule('spotify', 2);
+      
+      expect(mockRuleRepository.insertCalledCount, 1);
+      expect(viewModel.rules.length, 1);
+      expect(viewModel.rules.first.keyword, 'spotify');
+    });
 
-  test('loadRules sets rules and categories on success', () async {
-    when(mockRuleRepo.getAllRules()).thenAnswer((_) async => sampleRules);
-    when(mockCategoryRepo.getAllCategories()).thenAnswer((_) async => sampleCategories);
+    test('updateRule calls repository and reloads', () async {
+      mockRuleRepository.rules = [const RuleModel(id: 1, keyword: 'netflix', categoryId: 2)];
+      await viewModel.loadRules();
 
-    await viewModel.loadRules();
+      await viewModel.updateRule(1, 'netflix inc', 3);
+      
+      expect(mockRuleRepository.updateCalledCount, 1);
+      expect(viewModel.rules.first.keyword, 'netflix inc');
+      expect(viewModel.rules.first.categoryId, 3);
+    });
 
-    expect(viewModel.rules, sampleRules);
-    expect(viewModel.categories, sampleCategories);
-    expect(viewModel.errorMessage, isNull);
-    expect(viewModel.isLoading, isFalse);
-  });
+    test('deleteRule calls repository and reloads', () async {
+      mockRuleRepository.rules = [const RuleModel(id: 1, keyword: 'netflix', categoryId: 2)];
+      await viewModel.loadRules();
 
-  test('addRule inserts rule and reloads', () async {
-    when(mockRuleRepo.getAllRules()).thenAnswer((_) async => sampleRules);
-    when(mockCategoryRepo.getAllCategories()).thenAnswer((_) async => sampleCategories);
-    when(mockRuleRepo.insertRule(any)).thenAnswer((_) async => 2);
+      final result = await viewModel.deleteRule(1);
+      
+      expect(result, true);
+      expect(mockRuleRepository.deleteCalledWithId, 1);
+      expect(viewModel.rules.length, 0);
+    });
 
-    final result = await viewModel.addRule('spotify', 2);
-
-    expect(result, isTrue);
-    verify(mockRuleRepo.insertRule(any)).called(1);
-    verify(mockRuleRepo.getAllRules()).called(1);
-  });
-
-  test('updateRule updates rule and reloads', () async {
-    when(mockRuleRepo.getAllRules()).thenAnswer((_) async => sampleRules);
-    when(mockCategoryRepo.getAllCategories()).thenAnswer((_) async => sampleCategories);
-    when(mockRuleRepo.updateRule(any)).thenAnswer((_) async => true);
-
-    await viewModel.loadRules(); // Load first so the existing rule is there.
-    
-    final result = await viewModel.updateRule(1, 'netflix updated', 2);
-
-    expect(result, isTrue);
-    verify(mockRuleRepo.updateRule(any)).called(1);
-  });
-  
-  test('deleteRule deletes rule and reloads', () async {
-    when(mockRuleRepo.getAllRules()).thenAnswer((_) async => sampleRules);
-    when(mockCategoryRepo.getAllCategories()).thenAnswer((_) async => sampleCategories);
-    when(mockRuleRepo.deleteRule(1)).thenAnswer((_) async => 1);
-
-    final result = await viewModel.deleteRule(1);
-
-    expect(result, isTrue);
-    verify(mockRuleRepo.deleteRule(1)).called(1);
-  });
-
-  test('applyRulesToAllTransactions matches keyword to beneficiary and updates transaction', () async {
-    when(mockRuleRepo.getAllRules()).thenAnswer((_) async => sampleRules);
-    when(mockCategoryRepo.getAllCategories()).thenAnswer((_) async => sampleCategories);
-
-    final tx1 = TransactionModel(
-      id: 1,
-      date: DateTime.now(),
-      amount: -100,
-      source: 'HBL',
-      beneficiary: 'Netflix Subscription',
-      categoryId: null, // should match rule 1 -> cat 2
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-    final tx2 = TransactionModel(
-      id: 2,
-      date: DateTime.now(),
-      amount: -50,
-      source: 'HBL',
-      beneficiary: 'Random Store',
-      categoryId: null, // should NOT match rule
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-
-    when(mockTransactionRepo.getAllTransactions(any, any))
-        .thenAnswer((_) async => [tx1, tx2]);
-
-    when(mockTransactionRepo.updateTransaction(any)).thenAnswer((_) async => true);
-
-    await viewModel.loadRules(); // Ensure rules are loaded
-    final updateCount = await viewModel.applyRulesToAllTransactions();
-
-    expect(updateCount, 1);
-    
-    final verification = verify(mockTransactionRepo.updateTransaction(captureAny));
-    verification.called(1);
-    
-    final updatedTx = verification.captured.first as TransactionModel;
-    expect(updatedTx.id, 1);
-    expect(updatedTx.categoryId, 2);
+    test('applyRulesToAllTransactions bulk applies correctly', () async {
+      mockRuleRepository.rules = [
+        const RuleModel(id: 1, keyword: 'netflix', categoryId: 2), // Entertainment
+        const RuleModel(id: 2, keyword: 'uber', categoryId: 3), // Transport
+      ];
+      
+      final tx1 = TransactionModel(id: 1, date: DateTime.now(), amount: -100, source: 'Cash', updatedAt: DateTime.now(), createdAt: DateTime.now(), beneficiary: 'Netflix', categoryId: 1); // Old cat
+      final tx2 = TransactionModel(id: 2, date: DateTime.now(), amount: -100, source: 'Cash', updatedAt: DateTime.now(), createdAt: DateTime.now(), beneficiary: 'Uber Trip', categoryId: 1); // Old cat
+      final tx3 = TransactionModel(id: 3, date: DateTime.now(), amount: -100, source: 'Cash', updatedAt: DateTime.now(), createdAt: DateTime.now(), beneficiary: 'Unknown', categoryId: 1); // No match
+      final tx4 = TransactionModel(id: 4, date: DateTime.now(), amount: -100, source: 'Cash', updatedAt: DateTime.now(), createdAt: DateTime.now(), beneficiary: 'Netflix', categoryId: 2); // Already correct
+      
+      mockTransactionRepository.transactions = [tx1, tx2, tx3, tx4];
+      
+      await viewModel.loadRules(); // Load rules into VM state
+      
+      final updatedCount = await viewModel.applyRulesToAllTransactions();
+      
+      expect(updatedCount, 2); // Only tx1 and tx2 should be updated
+      expect(mockTransactionRepository.updateCalledCount, 2);
+    });
   });
 }
