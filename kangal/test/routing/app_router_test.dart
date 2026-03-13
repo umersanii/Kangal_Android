@@ -12,7 +12,12 @@ import 'package:mockito/mockito.dart';
 class FakeTransactionRepository implements TransactionRepository {
   @override
   Future<TransactionSummary> getSummary(DateTime start, DateTime end) async {
-    return TransactionSummary(totalSpent: 0, totalIncome: 0, netBalance: 0, transactionCount: 0);
+    return TransactionSummary(
+      totalSpent: 0,
+      totalIncome: 0,
+      netBalance: 0,
+      transactionCount: 0,
+    );
   }
 
   @override
@@ -21,7 +26,10 @@ class FakeTransactionRepository implements TransactionRepository {
   }
 
   @override
-  Future<List<CategorySpend>> getCategorySpend(DateTime start, DateTime end) async {
+  Future<List<CategorySpend>> getCategorySpend(
+    DateTime start,
+    DateTime end,
+  ) async {
     return [];
   }
 

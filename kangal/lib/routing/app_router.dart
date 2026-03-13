@@ -50,7 +50,9 @@ class AppRouter {
                 GoRoute(
                   path: '/',
                   builder: (context, state) => ChangeNotifierProvider(
-                    create: (context) => DashboardViewModel(context.read<TransactionRepository>()),
+                    create: (context) => DashboardViewModel(
+                      context.read<TransactionRepository>(),
+                    ),
                     child: const DashboardScreen(),
                   ),
                 ),

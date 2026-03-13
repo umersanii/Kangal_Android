@@ -6,7 +6,9 @@ import 'package:fl_chart/fl_chart.dart';
 
 void main() {
   group('CategoryDonutChart', () {
-    testWidgets('renders correctly with given CategorySpend data', (WidgetTester tester) async {
+    testWidgets('renders correctly with given CategorySpend data', (
+      WidgetTester tester,
+    ) async {
       final List<CategorySpend> mockData = [
         CategorySpend(
           categoryId: 1,
@@ -26,9 +28,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: CategoryDonutChart(data: mockData),
-          ),
+          home: Scaffold(body: CategoryDonutChart(data: mockData)),
         ),
       );
 
@@ -40,12 +40,12 @@ void main() {
       expect(find.text('🚗 Transport'), findsOneWidget);
     });
 
-    testWidgets('renders empty state when data is empty', (WidgetTester tester) async {
+    testWidgets('renders empty state when data is empty', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: CategoryDonutChart(data: []),
-          ),
+          home: Scaffold(body: CategoryDonutChart(data: [])),
         ),
       );
 

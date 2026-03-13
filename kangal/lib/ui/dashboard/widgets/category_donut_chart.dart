@@ -5,17 +5,12 @@ import '../../../data/models/category_spend.dart';
 class CategoryDonutChart extends StatelessWidget {
   final List<CategorySpend> data;
 
-  const CategoryDonutChart({
-    super.key,
-    required this.data,
-  });
+  const CategoryDonutChart({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
     if (data.isEmpty) {
-      return const Center(
-        child: Text('No categorical data available'),
-      );
+      return const Center(child: Text('No categorical data available'));
     }
 
     final double total = data.fold(0, (sum, item) => sum + item.totalSpent);
@@ -30,8 +25,10 @@ class CategoryDonutChart extends StatelessWidget {
               centerSpaceRadius: 40,
               sections: data.map((item) {
                 // Ensure percentage adds up to 100 correctly, handling 0 edge case
-                final double percentage = total > 0 ? (item.totalSpent / total) * 100 : 0;
-                
+                final double percentage = total > 0
+                    ? (item.totalSpent / total) * 100
+                    : 0;
+
                 // Parse color from hex string if available
                 Color sectionColor = Colors.grey;
                 if (item.color != null && item.color!.isNotEmpty) {
