@@ -24,10 +24,38 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase({QueryExecutor? e}) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (migrator, from, to) async {
+      if (from < 2) {
+        await migrator.createIndex(
+          Index(
+            'idx_transactions_date',
+            'CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions_table (date)',
+          ),
+        );
+        await migrator.createIndex(
+          Index(
+            'idx_transactions_source',
+            'CREATE INDEX IF NOT EXISTS idx_transactions_source ON transactions_table (source)',
+          ),
+        );
+        await migrator.createIndex(
+          Index(
+            'idx_transactions_category_id',
+            'CREATE INDEX IF NOT EXISTS idx_transactions_category_id ON transactions_table (category_id)',
+          ),
+        );
+        await migrator.createIndex(
+          Index(
+            'idx_transactions_transaction_id',
+            'CREATE INDEX IF NOT EXISTS idx_transactions_transaction_id ON transactions_table (transaction_id)',
+          ),
+        );
+      }
+    },
     beforeOpen: (details) async {
       await seedInitialData();
     },

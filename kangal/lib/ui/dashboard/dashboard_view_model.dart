@@ -15,6 +15,7 @@ class DashboardViewModel extends ChangeNotifier {
   DateRange selectedPeriod;
   PeriodPreset selectedPreset = PeriodPreset.thisMonth;
   bool isLoading = false;
+  String? errorMessage;
 
   DashboardViewModel(this._transactionRepository)
     : selectedPeriod = _computeDateRange(PeriodPreset.thisMonth) {
@@ -68,6 +69,7 @@ class DashboardViewModel extends ChangeNotifier {
   }
 
   Future<void> loadDashboardData() async {
+    errorMessage = null;
     isLoading = true;
     notifyListeners();
 
@@ -87,13 +89,17 @@ class DashboardViewModel extends ChangeNotifier {
         selectedPeriod.end,
       );
     } catch (e) {
-      // Ignore unimplemented for now as TASK-031 implements them.
       if (e is! UnimplementedError) {
-        rethrow;
+        errorMessage = 'Failed to load dashboard data. Please try again.';
       }
     } finally {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  void clearError() {
+    errorMessage = null;
+    notifyListeners();
   }
 }

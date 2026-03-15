@@ -74,32 +74,32 @@ void main() {
   });
 
   group('getHblMessages', () {
-    test('returns only messages with HBL sender and within cutoff', () async {
+    test('returns messages within cutoff regardless of sender', () async {
       final now = DateTime.now();
       fakeProvider.inbox = [
         makeSms(address: 'HBL BANK', date: now.subtract(Duration(days: 1))),
-        makeSms(address: 'hblxyz', date: now.subtract(Duration(days: 10))),
+        makeSms(address: '4250', date: now.subtract(Duration(days: 10))),
         makeSms(address: 'other', date: now),
         makeSms(address: 'HBL OLD', date: now.subtract(Duration(days: 200))),
       ];
 
       final result = await service.getHblMessages(daysBack: 90);
 
-      expect(result.length, 2);
+      expect(result.length, 3);
       expect(result.any((m) => m.address == 'HBL BANK'), isTrue);
-      expect(result.any((m) => m.address == 'hblxyz'), isTrue);
-      expect(result.any((m) => m.address == 'other'), isFalse);
+      expect(result.any((m) => m.address == '4250'), isTrue);
+      expect(result.any((m) => m.address == 'other'), isTrue);
       expect(result.any((m) => m.address == 'HBL OLD'), isFalse);
     });
 
-    test('defaults to 90 days when daysBack not provided', () async {
+    test('returns full history when daysBack not provided', () async {
       final now = DateTime.now();
       fakeProvider.inbox = [
         makeSms(address: 'HBL', date: now.subtract(Duration(days: 89))),
         makeSms(address: 'HBL', date: now.subtract(Duration(days: 91))),
       ];
       final result = await service.getHblMessages();
-      expect(result.length, 1);
+      expect(result.length, 2);
     });
 
     test('returns empty list when inbox is empty', () async {
@@ -107,33 +107,49 @@ void main() {
       final result = await service.getHblMessages();
       expect(result, isEmpty);
     });
+
+    test('includes numeric sender message', () async {
+      final now = DateTime.now();
+      fakeProvider.inbox = [
+        makeSms(
+          address: '4250',
+          date: now,
+          body: 'A/C has been debited with PKR 100.00',
+        ),
+      ];
+
+      final result = await service.getHblMessages();
+
+      expect(result.length, 1);
+      expect(result.first.address, '4250');
+    });
   });
 
   group('listenForNewSms', () {
-    test('invokes callback for foreground HBL message only', () {
+    test('invokes callback for all foreground messages', () {
       SmsMessage? received;
       service.listenForNewSms((m) => received = m);
 
       // simulate messages from fake provider
-      final msg1 = makeSms(address: 'hbl123', date: DateTime.now());
-      final msg2 = makeSms(address: 'foo', date: DateTime.now());
+      final msg1 = makeSms(address: 'foo', date: DateTime.now());
+      final msg2 = makeSms(address: 'bar', date: DateTime.now());
 
       fakeProvider.simulateForegroundSms(msg1);
       fakeProvider.simulateForegroundSms(msg2);
 
-      expect(received?.address, msg1.address);
-      expect(received?.date, msg1.date);
+      expect(received?.address, msg2.address);
+      expect(received?.date, msg2.date);
     });
 
-    test('invokes callback for background HBL message only', () {
+    test('invokes callback for all background messages', () {
       SmsMessage? received;
       service.listenForNewSms((m) => received = m);
 
-      final msg1 = makeSms(address: 'HBL something', date: DateTime.now());
-      final msg2 = makeSms(address: 'other', date: DateTime.now());
+      final msg1 = makeSms(address: 'alpha', date: DateTime.now());
+      final msg2 = makeSms(address: 'beta', date: DateTime.now());
 
       fakeProvider.simulateBackgroundSms(msg2);
-      expect(received, isNull);
+      expect(received?.address, msg2.address);
 
       fakeProvider.simulateBackgroundSms(msg1);
       expect(received?.address, msg1.address);

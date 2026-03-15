@@ -56,41 +56,40 @@ class TelephonySmsInboxProvider implements SmsInboxProvider {
 }
 
 /// Service responsible for reading the SMS inbox and registering listeners for
-/// new messages. The class filters results to only include messages that
-/// appear to originate from HBL (sender address contains the substring "HBL",
-/// case‑insensitive).
+/// new messages.
 class SmsInboxService {
   final SmsInboxProvider _provider;
 
   SmsInboxService({SmsInboxProvider? provider})
     : _provider = provider ?? TelephonySmsInboxProvider();
 
-  /// Returns all inbox messages that look like they came from HBL and whose
-  /// date is within the past [daysBack] days. The default window of 90 days is
-  /// chosen to match the requirements of TASK-017.
-  Future<List<SmsMessage>> getHblMessages({int daysBack = 90}) async {
-    final cutoff = DateTime.now()
-        .subtract(Duration(days: daysBack))
-        .millisecondsSinceEpoch;
+  /// Returns inbox messages used for historical import.
+  ///
+  /// When [daysBack] is provided, the result is additionally constrained to
+  /// messages within that many days from now. If omitted, no date cutoff is
+  /// applied and the full available history is returned.
+  Future<List<SmsMessage>> getHblMessages({int? daysBack}) async {
+    final cutoff = daysBack == null
+        ? null
+        : DateTime.now().subtract(Duration(days: daysBack)).millisecondsSinceEpoch;
 
-    // We still pass a filter to the underlying API to narrow the results, but
-    // perform an additional check in Dart to ensure case‑insensitivity and to
-    // apply the date cutoff since the filter builder is fairly limited.
+    // We avoid sender/body pre-filtering here and let the parser stage decide
+    // whether a message is a supported HBL transaction format.
     final raw = await _provider.getInboxSms(
-      filter: SmsFilter.where(SmsColumn.ADDRESS).like('%HBL%'),
+      columns: const [SmsColumn.ADDRESS, SmsColumn.BODY, SmsColumn.DATE],
     );
 
     return raw
         .where((m) {
-          final addr = m.address?.toLowerCase() ?? '';
           final date = m.date ?? 0;
-          return addr.contains('hbl') && date >= cutoff;
+          final passesCutoff = cutoff == null || date >= cutoff;
+          return passesCutoff;
         })
         .toList(growable: false);
   }
 
   /// Registers a listener that will be invoked every time a new SMS arrives
-  /// (foreground or background) and the sender address contains "HBL".
+  /// (foreground or background).
   ///
   /// Note that the callback may be called on a background isolate when
   /// [telephony] delivers messages while the app is not running; the caller
@@ -98,16 +97,10 @@ class SmsInboxService {
   void listenForNewSms(void Function(SmsMessage) onMessage) {
     _provider.listenIncomingSms(
       onNewMessage: (msg) {
-        final addr = msg.address?.toLowerCase() ?? '';
-        if (addr.contains('hbl')) {
-          onMessage(msg);
-        }
+        onMessage(msg);
       },
       onBackgroundMessage: (msg) {
-        final addr = msg.address?.toLowerCase() ?? '';
-        if (addr.contains('hbl')) {
-          onMessage(msg);
-        }
+        onMessage(msg);
       },
       listenInBackground: true,
     );

@@ -56,7 +56,7 @@ class _FakeSmsPermissionService extends SmsPermissionService {
 
 class _FakeSmsImportRepository implements SmsImportRepository {
   @override
-  Future<int> importHistoricalSms() async => 0;
+  Future<int> importHistoricalSms({int? daysBack}) async => 0;
 
   @override
   void startRealtimeListener() {}

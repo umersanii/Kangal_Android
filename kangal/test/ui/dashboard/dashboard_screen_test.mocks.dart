@@ -119,6 +119,12 @@ class MockDashboardViewModel extends _i1.Mock
   );
 
   @override
+  set errorMessage(String? value) => super.noSuchMethod(
+    Invocation.setter(#errorMessage, value),
+    returnValueForMissingStub: null,
+  );
+
+  @override
   bool get hasListeners =>
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
           as bool);
@@ -137,6 +143,12 @@ class MockDashboardViewModel extends _i1.Mock
             returnValueForMissingStub: _i7.Future<void>.value(),
           )
           as _i7.Future<void>);
+
+  @override
+  void clearError() => super.noSuchMethod(
+    Invocation.method(#clearError, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void addListener(_i8.VoidCallback? listener) => super.noSuchMethod(

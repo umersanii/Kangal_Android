@@ -22,9 +22,13 @@ class _FakeSmsImportRepository implements SmsImportRepository {
   _FakeSmsImportRepository({required this.importCount});
 
   int importCount;
+  int? lastDaysBack;
 
   @override
-  Future<int> importHistoricalSms() async => importCount;
+  Future<int> importHistoricalSms({int? daysBack}) async {
+    lastDaysBack = daysBack;
+    return importCount;
+  }
 
   @override
   void startRealtimeListener() {}
@@ -106,6 +110,16 @@ void main() {
 
     expect(viewModel.smsPermissionGranted, isTrue);
     expect(viewModel.importedTransactionCount, 3);
+    expect(smsImportRepository.lastDaysBack, isNull);
+  });
+
+  test('requestSmsPermission uses selected import range', () async {
+    viewModel.setSmsImportDaysBack(90);
+
+    await viewModel.requestSmsPermission();
+
+    expect(viewModel.smsPermissionGranted, isTrue);
+    expect(smsImportRepository.lastDaysBack, 90);
   });
 
   test('saveEmailCredentials imports emails and adds to count', () async {

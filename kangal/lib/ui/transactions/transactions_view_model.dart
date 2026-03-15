@@ -14,6 +14,7 @@ class TransactionsViewModel extends ChangeNotifier {
   String? sourceFilter;
   int? categoryFilter;
   DateRange? dateFilter;
+  String? errorMessage;
 
   static const int _pageSize = 50;
 
@@ -22,6 +23,7 @@ class TransactionsViewModel extends ChangeNotifier {
   }
 
   Future<void> loadTransactions() async {
+    errorMessage = null;
     isLoading = true;
     _offset = 0;
     notifyListeners();
@@ -40,6 +42,8 @@ class TransactionsViewModel extends ChangeNotifier {
       transactions = results;
       _offset += results.length;
       hasMore = results.length == _pageSize;
+    } catch (_) {
+      errorMessage = 'Failed to load transactions. Please try again.';
     } finally {
       isLoading = false;
       notifyListeners();
@@ -63,9 +67,11 @@ class TransactionsViewModel extends ChangeNotifier {
         endDate: dateFilter?.end,
       );
 
-      transactions.addAll(results);
+      transactions = [...transactions, ...results];
       _offset += results.length;
       hasMore = results.length == _pageSize;
+    } catch (_) {
+      errorMessage = 'Failed to load more transactions.';
     } finally {
       isLoading = false;
       notifyListeners();
@@ -94,5 +100,10 @@ class TransactionsViewModel extends ChangeNotifier {
     dateFilter = range;
     _offset = 0;
     loadTransactions();
+  }
+
+  void clearError() {
+    errorMessage = null;
+    notifyListeners();
   }
 }

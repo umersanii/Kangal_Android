@@ -1,4 +1,4 @@
 abstract class SmsImportRepository {
-  Future<int> importHistoricalSms();
+  Future<int> importHistoricalSms({int? daysBack});
   void startRealtimeListener();
 }

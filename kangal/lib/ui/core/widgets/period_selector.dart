@@ -31,14 +31,19 @@ class PeriodSelector extends StatelessWidget {
   }
 
   Widget _buildChip(BuildContext context, PeriodPreset preset, String label) {
-    return ChoiceChip(
-      label: Text(label),
-      selected: current == preset,
-      onSelected: (selected) {
-        if (selected) {
-          onChanged(preset);
-        }
-      },
+    return Semantics(
+      button: true,
+      label: 'Select period: $label',
+      child: ChoiceChip(
+        tooltip: 'Select $label period',
+        label: Text(label),
+        selected: current == preset,
+        onSelected: (selected) {
+          if (selected) {
+            onChanged(preset);
+          }
+        },
+      ),
     );
   }
 }

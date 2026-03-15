@@ -173,10 +173,15 @@ class _FakeTransactionRepository implements TransactionRepository {
   }
 
   @override
-  Future<List<CategorySpend>> getCategorySpend(DateTime startDate, DateTime endDate) {
+  Future<List<CategorySpend>> getCategorySpend(
+    DateTime startDate,
+    DateTime endDate,
+  ) {
     throw UnimplementedError();
   }
-  @override Future<int> reassignCategory(int oldCategoryId, int newCategoryId) async => 0;
+
+  @override
+  Future<int> reassignCategory(int oldCategoryId, int newCategoryId) async => 0;
 }
 
 class _FakeRuleRepository implements RuleRepository {
@@ -263,7 +268,8 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
+      ruleRepository: rules,
+      autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );
@@ -303,7 +309,8 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
+      ruleRepository: rules,
+      autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );
@@ -342,7 +349,8 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
+      ruleRepository: rules,
+      autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );
@@ -365,7 +373,8 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
+      ruleRepository: rules,
+      autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );
@@ -384,7 +393,8 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
+      ruleRepository: rules,
+      autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );
@@ -408,7 +418,8 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
+      ruleRepository: rules,
+      autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );
@@ -429,7 +440,8 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
+      ruleRepository: rules,
+      autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );
@@ -457,7 +469,8 @@ void main() {
     final repository = EmailImportRepositoryImpl(
       nayaPayEmailService: emailParser,
       transactionRepository: transactions,
-      ruleRepository: rules, autoCategorisationService: AutoCategorisationService(),
+      ruleRepository: rules,
+      autoCategorisationService: AutoCategorisationService(),
       secureStorageService: storage,
       imapServiceFactory: (_, __) => imapService,
     );

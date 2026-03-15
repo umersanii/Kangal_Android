@@ -14,15 +14,18 @@ class SourceBadge extends StatelessWidget {
       _ => AppTheme.cashSourceColor,
     };
 
-    return Chip(
-      label: Text(
-        source,
-        style: const TextStyle(color: Colors.white, fontSize: 12),
+    return Semantics(
+      label: 'Source: $source',
+      child: Chip(
+        label: Text(
+          source,
+          style: const TextStyle(color: Colors.white, fontSize: 12),
+        ),
+        backgroundColor: color,
+        visualDensity: VisualDensity.compact,
+        padding: EdgeInsets.zero,
+        side: BorderSide.none,
       ),
-      backgroundColor: color,
-      visualDensity: VisualDensity.compact,
-      padding: EdgeInsets.zero,
-      side: BorderSide.none,
     );
   }
 }

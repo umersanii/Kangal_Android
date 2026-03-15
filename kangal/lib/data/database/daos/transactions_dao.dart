@@ -16,11 +16,14 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     int limit,
     int offset,
   ) async {
-    final rows = await (select(
-      transactionsTable,
-    )
-      ..orderBy([(t) => OrderingTerm(expression: t.date, mode: OrderingMode.desc)])
-      ..limit(limit, offset: offset)).get();
+    final rows =
+        await (select(transactionsTable)
+              ..orderBy([
+                (t) =>
+                    OrderingTerm(expression: t.date, mode: OrderingMode.desc),
+              ])
+              ..limit(limit, offset: offset))
+            .get();
     return rows.map(_toModel).toList();
   }
 
@@ -35,18 +38,32 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
   }) async {
     final query = select(transactionsTable);
     if (searchQuery != null && searchQuery.isNotEmpty) {
-      query.where((t) => t.beneficiary.like('%$searchQuery%') | t.note.like('%$searchQuery%') | t.subject.like('%$searchQuery%'));
+      query.where(
+        (t) =>
+            t.beneficiary.like('%$searchQuery%') |
+            t.note.like('%$searchQuery%') |
+            t.subject.like('%$searchQuery%'),
+      );
     }
-    if (sourceFilter != null && sourceFilter.isNotEmpty && sourceFilter != 'All') {
+    if (sourceFilter != null &&
+        sourceFilter.isNotEmpty &&
+        sourceFilter != 'All') {
       query.where((t) => t.source.equals(sourceFilter));
     }
     if (categoryFilter != null) {
       query.where((t) => t.categoryId.equals(categoryFilter));
     }
     if (startDate != null && endDate != null) {
-      query.where((t) => t.date.isBetweenValues(startDate.toIso8601String(), endDate.toIso8601String()));
+      query.where(
+        (t) => t.date.isBetweenValues(
+          startDate.toIso8601String(),
+          endDate.toIso8601String(),
+        ),
+      );
     }
-    query.orderBy([(t) => OrderingTerm(expression: t.date, mode: OrderingMode.desc)]);
+    query.orderBy([
+      (t) => OrderingTerm(expression: t.date, mode: OrderingMode.desc),
+    ]);
     query.limit(limit, offset: offset);
     final rows = await query.get();
     return rows.map(_toModel).toList();

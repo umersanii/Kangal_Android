@@ -1,23 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
 import 'package:kangal/ui/core/theme.dart';
+import 'package:kangal/ui/core/utils/currency_formatter.dart';
 
 class SummaryCards extends StatelessWidget {
   final TransactionSummary summary;
 
-  const SummaryCards({
-    super.key,
-    required this.summary,
-  });
+  const SummaryCards({super.key, required this.summary});
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormat = NumberFormat.currency(
-      symbol: 'Rs. ',
-      decimalDigits: 0,
-    );
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final cardWidth = (constraints.maxWidth - 8) / 2;
@@ -30,21 +22,21 @@ class SummaryCards extends StatelessWidget {
               context,
               width: cardWidth,
               title: 'Total Spent',
-              amountText: currencyFormat.format(summary.totalSpent),
+              amountText: formatPkr(summary.totalSpent),
               amountColor: AppTheme.expenseColor,
             ),
             _buildCard(
               context,
               width: cardWidth,
               title: 'Total Income',
-              amountText: currencyFormat.format(summary.totalIncome),
+              amountText: formatPkr(summary.totalIncome),
               amountColor: AppTheme.incomeColor,
             ),
             _buildCard(
               context,
               width: cardWidth,
               title: 'Net Balance',
-              amountText: currencyFormat.format(summary.netBalance),
+              amountText: formatPkr(summary.netBalance),
               amountColor: summary.netBalance >= 0
                   ? AppTheme.incomeColor
                   : AppTheme.expenseColor,
@@ -58,7 +50,7 @@ class SummaryCards extends StatelessWidget {
             ),
           ],
         );
-      }
+      },
     );
   }
 
@@ -83,8 +75,8 @@ class SummaryCards extends StatelessWidget {
               Text(
                 title,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -95,9 +87,9 @@ class SummaryCards extends StatelessWidget {
                 child: Text(
                   amountText,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: amountColor,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    color: amountColor,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],

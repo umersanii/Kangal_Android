@@ -23,9 +23,13 @@ class _FakeSmsImportRepository implements SmsImportRepository {
   _FakeSmsImportRepository({required this.importCount});
 
   int importCount;
+  int? lastDaysBack;
 
   @override
-  Future<int> importHistoricalSms() async => importCount;
+  Future<int> importHistoricalSms({int? daysBack}) async {
+    lastDaysBack = daysBack;
+    return importCount;
+  }
 
   @override
   void startRealtimeListener() {}
@@ -53,6 +57,34 @@ class _FakeEmailImportRepository implements EmailImportRepository {
 }
 
 void main() {
+  testWidgets('selected SMS range is forwarded to import', (tester) async {
+    final smsRepository = _FakeSmsImportRepository(importCount: 2);
+    final viewModel = OnboardingViewModel(
+      smsPermissionService: _FakeSmsPermissionService(granted: true),
+      smsImportRepository: smsRepository,
+      secureStorageService: _FakeSecureStorageService(),
+      emailImportRepository: _FakeEmailImportRepository(
+        connectionResult: true,
+        importCount: 3,
+      ),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(home: OnboardingScreen(viewModel: viewModel)),
+    );
+
+    await tester.tap(find.text('Get Started'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Last 90 days'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Grant SMS Permission'));
+    await tester.pumpAndSettle();
+
+    expect(smsRepository.lastDaysBack, 90);
+  });
+
   testWidgets('onboarding renders 5 steps and skip buttons navigate', (
     tester,
   ) async {

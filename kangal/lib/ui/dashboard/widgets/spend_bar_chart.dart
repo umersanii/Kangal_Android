@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import 'package:kangal/data/models/daily_spend.dart';
 import 'package:kangal/ui/core/theme.dart';
+import 'package:kangal/ui/core/utils/currency_formatter.dart';
 
 class SpendBarChart extends StatelessWidget {
   final List<DailySpend> dailySpend;
@@ -44,10 +45,6 @@ class SpendBarChart extends StatelessWidget {
                     Theme.of(context).colorScheme.surfaceContainerHighest,
                 getTooltipItem: (group, groupIndex, rod, rodIndex) {
                   final spend = dailySpend[groupIndex];
-                  final formatter = NumberFormat.currency(
-                    symbol: 'Rs. ',
-                    decimalDigits: 0,
-                  );
                   return BarTooltipItem(
                     '${DateFormat('MMM d').format(spend.date)}\n',
                     Theme.of(context).textTheme.bodySmall!.copyWith(
@@ -55,7 +52,7 @@ class SpendBarChart extends StatelessWidget {
                     ),
                     children: <TextSpan>[
                       TextSpan(
-                        text: formatter.format(spend.totalSpent),
+                        text: formatPkr(spend.totalSpent),
                         style: TextStyle(
                           color: AppTheme.expenseColor,
                           fontWeight: FontWeight.w500,

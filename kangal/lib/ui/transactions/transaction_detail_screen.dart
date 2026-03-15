@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:kangal/data/repositories/category_repository.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
 import 'package:kangal/ui/core/theme.dart';
+import 'package:kangal/ui/core/utils/currency_formatter.dart';
 import 'package:kangal/ui/core/widgets/source_badge.dart';
 import 'package:kangal/ui/transactions/transaction_detail_view_model.dart';
 import 'package:provider/provider.dart';
@@ -151,6 +152,19 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
   Widget _buildBody() {
     return Consumer<TransactionDetailViewModel>(
       builder: (context, viewModel, child) {
+        final errorMessage = viewModel.errorMessage;
+        if (errorMessage != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!context.mounted) {
+              return;
+            }
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(errorMessage)));
+            viewModel.clearError();
+          });
+        }
+
         final transaction = viewModel.transaction;
 
         if (viewModel.isLoading && transaction == null) {
@@ -166,12 +180,8 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
           _didSeedNote = true;
         }
 
-        final amountFormatter = NumberFormat.currency(
-          symbol: 'Rs. ',
-          decimalDigits: 2,
-        );
         final signedAmount =
-            '${transaction.amount >= 0 ? '+' : '-'}${amountFormatter.format(transaction.amount.abs())}';
+            '${transaction.amount >= 0 ? '+' : '-'}${formatPkr(transaction.amount.abs())}';
         final amountColor = transaction.amount < 0
             ? AppTheme.expenseColor
             : AppTheme.incomeColor;

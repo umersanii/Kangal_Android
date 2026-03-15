@@ -12,6 +12,7 @@ class TransactionDetailViewModel extends ChangeNotifier {
   List<CategoryModel> categories = [];
   bool isLoading = false;
   bool isDeleting = false;
+  String? errorMessage;
 
   TransactionDetailViewModel({
     required TransactionRepository transactionRepository,
@@ -20,6 +21,7 @@ class TransactionDetailViewModel extends ChangeNotifier {
        _categoryRepository = categoryRepository;
 
   Future<void> loadTransaction(int id) async {
+    errorMessage = null;
     isLoading = true;
     notifyListeners();
 
@@ -31,6 +33,8 @@ class TransactionDetailViewModel extends ChangeNotifier {
 
       transaction = results.first as TransactionModel?;
       categories = results.last as List<CategoryModel>;
+    } catch (_) {
+      errorMessage = 'Failed to load transaction details.';
     } finally {
       isLoading = false;
       notifyListeners();
@@ -41,28 +45,42 @@ class TransactionDetailViewModel extends ChangeNotifier {
     final current = transaction;
     if (current == null) return false;
 
-    final updated = current.copyWith(categoryId: categoryId);
-    final success = await _transactionRepository.updateTransaction(updated);
-    if (success) {
-      transaction = updated;
-      notifyListeners();
-    }
+    errorMessage = null;
+    try {
+      final updated = current.copyWith(categoryId: categoryId);
+      final success = await _transactionRepository.updateTransaction(updated);
+      if (success) {
+        transaction = updated;
+        notifyListeners();
+      }
 
-    return success;
+      return success;
+    } catch (_) {
+      errorMessage = 'Failed to update category.';
+      notifyListeners();
+      return false;
+    }
   }
 
   Future<bool> updateNote(String note) async {
     final current = transaction;
     if (current == null) return false;
 
-    final updated = current.copyWith(note: note);
-    final success = await _transactionRepository.updateTransaction(updated);
-    if (success) {
-      transaction = updated;
-      notifyListeners();
-    }
+    errorMessage = null;
+    try {
+      final updated = current.copyWith(note: note);
+      final success = await _transactionRepository.updateTransaction(updated);
+      if (success) {
+        transaction = updated;
+        notifyListeners();
+      }
 
-    return success;
+      return success;
+    } catch (_) {
+      errorMessage = 'Failed to update note.';
+      notifyListeners();
+      return false;
+    }
   }
 
   Future<bool> deleteTransaction() async {
@@ -71,6 +89,7 @@ class TransactionDetailViewModel extends ChangeNotifier {
 
     if (id == null) return false;
 
+    errorMessage = null;
     isDeleting = true;
     notifyListeners();
 
@@ -81,10 +100,21 @@ class TransactionDetailViewModel extends ChangeNotifier {
         notifyListeners();
         return true;
       }
+      errorMessage = 'Failed to delete transaction.';
+      notifyListeners();
+      return false;
+    } catch (_) {
+      errorMessage = 'Failed to delete transaction.';
+      notifyListeners();
       return false;
     } finally {
       isDeleting = false;
       notifyListeners();
     }
+  }
+
+  void clearError() {
+    errorMessage = null;
+    notifyListeners();
   }
 }

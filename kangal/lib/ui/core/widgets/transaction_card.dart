@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kangal/data/models/transaction_model.dart';
 import 'package:kangal/ui/core/theme.dart';
+import 'package:kangal/ui/core/utils/currency_formatter.dart';
 import 'package:kangal/ui/core/widgets/category_chip.dart';
 import 'package:kangal/ui/core/widgets/source_badge.dart';
 import 'package:provider/provider.dart';
@@ -25,11 +26,7 @@ class TransactionCard extends StatelessWidget {
         ? AppTheme.expenseColor
         : AppTheme.incomeColor;
 
-    final amountFormatter = NumberFormat.currency(
-      symbol: 'Rs. ',
-      decimalDigits: 2,
-    );
-    final amountText = amountFormatter.format(transaction.amount.abs());
+    final amountText = formatPkr(transaction.amount.abs());
 
     final dateFormatter = DateFormat('dd MMM yyyy, hh:mm a');
     final dateText = dateFormatter.format(transaction.date);

@@ -1,17 +1,52 @@
-# kangal
+# Kangal
 
-A new Flutter project.
+Kangal is a local-first personal finance Android app built with Flutter. It ingests HBL SMS and NayaPay email transactions, stores them in a local Drift (SQLite) database, and optionally syncs with Supabase.
 
-## Getting Started
+## Requirements
 
-This project is a starting point for a Flutter application.
+- Flutter SDK: `>=3.24.0` (stable channel recommended)
+- Dart SDK: bundled with Flutter
+- Android SDK (API 26+)
 
-A few resources to get you started if this is your first Flutter project:
+## Setup
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+From the `kangal/` directory:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Install dependencies: `flutter pub get`
+- Regenerate code (Drift/Freezed/JSON): `dart run build_runner build --delete-conflicting-outputs`
+
+## Run
+
+- Start app: `flutter run`
+- Analyze: `flutter analyze`
+- Run tests: `flutter test`
+
+## Architecture
+
+Kangal follows MVVM with `provider` and repository abstractions.
+
+```text
+UI Screens/Widgets
+	|
+	v
+ChangeNotifier ViewModels
+	|
+	v
+Repository Interfaces
+	|
+	v
+Drift Repository Implementations
+	|
+	v
+DAOs (Drift)
+	|
+	v
+SQLite (local source of truth)
+
+Optional cloud path:
+SQLite <-> Sync Repository <-> Supabase
+```
+
+## APK Build
+
+- Release APK: `flutter build apk --release`

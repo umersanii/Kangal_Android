@@ -60,7 +60,7 @@ class _FakeSmsInboxService extends SmsInboxService {
   void Function(SmsMessage)? listener;
 
   @override
-  Future<List<SmsMessage>> getHblMessages({int daysBack = 90}) async =>
+  Future<List<SmsMessage>> getHblMessages({int? daysBack}) async =>
       messages;
 
   @override

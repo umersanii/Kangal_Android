@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:kangal/data/repositories/email_import_repository.dart';
 import 'package:kangal/data/repositories/sync_repository.dart';
 import 'package:kangal/data/services/secure_storage_service.dart';
 import 'package:kangal/data/services/sms_permission_service.dart';
@@ -20,6 +21,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late final SettingsViewModel _viewModel;
   late final SmsPermissionService _smsPermissionService;
   late final SecureStorageService _secureStorageService;
+  late final EmailImportRepository _emailImportRepository;
   bool _isLoadingDataSources = true;
   bool _isSmsPermissionGranted = false;
   bool _isEmailConfigured = false;
@@ -33,6 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
     _smsPermissionService = context.read<SmsPermissionService>();
     _secureStorageService = context.read<SecureStorageService>();
+    _emailImportRepository = context.read<EmailImportRepository>();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _loadStatuses();
     });
@@ -82,6 +85,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
+  Future<void> _refreshEmails() async {
+    try {
+      final importedCount = await _emailImportRepository.importEmails();
+
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Imported $importedCount new email transactions.'),
+        ),
+      );
+      await _loadStatuses();
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Could not connect to Gmail. Check your credentials.'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,6 +119,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
         animation: _viewModel,
         builder: (context, _) {
           final viewModel = _viewModel;
+          final errorMessage = viewModel.errorMessage;
+          if (errorMessage != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!context.mounted) {
+                return;
+              }
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(errorMessage)));
+              viewModel.clearError();
+            });
+          }
+
           final accountStatus = viewModel.isAuthenticated
               ? (viewModel.authenticatedEmail ?? 'Signed in')
               : 'Not signed in';
@@ -209,6 +251,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           await _loadStatuses();
                         }
                       },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: const Icon(Icons.refresh),
+                      title: const Text('Refresh Emails'),
+                      subtitle: const Text('Import latest NayaPay emails now'),
+                      trailing: FilledButton.tonal(
+                        onPressed: _refreshEmails,
+                        child: const Text('Refresh'),
+                      ),
                     ),
                   ],
                 ),

@@ -55,7 +55,7 @@ class EmailSetupViewModel extends ChangeNotifier {
       return success;
     } catch (error) {
       connectionTestResult = false;
-      errorMessage = 'Connection test failed: $error';
+      errorMessage = 'Could not connect to Gmail. Check your credentials.';
       return false;
     } finally {
       isTestingConnection = false;

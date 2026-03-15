@@ -1774,6 +1774,22 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $TransactionsTableTable(this);
   late final $RulesTableTable rulesTable = $RulesTableTable(this);
   late final $SyncLogTableTable syncLogTable = $SyncLogTableTable(this);
+  late final Index idxTransactionsDate = Index(
+    'idx_transactions_date',
+    'CREATE INDEX idx_transactions_date ON transactions_table (date)',
+  );
+  late final Index idxTransactionsSource = Index(
+    'idx_transactions_source',
+    'CREATE INDEX idx_transactions_source ON transactions_table (source)',
+  );
+  late final Index idxTransactionsCategoryId = Index(
+    'idx_transactions_category_id',
+    'CREATE INDEX idx_transactions_category_id ON transactions_table (category_id)',
+  );
+  late final Index idxTransactionsTransactionId = Index(
+    'idx_transactions_transaction_id',
+    'CREATE INDEX idx_transactions_transaction_id ON transactions_table (transaction_id)',
+  );
   late final TransactionsDao transactionsDao = TransactionsDao(
     this as AppDatabase,
   );
@@ -1789,6 +1805,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     transactionsTable,
     rulesTable,
     syncLogTable,
+    idxTransactionsDate,
+    idxTransactionsSource,
+    idxTransactionsCategoryId,
+    idxTransactionsTransactionId,
   ];
 }
 

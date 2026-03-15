@@ -4,8 +4,9 @@ import 'package:kangal/ui/core/widgets/period_selector.dart';
 import 'package:kangal/ui/dashboard/dashboard_view_model.dart';
 
 void main() {
-  testWidgets('PeriodSelector renders correctly and calls onChanged',
-      (WidgetTester tester) async {
+  testWidgets('PeriodSelector renders correctly and calls onChanged', (
+    WidgetTester tester,
+  ) async {
     PeriodPreset? selectedPreset;
 
     await tester.pumpWidget(

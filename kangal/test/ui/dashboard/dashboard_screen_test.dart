@@ -8,6 +8,7 @@ import 'package:kangal/ui/dashboard/dashboard_view_model.dart';
 import 'package:kangal/data/models/daily_spend.dart';
 import 'package:kangal/data/models/category_spend.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
+import 'package:kangal/ui/core/utils/currency_formatter.dart';
 import 'package:kangal/ui/core/widgets/period_selector.dart';
 import 'package:kangal/ui/dashboard/widgets/summary_cards.dart';
 import 'package:kangal/ui/dashboard/widgets/spend_bar_chart.dart';
@@ -21,6 +22,7 @@ void main() {
 
   setUp(() {
     mockViewModel = MockDashboardViewModel();
+    when(mockViewModel.errorMessage).thenReturn(null);
   });
 
   Widget createWidgetUnderTest() {
@@ -78,10 +80,10 @@ void main() {
       // Assert SummaryCards are shown with 4 cards
       expect(find.byType(SummaryCards), findsOneWidget);
       expect(
-        find.text('Rs. 1,000'),
+        find.text(formatPkr(1000.0)),
         findsNWidgets(2),
       ); // total spent and net balance
-      expect(find.text('Rs. 2,000'), findsOneWidget); // total income
+      expect(find.text(formatPkr(2000.0)), findsOneWidget); // total income
       expect(find.text('5'), findsOneWidget); // transaction count
 
       // Assert Charts are shown

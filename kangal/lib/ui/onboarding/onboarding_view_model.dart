@@ -30,6 +30,7 @@ class OnboardingViewModel extends ChangeNotifier {
   bool emailConfigured = false;
   bool supabaseConfigured = false;
   int importedTransactionCount = 0;
+  int? smsImportDaysBack;
   bool isImporting = false;
   String? errorMessage;
 
@@ -37,6 +38,7 @@ class OnboardingViewModel extends ChangeNotifier {
     errorMessage = null;
     smsPermissionGranted = await _smsPermissionService.requestSmsPermission();
     if (!smsPermissionGranted) {
+      errorMessage = 'SMS access required for HBL tracking.';
       notifyListeners();
       return;
     }
@@ -45,10 +47,12 @@ class OnboardingViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final imported = await _smsImportRepository.importHistoricalSms();
+      final imported = await _smsImportRepository.importHistoricalSms(
+        daysBack: smsImportDaysBack,
+      );
       importedTransactionCount += imported;
     } catch (error) {
-      errorMessage = 'Failed to import SMS transactions: $error';
+      errorMessage = 'Failed to import SMS transactions.';
     } finally {
       isImporting = false;
       notifyListeners();
@@ -76,7 +80,7 @@ class OnboardingViewModel extends ChangeNotifier {
       return true;
     } catch (error) {
       emailConfigured = false;
-      errorMessage = 'Failed to set up email: $error';
+      errorMessage = 'Could not connect to Gmail. Check your credentials.';
       return false;
     } finally {
       isImporting = false;
@@ -96,6 +100,11 @@ class OnboardingViewModel extends ChangeNotifier {
 
   void setSupabaseConfigured(bool configured) {
     supabaseConfigured = configured;
+    notifyListeners();
+  }
+
+  void setSmsImportDaysBack(int? daysBack) {
+    smsImportDaysBack = daysBack;
     notifyListeners();
   }
 

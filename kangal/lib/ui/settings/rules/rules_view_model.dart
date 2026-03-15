@@ -14,9 +14,9 @@ class RulesViewModel extends ChangeNotifier {
     required RuleRepository ruleRepository,
     required CategoryRepository categoryRepository,
     required TransactionRepository transactionRepository,
-  })  : _ruleRepository = ruleRepository,
-        _categoryRepository = categoryRepository,
-        _transactionRepository = transactionRepository;
+  }) : _ruleRepository = ruleRepository,
+       _categoryRepository = categoryRepository,
+       _transactionRepository = transactionRepository;
 
   List<RuleModel> _rules = [];
   List<RuleModel> get rules => _rules;
@@ -117,8 +117,11 @@ class RulesViewModel extends ChangeNotifier {
     try {
       // Basic implementation for bulk apply
       // Iterates all transactions and applies keyword matching
-      final transactions = await _transactionRepository.getAllTransactions(10000, 0);
-      
+      final transactions = await _transactionRepository.getAllTransactions(
+        10000,
+        0,
+      );
+
       for (final tx in transactions) {
         if (tx.beneficiary == null || tx.beneficiary!.isEmpty) continue;
 
@@ -138,7 +141,6 @@ class RulesViewModel extends ChangeNotifier {
           updatedCount++;
         }
       }
-
     } catch (e) {
       _errorMessage = 'Failed to apply rules: $e';
     } finally {
@@ -146,7 +148,7 @@ class RulesViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
-    
+
     return updatedCount;
   }
 }

@@ -115,6 +115,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       description:
                           'Grant SMS permission to read HBL transaction alerts automatically.',
                       children: [
+                        const Text('Import range'),
+                        const SizedBox(height: 8),
+                        RadioListTile<int?>(
+                          value: null,
+                          groupValue: _viewModel.smsImportDaysBack,
+                          onChanged: (value) {
+                            _viewModel.setSmsImportDaysBack(value);
+                          },
+                          title: const Text('All SMS history'),
+                        ),
+                        RadioListTile<int?>(
+                          value: 90,
+                          groupValue: _viewModel.smsImportDaysBack,
+                          onChanged: (value) {
+                            _viewModel.setSmsImportDaysBack(value);
+                          },
+                          title: const Text('Last 90 days'),
+                        ),
+                        const SizedBox(height: 8),
                         FilledButton(
                           onPressed: _viewModel.isImporting
                               ? null

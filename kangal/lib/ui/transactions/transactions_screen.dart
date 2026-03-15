@@ -160,6 +160,19 @@ class _TransactionsScreenBodyState extends State<_TransactionsScreenBody> {
   Widget build(BuildContext context) {
     return Consumer<TransactionsViewModel>(
       builder: (context, viewModel, child) {
+        final errorMessage = viewModel.errorMessage;
+        if (errorMessage != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!context.mounted) {
+              return;
+            }
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(errorMessage)));
+            viewModel.clearError();
+          });
+        }
+
         final isInitialLoading =
             viewModel.isLoading && viewModel.transactions.isEmpty;
         final isLoadingMore =
@@ -199,24 +212,28 @@ class _TransactionsScreenBodyState extends State<_TransactionsScreenBody> {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   children: [
                     FilterChip(
+                      tooltip: 'Filter all sources',
                       label: const Text('All'),
                       selected: viewModel.sourceFilter == null,
                       onSelected: (_) => viewModel.setSourceFilter(null),
                     ),
                     const SizedBox(width: 8),
                     FilterChip(
+                      tooltip: 'Filter HBL transactions',
                       label: const Text('HBL'),
                       selected: viewModel.sourceFilter == 'HBL',
                       onSelected: (_) => viewModel.setSourceFilter('HBL'),
                     ),
                     const SizedBox(width: 8),
                     FilterChip(
+                      tooltip: 'Filter NayaPay transactions',
                       label: const Text('NayaPay'),
                       selected: viewModel.sourceFilter == 'NayaPay',
                       onSelected: (_) => viewModel.setSourceFilter('NayaPay'),
                     ),
                     const SizedBox(width: 8),
                     FilterChip(
+                      tooltip: 'Filter Cash transactions',
                       label: const Text('Cash'),
                       selected: viewModel.sourceFilter == 'Cash',
                       onSelected: (_) => viewModel.setSourceFilter('Cash'),
@@ -253,35 +270,41 @@ class _TransactionsScreenBodyState extends State<_TransactionsScreenBody> {
                     ? const Center(child: CircularProgressIndicator())
                     : viewModel.transactions.isEmpty
                     ? const Center(child: Text('No transactions found.'))
-                    : ListView.builder(
-                        controller: _scrollController,
-                        itemCount: viewModel.transactions.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index >= viewModel.transactions.length) {
-                            return isLoadingMore
-                                ? const Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 16),
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  )
-                                : const SizedBox(height: 16);
-                          }
+                    : RefreshIndicator(
+                        onRefresh: viewModel.loadTransactions,
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          itemCount: viewModel.transactions.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index >= viewModel.transactions.length) {
+                              return isLoadingMore
+                                  ? const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 16,
+                                      ),
+                                      child: Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    )
+                                  : const SizedBox(height: 16);
+                            }
 
-                          final transaction = viewModel.transactions[index];
+                            final transaction = viewModel.transactions[index];
 
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 4,
-                            ),
-                            child: TransactionCard(
-                              transaction: transaction,
-                              onTap: () =>
-                                  _openTransactionDetail(transaction.id),
-                            ),
-                          );
-                        },
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 4,
+                              ),
+                              child: TransactionCard(
+                                transaction: transaction,
+                                onTap: () =>
+                                    _openTransactionDetail(transaction.id),
+                              ),
+                            );
+                          },
+                        ),
                       ),
               ),
             ],

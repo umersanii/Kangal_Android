@@ -8,10 +8,13 @@ class CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Chip(
-      label: Text('$emoji $name', style: const TextStyle(fontSize: 12)),
-      visualDensity: VisualDensity.compact,
-      padding: EdgeInsets.zero,
+    return Semantics(
+      label: 'Category: $name',
+      child: Chip(
+        label: Text('$emoji $name', style: const TextStyle(fontSize: 12)),
+        visualDensity: VisualDensity.compact,
+        padding: EdgeInsets.zero,
+      ),
     );
   }
 }

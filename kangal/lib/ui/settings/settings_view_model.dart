@@ -20,19 +20,23 @@ class SettingsViewModel extends ChangeNotifier {
   bool isAuthenticated = false;
   String? authenticatedEmail;
   SyncResult? lastSyncResult;
+  String? errorMessage;
 
   Future<void> loadSyncStatus() async {
+    errorMessage = null;
     try {
       lastSyncTime = await _syncRepository.getLastSyncTime();
       unsyncedChangesCount = await _syncRepository.getUnsyncedChangesCount();
       hasUnsyncedChanges = unsyncedChangesCount > 0;
       notifyListeners();
     } catch (_) {
+      errorMessage = 'Sync failed. Will retry automatically.';
       notifyListeners();
     }
   }
 
   Future<void> loadAuthStatus() async {
+    errorMessage = null;
     try {
       isAuthenticated = await _supabaseAuthService.isAuthenticated();
       authenticatedEmail = _supabaseAuthService.getCurrentUserEmail();
@@ -45,6 +49,7 @@ class SettingsViewModel extends ChangeNotifier {
   }
 
   Future<void> syncNow() async {
+    errorMessage = null;
     isSyncing = true;
     notifyListeners();
 
@@ -54,16 +59,22 @@ class SettingsViewModel extends ChangeNotifier {
       unsyncedChangesCount = await _syncRepository.getUnsyncedChangesCount();
       hasUnsyncedChanges = unsyncedChangesCount > 0;
     } catch (error) {
+      errorMessage = 'Sync failed. Will retry automatically.';
       lastSyncResult = SyncResult(
         uploaded: 0,
         downloaded: 0,
         conflictsResolved: 0,
         success: false,
-        errorMessage: error.toString(),
+        errorMessage: 'Sync failed. Will retry automatically.',
       );
     } finally {
       isSyncing = false;
       notifyListeners();
     }
+  }
+
+  void clearError() {
+    errorMessage = null;
+    notifyListeners();
   }
 }

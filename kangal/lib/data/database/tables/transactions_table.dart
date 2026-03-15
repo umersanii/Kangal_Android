@@ -1,6 +1,10 @@
 import 'package:drift/drift.dart';
 import 'categories_table.dart';
 
+@TableIndex(name: 'idx_transactions_date', columns: {#date})
+@TableIndex(name: 'idx_transactions_source', columns: {#source})
+@TableIndex(name: 'idx_transactions_category_id', columns: {#categoryId})
+@TableIndex(name: 'idx_transactions_transaction_id', columns: {#transactionId})
 class TransactionsTable extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get remoteId => text().nullable()();

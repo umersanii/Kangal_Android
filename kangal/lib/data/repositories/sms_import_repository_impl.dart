@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 
 import 'package:kangal/data/models/rule_model.dart';
 import 'package:kangal/data/repositories/rule_repository.dart';
@@ -29,16 +30,29 @@ class SmsImportRepositoryImpl implements SmsImportRepository {
        _autoCategorisationService = autoCategorisationService;
 
   @override
-  Future<int> importHistoricalSms() async {
-    final messages = await _smsInboxService.getHblMessages();
+  Future<int> importHistoricalSms({int? daysBack}) async {
+    final messages = await _smsInboxService.getHblMessages(daysBack: daysBack);
     final rules = await _ruleRepository.getAllRules();
 
+    var parsedCount = 0;
+    var duplicateCount = 0;
     var importedCount = 0;
     for (final message in messages) {
-      if (await _importSmsMessage(message, rules)) {
-        importedCount++;
+      final result = await _importSmsMessage(message, rules);
+      if (result == _SmsImportResult.imported) {
+        importedCount += 1;
+      } else if (result == _SmsImportResult.parsedButDuplicate) {
+        parsedCount += 1;
+        duplicateCount += 1;
+      } else if (result == _SmsImportResult.parsedButNotInserted) {
+        parsedCount += 1;
       }
     }
+
+    developer.log(
+      'SMS import summary: fetched=${messages.length}, parsed=${parsedCount + importedCount}, duplicates=$duplicateCount, inserted=$importedCount, daysBack=${daysBack ?? 'all'}',
+      name: 'SmsImportRepository',
+    );
 
     return importedCount;
   }
@@ -50,18 +64,18 @@ class SmsImportRepositoryImpl implements SmsImportRepository {
     });
   }
 
-  Future<bool> _importSmsMessage(
+  Future<_SmsImportResult> _importSmsMessage(
     SmsMessage message,
     List<RuleModel>? preloadedRules,
   ) async {
     final body = message.body;
     if (body == null || body.trim().isEmpty) {
-      return false;
+      return _SmsImportResult.notParsed;
     }
 
     final parsedTransaction = _hblSmsService.parseHblSms(body);
     if (parsedTransaction == null) {
-      return false;
+      return _SmsImportResult.notParsed;
     }
 
     final transactionId = parsedTransaction.transactionId;
@@ -69,7 +83,7 @@ class SmsImportRepositoryImpl implements SmsImportRepository {
       final existing = await _transactionRepository
           .getTransactionByTransactionId(transactionId);
       if (existing != null) {
-        return false;
+        return _SmsImportResult.parsedButDuplicate;
       }
     }
 
@@ -85,6 +99,8 @@ class SmsImportRepositoryImpl implements SmsImportRepository {
     );
 
     await _transactionRepository.insertTransaction(transactionToInsert);
-    return true;
+    return _SmsImportResult.imported;
   }
 }
+
+enum _SmsImportResult { notParsed, parsedButDuplicate, parsedButNotInserted, imported }
