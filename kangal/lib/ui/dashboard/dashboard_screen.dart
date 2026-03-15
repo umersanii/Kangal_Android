@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:kangal/ui/core/widgets/period_selector.dart';
+import 'package:kangal/ui/core/widgets/setup_banner.dart';
 import 'package:kangal/ui/dashboard/dashboard_view_model.dart';
 import 'package:kangal/ui/dashboard/widgets/category_donut_chart.dart';
 import 'package:kangal/ui/dashboard/widgets/spend_bar_chart.dart';
@@ -24,6 +25,7 @@ class DashboardScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const SetupBanner(),
                 PeriodSelector(
                   current: viewModel.selectedPreset,
                   onChanged: (preset) {

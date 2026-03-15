@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kangal/data/models/date_range.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
+import 'package:kangal/ui/core/widgets/setup_banner.dart';
 import 'package:kangal/ui/core/widgets/transaction_card.dart';
 import 'package:kangal/ui/transactions/transaction_detail_screen.dart';
 import 'package:kangal/ui/transactions/transactions_view_model.dart';
@@ -187,6 +188,10 @@ class _TransactionsScreenBodyState extends State<_TransactionsScreenBody> {
           ),
           body: Column(
             children: [
+              const Padding(
+                padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+                child: SetupBanner(),
+              ),
               SizedBox(
                 height: 52,
                 child: ListView(

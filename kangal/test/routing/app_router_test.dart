@@ -1,13 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:kangal/routing/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:kangal/data/repositories/email_import_repository.dart';
+import 'package:kangal/data/repositories/sms_import_repository.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
+import 'package:kangal/data/services/secure_storage_service.dart';
+import 'package:kangal/data/services/sms_permission_service.dart';
 import 'package:kangal/data/models/daily_spend.dart';
 import 'package:kangal/data/models/category_spend.dart';
-import 'package:kangal/data/models/transaction_model.dart';
-import 'package:mockito/mockito.dart';
 
 class FakeTransactionRepository implements TransactionRepository {
   @override
@@ -35,7 +38,55 @@ class FakeTransactionRepository implements TransactionRepository {
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
-  @override Future<int> reassignCategory(int oldCategoryId, int newCategoryId) async => 0;
+  @override
+  Future<int> reassignCategory(int oldCategoryId, int newCategoryId) async => 0;
+}
+
+class _FakeSmsPermissionService extends SmsPermissionService {
+  _FakeSmsPermissionService({required this.granted});
+
+  bool granted;
+
+  @override
+  Future<bool> requestSmsPermission() async => granted;
+
+  @override
+  Future<bool> isSmsPermissionGranted() async => granted;
+}
+
+class _FakeSmsImportRepository implements SmsImportRepository {
+  @override
+  Future<int> importHistoricalSms() async => 0;
+
+  @override
+  void startRealtimeListener() {}
+}
+
+class _FakeEmailImportRepository implements EmailImportRepository {
+  @override
+  Future<int> importEmails() async => 0;
+
+  @override
+  Future<bool> testConnection() async => false;
+}
+
+class _FakeSecureStorageService extends SecureStorageService {}
+
+Widget _buildRouterHost(GoRouter router) {
+  return MultiProvider(
+    providers: [
+      Provider<TransactionRepository>.value(value: FakeTransactionRepository()),
+      Provider<SmsPermissionService>.value(
+        value: _FakeSmsPermissionService(granted: false),
+      ),
+      Provider<SmsImportRepository>.value(value: _FakeSmsImportRepository()),
+      Provider<SecureStorageService>.value(value: _FakeSecureStorageService()),
+      Provider<EmailImportRepository>.value(
+        value: _FakeEmailImportRepository(),
+      ),
+    ],
+    child: MaterialApp.router(routerConfig: router),
+  );
 }
 
 void main() {
@@ -49,12 +100,7 @@ void main() {
 
         final router = await AppRouter.createRouter();
 
-        await tester.pumpWidget(
-          Provider<TransactionRepository>.value(
-            value: FakeTransactionRepository(),
-            child: MaterialApp.router(routerConfig: router),
-          ),
-        );
+        await tester.pumpWidget(_buildRouterHost(router));
         await tester.pumpAndSettle();
 
         expect(find.byType(OnboardingScreen), findsOneWidget);
@@ -69,12 +115,7 @@ void main() {
 
       final router = await AppRouter.createRouter();
 
-      await tester.pumpWidget(
-        Provider<TransactionRepository>.value(
-          value: FakeTransactionRepository(),
-          child: MaterialApp.router(routerConfig: router),
-        ),
-      );
+      await tester.pumpWidget(_buildRouterHost(router));
       await tester.pumpAndSettle();
 
       expect(find.byType(DashboardScreen), findsOneWidget);

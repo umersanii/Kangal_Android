@@ -234,6 +234,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+              const _SectionTitle('Setup'),
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.restart_alt),
+                  title: const Text('Re-run Setup'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push('/onboarding'),
+                ),
+              ),
+              const SizedBox(height: 16),
               const _SectionTitle('About'),
               const Card(
                 child: ListTile(
