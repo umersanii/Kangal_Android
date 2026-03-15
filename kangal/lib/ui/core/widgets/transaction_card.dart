@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kangal/data/models/transaction_model.dart';
 import 'package:kangal/ui/core/theme.dart';
+import 'package:kangal/ui/core/widgets/category_chip.dart';
+import 'package:kangal/ui/core/widgets/source_badge.dart';
 import 'package:provider/provider.dart';
 import 'package:kangal/data/repositories/category_repository.dart';
 import 'package:kangal/data/models/category_model.dart';
@@ -19,13 +21,16 @@ class TransactionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final amountColor = transaction.amount < 0 
-        ? AppTheme.expenseColor 
+    final amountColor = transaction.amount < 0
+        ? AppTheme.expenseColor
         : AppTheme.incomeColor;
-        
-    final amountFormatter = NumberFormat.currency(symbol: 'Rs. ', decimalDigits: 2);
+
+    final amountFormatter = NumberFormat.currency(
+      symbol: 'Rs. ',
+      decimalDigits: 2,
+    );
     final amountText = amountFormatter.format(transaction.amount.abs());
-    
+
     final dateFormatter = DateFormat('dd MMM yyyy, hh:mm a');
     final dateText = dateFormatter.format(transaction.date);
 
@@ -71,16 +76,21 @@ class TransactionCard extends StatelessWidget {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  _SourceBadge(source: transaction.source),
+                  SourceBadge(source: transaction.source),
                   const SizedBox(width: 8),
                   if (transaction.categoryId != null)
                     FutureBuilder<CategoryModel?>(
-                      future: context.read<CategoryRepository>().getCategoryById(transaction.categoryId!),
+                      future: context
+                          .read<CategoryRepository>()
+                          .getCategoryById(transaction.categoryId!),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData || snapshot.data == null) {
                           return const SizedBox.shrink();
                         }
-                        return _CategoryChip(category: snapshot.data!);
+                        return CategoryChip(
+                          emoji: snapshot.data!.emoji,
+                          name: snapshot.data!.name,
+                        );
                       },
                     ),
                 ],
@@ -89,56 +99,6 @@ class TransactionCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _SourceBadge extends StatelessWidget {
-  final String source;
-
-  const _SourceBadge({required this.source});
-
-  @override
-  Widget build(BuildContext context) {
-    Color badgeColor;
-    switch (source.toLowerCase()) {
-      case 'hbl':
-        badgeColor = AppTheme.hblSourceColor;
-        break;
-      case 'nayapay':
-        badgeColor = AppTheme.nayaPaySourceColor;
-        break;
-      default:
-        badgeColor = AppTheme.cashSourceColor;
-    }
-
-    return Chip(
-      label: Text(
-        source,
-        style: const TextStyle(color: Colors.white, fontSize: 12),
-      ),
-      backgroundColor: badgeColor,
-      padding: EdgeInsets.zero,
-      visualDensity: VisualDensity.compact,
-      side: BorderSide.none,
-    );
-  }
-}
-
-class _CategoryChip extends StatelessWidget {
-  final CategoryModel category;
-
-  const _CategoryChip({required this.category});
-
-  @override
-  Widget build(BuildContext context) {
-    return Chip(
-      label: Text(
-        '${category.emoji} ${category.name}',
-        style: const TextStyle(fontSize: 12),
-      ),
-      padding: EdgeInsets.zero,
-      visualDensity: VisualDensity.compact,
     );
   }
 }
