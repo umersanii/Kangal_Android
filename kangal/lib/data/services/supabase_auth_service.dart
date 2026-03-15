@@ -91,8 +91,12 @@ class SupabaseAuthService {
   }
 
   Future<bool> isAuthenticated() async {
-    if (_client.currentUser != null) {
-      return true;
+    try {
+      if (_client.currentUser != null) {
+        return true;
+      }
+    } catch (_) {
+      // Fallback to secure storage if Supabase client is unavailable
     }
 
     final token = await _secureStorageService.getSupabaseToken();
