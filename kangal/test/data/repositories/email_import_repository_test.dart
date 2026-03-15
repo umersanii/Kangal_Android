@@ -90,6 +90,17 @@ class _FakeNayaPayEmailService extends NayaPayEmailService {
 }
 
 class _FakeTransactionRepository implements TransactionRepository {
+  @override
+  Future<List<TransactionModel>> getFilteredTransactions({
+    required int limit,
+    required int offset,
+    String? searchQuery,
+    String? sourceFilter,
+    int? categoryFilter,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async => [];
+
   final List<TransactionModel> inserted = [];
   final Map<String, TransactionModel> _byTransactionId = {};
 

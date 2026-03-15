@@ -14,6 +14,25 @@ class DriftTransactionRepository implements TransactionRepository {
       _dao.getAllTransactions(limit, offset);
 
   @override
+  Future<List<TransactionModel>> getFilteredTransactions({
+    required int limit,
+    required int offset,
+    String? searchQuery,
+    String? sourceFilter,
+    int? categoryFilter,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) => _dao.getFilteredTransactions(
+        limit: limit,
+        offset: offset,
+        searchQuery: searchQuery,
+        sourceFilter: sourceFilter,
+        categoryFilter: categoryFilter,
+        startDate: startDate,
+        endDate: endDate,
+      );
+
+  @override
   Future<TransactionModel?> getTransactionById(int id) =>
       _dao.getTransactionById(id);
 

@@ -5,6 +5,15 @@ import 'package:kangal/data/models/category_spend.dart';
 
 abstract class TransactionRepository {
   Future<List<TransactionModel>> getAllTransactions(int limit, int offset);
+  Future<List<TransactionModel>> getFilteredTransactions({
+    required int limit,
+    required int offset,
+    String? searchQuery,
+    String? sourceFilter,
+    int? categoryFilter,
+    DateTime? startDate,
+    DateTime? endDate,
+  });
   Future<TransactionModel?> getTransactionById(int id);
   Future<TransactionModel?> getTransactionByTransactionId(String txnId);
   Future<int> insertTransaction(TransactionModel transaction);

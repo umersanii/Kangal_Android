@@ -7,6 +7,7 @@ import 'package:kangal/data/services/auto_categorisation_service.dart';
 import 'package:kangal/data/services/nayapay_email_service.dart';
 import 'package:kangal/data/services/secure_storage_service.dart';
 import 'package:kangal/data/services/supabase_auth_service.dart';
+import 'package:kangal/data/services/supabase_initializer.dart';
 import 'package:kangal/data/services/supabase_sync_service.dart';
 
 /// Service to configure and manage background email sync tasks.
@@ -100,6 +101,8 @@ void callbackDispatcher() {
       }
 
       if (taskName == BackgroundSyncService.supabaseSyncTask) {
+        await SupabaseInitializer.initializeIfConfigured();
+
         final authService = SupabaseAuthService();
         final isAuthenticated = await authService.isAuthenticated();
         if (!isAuthenticated) {

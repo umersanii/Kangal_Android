@@ -152,7 +152,7 @@ class SpendBarChart extends StatelessWidget {
               getDrawingHorizontalLine: (value) => FlLine(
                 color: Theme.of(
                   context,
-                ).colorScheme.outlineVariant.withOpacity(0.5),
+                ).colorScheme.outlineVariant.withValues(alpha: 0.5),
                 strokeWidth: 1,
                 dashArray: [5, 5],
               ),

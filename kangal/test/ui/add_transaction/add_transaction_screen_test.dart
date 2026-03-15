@@ -25,7 +25,10 @@ class FakeTransactionRepository implements TransactionRepository {
   Future<int> deleteTransaction(int id) async => 1;
 
   @override
-  Future<List<TransactionModel>> getAllTransactions(int limit, int offset) async => [];
+  Future<List<TransactionModel>> getAllTransactions(
+    int limit,
+    int offset,
+  ) async => [];
 
   @override
   Future<List<TransactionModel>> getFilteredTransactions({
@@ -42,13 +45,18 @@ class FakeTransactionRepository implements TransactionRepository {
   Future<TransactionModel?> getTransactionById(int id) async => null;
 
   @override
-  Future<TransactionModel?> getTransactionByTransactionId(String txnId) async => null;
+  Future<TransactionModel?> getTransactionByTransactionId(String txnId) async =>
+      null;
 
   @override
-  Future<List<TransactionModel>> getTransactionsByDateRange(DateTime start, DateTime end) async => [];
+  Future<List<TransactionModel>> getTransactionsByDateRange(
+    DateTime start,
+    DateTime end,
+  ) async => [];
 
   @override
-  Future<List<TransactionModel>> getTransactionsBySource(String source) async => [];
+  Future<List<TransactionModel>> getTransactionsBySource(String source) async =>
+      [];
 
   @override
   Future<List<TransactionModel>> getUnsyncedTransactions() async => [];
@@ -60,13 +68,22 @@ class FakeTransactionRepository implements TransactionRepository {
   Future<bool> updateTransaction(TransactionModel transaction) async => true;
 
   @override
-  Future<List<CategorySpend>> getCategorySpend(DateTime startDate, DateTime endDate) async => [];
+  Future<List<CategorySpend>> getCategorySpend(
+    DateTime startDate,
+    DateTime endDate,
+  ) async => [];
 
   @override
-  Future<List<DailySpend>> getDailySpend(DateTime startDate, DateTime endDate) async => [];
+  Future<List<DailySpend>> getDailySpend(
+    DateTime startDate,
+    DateTime endDate,
+  ) async => [];
 
   @override
-  Future<TransactionSummary> getSummary(DateTime startDate, DateTime endDate) async {
+  Future<TransactionSummary> getSummary(
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
     return TransactionSummary(
       totalSpent: 0,
       totalIncome: 0,
@@ -82,14 +99,14 @@ class FakeTransactionRepository implements TransactionRepository {
 class FakeCategoryRepository implements CategoryRepository {
   @override
   Future<List<CategoryModel>> getAllCategories() async => const [
-        CategoryModel(
-          id: 1,
-          name: 'Other',
-          emoji: '📦',
-          color: '#95A5A6',
-          isDefault: true,
-        ),
-      ];
+    CategoryModel(
+      id: 1,
+      name: 'Other',
+      emoji: '📦',
+      color: '#95A5A6',
+      isDefault: true,
+    ),
+  ];
 
   @override
   Future<CategoryModel?> getCategoryById(int id) async => null;

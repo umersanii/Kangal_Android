@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kangal/data/models/category_spend.dart';
 import 'package:kangal/data/models/category_model.dart';
+import 'package:kangal/data/models/daily_spend.dart';
 import 'package:kangal/data/models/rule_model.dart';
 import 'package:kangal/data/models/transaction_model.dart';
 import 'package:kangal/data/repositories/category_repository.dart';
@@ -29,6 +31,12 @@ class MockRuleRepository implements RuleRepository {
   }
 
   @override
+  Future<RuleModel?> getRuleById(int id) async {
+    if (throwError) throw Exception('Mock error');
+    return rules.where((r) => r.id == id).firstOrNull;
+  }
+
+  @override
   Future<int> insertRule(RuleModel rule) async {
     if (throwError) throw Exception('Mock error');
     insertCalledCount++;
@@ -38,19 +46,14 @@ class MockRuleRepository implements RuleRepository {
 
   @override
   Future<bool> updateRule(RuleModel rule) async {
-     if (throwError) throw Exception('Mock error');
-     updateCalledCount++;
-     final index = rules.indexWhere((r) => r.id == rule.id);
-     if (index != -1) {
-       rules[index] = rule;
-       return true;
-     }
-     return false;
-  }
-
-  @override
-  Future<void> deleteAllRules() async {
     if (throwError) throw Exception('Mock error');
+    updateCalledCount++;
+    final index = rules.indexWhere((r) => r.id == rule.id);
+    if (index != -1) {
+      rules[index] = rule;
+      return true;
+    }
+    return false;
   }
 }
 
@@ -68,11 +71,7 @@ class MockCategoryRepository implements CategoryRepository {
   @override
   Future<int> insertCategory(CategoryModel category) async => 1;
   @override
-  Future<void> seedDefaultCategories() async {}
-  @override
   Future<bool> updateCategory(CategoryModel category) async => true;
-  @override
-  Future<void> deleteAllCustomCategories() async {}
 }
 
 class MockTransactionRepository implements TransactionRepository {
@@ -83,28 +82,48 @@ class MockTransactionRepository implements TransactionRepository {
   Future<int> deleteTransaction(int id) async => 1;
 
   @override
-  Future<List<TransactionModel>> getAllTransactions(int limit, int offset) async => transactions;
+  Future<List<TransactionModel>> getAllTransactions(
+    int limit,
+    int offset,
+  ) async => transactions;
 
   @override
-  Future<dynamic> getTransactionById(int id) async => null;
+  Future<List<TransactionModel>> getFilteredTransactions({
+    required int limit,
+    required int offset,
+    String? searchQuery,
+    String? sourceFilter,
+    int? categoryFilter,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async => [];
 
   @override
-  Future<dynamic> getTransactionByTransactionId(String transactionId) async => null;
+  Future<TransactionModel?> getTransactionById(int id) async => null;
 
   @override
-  Future<List<dynamic>> getTransactionsByDateRange(DateTime start, DateTime end) async => [];
+  Future<TransactionModel?> getTransactionByTransactionId(
+    String transactionId,
+  ) async => null;
 
   @override
-  Future<List<dynamic>> getTransactionsBySource(String source) async => [];
+  Future<List<TransactionModel>> getTransactionsByDateRange(
+    DateTime start,
+    DateTime end,
+  ) async => [];
 
   @override
-  Future<List<dynamic>> getUnsyncedTransactions() async => [];
+  Future<List<TransactionModel>> getTransactionsBySource(String source) async =>
+      [];
 
   @override
-  Future<int> insertTransaction(dynamic transaction) async => 1;
+  Future<List<TransactionModel>> getUnsyncedTransactions() async => [];
 
   @override
-  Future<List<dynamic>> searchTransactions(String query) async => [];
+  Future<int> insertTransaction(TransactionModel transaction) async => 1;
+
+  @override
+  Future<List<TransactionModel>> searchTransactions(String query) async => [];
 
   @override
   Future<bool> updateTransaction(TransactionModel transaction) async {
@@ -115,13 +134,24 @@ class MockTransactionRepository implements TransactionRepository {
   }
 
   @override
-  Future<dynamic> getCategorySpend(DateTime start, DateTime end) async => [];
+  Future<List<CategorySpend>> getCategorySpend(
+    DateTime start,
+    DateTime end,
+  ) async => [];
 
   @override
-  Future<dynamic> getDailySpend(DateTime start, DateTime end) async => [];
+  Future<List<DailySpend>> getDailySpend(DateTime start, DateTime end) async =>
+      [];
 
   @override
-  Future<dynamic> getSummary(DateTime start, DateTime end) async => throw UnimplementedError();
+  Future<TransactionSummary> getSummary(DateTime start, DateTime end) async {
+    return TransactionSummary(
+      totalSpent: 0,
+      totalIncome: 0,
+      netBalance: 0,
+      transactionCount: 0,
+    );
+  }
 
   @override
   Future<int> reassignCategory(int oldCategoryId, int newCategoryId) async => 1;
@@ -137,7 +167,7 @@ void main() {
     mockRuleRepository = MockRuleRepository();
     mockCategoryRepository = MockCategoryRepository();
     mockTransactionRepository = MockTransactionRepository();
-    
+
     viewModel = RulesViewModel(
       ruleRepository: mockRuleRepository,
       categoryRepository: mockCategoryRepository,
@@ -147,11 +177,21 @@ void main() {
 
   group('RulesViewModel', () {
     test('loadRules populates rules and categories', () async {
-      mockRuleRepository.rules = [const RuleModel(id: 1, keyword: 'netflix', categoryId: 2)];
-      mockCategoryRepository.categories = [const CategoryModel(id: 2, name: 'Entertainment', emoji: '🎥', color: '#111111', isDefault: true)];
-      
+      mockRuleRepository.rules = [
+        const RuleModel(id: 1, keyword: 'netflix', categoryId: 2),
+      ];
+      mockCategoryRepository.categories = [
+        const CategoryModel(
+          id: 2,
+          name: 'Entertainment',
+          emoji: '🎥',
+          color: '#111111',
+          isDefault: true,
+        ),
+      ];
+
       await viewModel.loadRules();
-      
+
       expect(viewModel.rules.length, 1);
       expect(viewModel.categories.length, 1);
       expect(viewModel.isLoading, false);
@@ -160,29 +200,33 @@ void main() {
 
     test('addRule calls repository and reloads', () async {
       await viewModel.addRule('spotify', 2);
-      
+
       expect(mockRuleRepository.insertCalledCount, 1);
       expect(viewModel.rules.length, 1);
       expect(viewModel.rules.first.keyword, 'spotify');
     });
 
     test('updateRule calls repository and reloads', () async {
-      mockRuleRepository.rules = [const RuleModel(id: 1, keyword: 'netflix', categoryId: 2)];
+      mockRuleRepository.rules = [
+        const RuleModel(id: 1, keyword: 'netflix', categoryId: 2),
+      ];
       await viewModel.loadRules();
 
       await viewModel.updateRule(1, 'netflix inc', 3);
-      
+
       expect(mockRuleRepository.updateCalledCount, 1);
       expect(viewModel.rules.first.keyword, 'netflix inc');
       expect(viewModel.rules.first.categoryId, 3);
     });
 
     test('deleteRule calls repository and reloads', () async {
-      mockRuleRepository.rules = [const RuleModel(id: 1, keyword: 'netflix', categoryId: 2)];
+      mockRuleRepository.rules = [
+        const RuleModel(id: 1, keyword: 'netflix', categoryId: 2),
+      ];
       await viewModel.loadRules();
 
       final result = await viewModel.deleteRule(1);
-      
+
       expect(result, true);
       expect(mockRuleRepository.deleteCalledWithId, 1);
       expect(viewModel.rules.length, 0);
@@ -190,21 +234,61 @@ void main() {
 
     test('applyRulesToAllTransactions bulk applies correctly', () async {
       mockRuleRepository.rules = [
-        const RuleModel(id: 1, keyword: 'netflix', categoryId: 2), // Entertainment
+        const RuleModel(
+          id: 1,
+          keyword: 'netflix',
+          categoryId: 2,
+        ), // Entertainment
         const RuleModel(id: 2, keyword: 'uber', categoryId: 3), // Transport
       ];
-      
-      final tx1 = TransactionModel(id: 1, date: DateTime.now(), amount: -100, source: 'Cash', updatedAt: DateTime.now(), createdAt: DateTime.now(), beneficiary: 'Netflix', categoryId: 1); // Old cat
-      final tx2 = TransactionModel(id: 2, date: DateTime.now(), amount: -100, source: 'Cash', updatedAt: DateTime.now(), createdAt: DateTime.now(), beneficiary: 'Uber Trip', categoryId: 1); // Old cat
-      final tx3 = TransactionModel(id: 3, date: DateTime.now(), amount: -100, source: 'Cash', updatedAt: DateTime.now(), createdAt: DateTime.now(), beneficiary: 'Unknown', categoryId: 1); // No match
-      final tx4 = TransactionModel(id: 4, date: DateTime.now(), amount: -100, source: 'Cash', updatedAt: DateTime.now(), createdAt: DateTime.now(), beneficiary: 'Netflix', categoryId: 2); // Already correct
-      
+
+      final tx1 = TransactionModel(
+        id: 1,
+        date: DateTime.now(),
+        amount: -100,
+        source: 'Cash',
+        updatedAt: DateTime.now(),
+        createdAt: DateTime.now(),
+        beneficiary: 'Netflix',
+        categoryId: 1,
+      ); // Old cat
+      final tx2 = TransactionModel(
+        id: 2,
+        date: DateTime.now(),
+        amount: -100,
+        source: 'Cash',
+        updatedAt: DateTime.now(),
+        createdAt: DateTime.now(),
+        beneficiary: 'Uber Trip',
+        categoryId: 1,
+      ); // Old cat
+      final tx3 = TransactionModel(
+        id: 3,
+        date: DateTime.now(),
+        amount: -100,
+        source: 'Cash',
+        updatedAt: DateTime.now(),
+        createdAt: DateTime.now(),
+        beneficiary: 'Unknown',
+        categoryId: 1,
+      ); // No match
+      final tx4 = TransactionModel(
+        id: 4,
+        date: DateTime.now(),
+        amount: -100,
+        source: 'Cash',
+        updatedAt: DateTime.now(),
+        createdAt: DateTime.now(),
+        beneficiary: 'Netflix',
+        categoryId: 2,
+      ); // Already correct
+
       mockTransactionRepository.transactions = [tx1, tx2, tx3, tx4];
-      
+
       await viewModel.loadRules(); // Load rules into VM state
-      
+
       final updatedCount = await viewModel.applyRulesToAllTransactions();
-      
+
       expect(updatedCount, 2); // Only tx1 and tx2 should be updated
       expect(mockTransactionRepository.updateCalledCount, 2);
     });

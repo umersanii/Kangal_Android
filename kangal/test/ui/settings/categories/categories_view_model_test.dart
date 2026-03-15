@@ -1,5 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kangal/data/models/category_spend.dart';
 import 'package:kangal/data/models/category_model.dart';
+import 'package:kangal/data/models/daily_spend.dart';
+import 'package:kangal/data/models/transaction_model.dart';
 import 'package:kangal/data/repositories/category_repository.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
 import 'package:kangal/ui/settings/categories/categories_view_model.dart';
@@ -46,25 +49,15 @@ class MockCategoryRepository implements CategoryRepository {
   }
 
   @override
-  Future<void> seedDefaultCategories() async {
-     if (throwError) throw Exception('Mock error');
-  }
-
-  @override
   Future<bool> updateCategory(CategoryModel category) async {
-     if (throwError) throw Exception('Mock error');
-     updateCalledCount++;
-     final index = categories.indexWhere((c) => c.id == category.id);
-     if (index != -1) {
-       categories[index] = category;
-       return true;
-     }
-     return false;
-  }
-
-  @override
-  Future<void> deleteAllCustomCategories() async {
     if (throwError) throw Exception('Mock error');
+    updateCalledCount++;
+    final index = categories.indexWhere((c) => c.id == category.id);
+    if (index != -1) {
+      categories[index] = category;
+      return true;
+    }
+    return false;
   }
 }
 
@@ -76,40 +69,71 @@ class MockTransactionRepository implements TransactionRepository {
   Future<int> deleteTransaction(int id) async => 1;
 
   @override
-  Future<List<dynamic>> getAllTransactions(int limit, int offset) async => [];
+  Future<List<TransactionModel>> getAllTransactions(
+    int limit,
+    int offset,
+  ) async => [];
 
   @override
-  Future<dynamic> getTransactionById(int id) async => null;
+  Future<List<TransactionModel>> getFilteredTransactions({
+    required int limit,
+    required int offset,
+    String? searchQuery,
+    String? sourceFilter,
+    int? categoryFilter,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async => [];
 
   @override
-  Future<dynamic> getTransactionByTransactionId(String transactionId) async => null;
+  Future<TransactionModel?> getTransactionById(int id) async => null;
 
   @override
-  Future<List<dynamic>> getTransactionsByDateRange(DateTime start, DateTime end) async => [];
+  Future<TransactionModel?> getTransactionByTransactionId(
+    String transactionId,
+  ) async => null;
 
   @override
-  Future<List<dynamic>> getTransactionsBySource(String source) async => [];
+  Future<List<TransactionModel>> getTransactionsByDateRange(
+    DateTime start,
+    DateTime end,
+  ) async => [];
 
   @override
-  Future<List<dynamic>> getUnsyncedTransactions() async => [];
+  Future<List<TransactionModel>> getTransactionsBySource(String source) async =>
+      [];
 
   @override
-  Future<int> insertTransaction(dynamic transaction) async => 1;
+  Future<List<TransactionModel>> getUnsyncedTransactions() async => [];
 
   @override
-  Future<List<dynamic>> searchTransactions(String query) async => [];
+  Future<int> insertTransaction(TransactionModel transaction) async => 1;
 
   @override
-  Future<bool> updateTransaction(dynamic transaction) async => true;
+  Future<List<TransactionModel>> searchTransactions(String query) async => [];
 
   @override
-  Future<dynamic> getCategorySpend(DateTime start, DateTime end) async => [];
+  Future<bool> updateTransaction(TransactionModel transaction) async => true;
 
   @override
-  Future<dynamic> getDailySpend(DateTime start, DateTime end) async => [];
+  Future<List<CategorySpend>> getCategorySpend(
+    DateTime start,
+    DateTime end,
+  ) async => [];
 
   @override
-  Future<dynamic> getSummary(DateTime start, DateTime end) async => throw UnimplementedError();
+  Future<List<DailySpend>> getDailySpend(DateTime start, DateTime end) async =>
+      [];
+
+  @override
+  Future<TransactionSummary> getSummary(DateTime start, DateTime end) async {
+    return TransactionSummary(
+      totalSpent: 0,
+      totalIncome: 0,
+      netBalance: 0,
+      transactionCount: 0,
+    );
+  }
 
   @override
   Future<int> reassignCategory(int oldCategoryId, int newCategoryId) async {
@@ -124,9 +148,27 @@ void main() {
   late MockCategoryRepository mockCategoryRepository;
   late MockTransactionRepository mockTransactionRepository;
 
-  final customCategory = const CategoryModel(id: 1, name: 'Custom', emoji: '🌟', color: '#111111', isDefault: false);
-  final defaultCategoryOther = const CategoryModel(id: 2, name: 'Other', emoji: '📦', color: '#95A5A6', isDefault: true);
-  final defaultCategoryFood = const CategoryModel(id: 3, name: 'Food', emoji: '🍕', color: '#FF5733', isDefault: true);
+  final customCategory = const CategoryModel(
+    id: 1,
+    name: 'Custom',
+    emoji: '🌟',
+    color: '#111111',
+    isDefault: false,
+  );
+  final defaultCategoryOther = const CategoryModel(
+    id: 2,
+    name: 'Other',
+    emoji: '📦',
+    color: '#95A5A6',
+    isDefault: true,
+  );
+  final defaultCategoryFood = const CategoryModel(
+    id: 3,
+    name: 'Food',
+    emoji: '🍕',
+    color: '#FF5733',
+    isDefault: true,
+  );
 
   setUp(() {
     mockCategoryRepository = MockCategoryRepository();
@@ -139,10 +181,13 @@ void main() {
 
   group('CategoriesViewModel', () {
     test('loadCategories populates categories list', () async {
-      mockCategoryRepository.categories = [customCategory, defaultCategoryOther];
-      
+      mockCategoryRepository.categories = [
+        customCategory,
+        defaultCategoryOther,
+      ];
+
       await viewModel.loadCategories();
-      
+
       expect(viewModel.categories.length, 2);
       expect(viewModel.isLoading, false);
       expect(viewModel.errorMessage, isNull);
@@ -150,7 +195,7 @@ void main() {
 
     test('addCategory calls repository and reloads', () async {
       await viewModel.addCategory('NewCat', '😺', '#000000');
-      
+
       expect(mockCategoryRepository.insertCalledCount, 1);
       expect(viewModel.categories.length, 1);
       expect(viewModel.categories.first.name, 'NewCat');
@@ -161,7 +206,7 @@ void main() {
       await viewModel.loadCategories();
 
       await viewModel.updateCategory(1, 'Updated', '🌟', '#111111');
-      
+
       expect(mockCategoryRepository.updateCalledCount, 1);
       expect(viewModel.categories.first.name, 'Updated');
     });
@@ -171,31 +216,45 @@ void main() {
       await viewModel.loadCategories();
 
       final result = await viewModel.deleteCategory(3);
-      
+
       expect(result, false);
-      expect(viewModel.errorMessage, contains('Cannot delete a default category'));
+      expect(
+        viewModel.errorMessage,
+        contains('Cannot delete a default category'),
+      );
       expect(mockCategoryRepository.deleteCalledWithId, -1); // not called
     });
 
-    test('deleteCategory reassigns to Other and deletes custom category', () async {
-      mockCategoryRepository.categories = [customCategory, defaultCategoryOther];
-      await viewModel.loadCategories();
+    test(
+      'deleteCategory reassigns to Other and deletes custom category',
+      () async {
+        mockCategoryRepository.categories = [
+          customCategory,
+          defaultCategoryOther,
+        ];
+        await viewModel.loadCategories();
 
-      final result = await viewModel.deleteCategory(1);
-      
-      expect(result, true);
-      expect(mockTransactionRepository.reassignOldId, 1);
-      expect(mockTransactionRepository.reassignNewId, 2); // 'Other' category ID
-      expect(mockCategoryRepository.deleteCalledWithId, 1);
-      expect(viewModel.categories.length, 1); // Only 'Other' remains
-    });
-    
+        final result = await viewModel.deleteCategory(1);
+
+        expect(result, true);
+        expect(mockTransactionRepository.reassignOldId, 1);
+        expect(
+          mockTransactionRepository.reassignNewId,
+          2,
+        ); // 'Other' category ID
+        expect(mockCategoryRepository.deleteCalledWithId, 1);
+        expect(viewModel.categories.length, 1); // Only 'Other' remains
+      },
+    );
+
     test('deleteCategory fails if Other category is not found', () async {
-      mockCategoryRepository.categories = [customCategory]; // Note: missing 'Other'
+      mockCategoryRepository.categories = [
+        customCategory,
+      ]; // Note: missing 'Other'
       await viewModel.loadCategories();
 
       final result = await viewModel.deleteCategory(1);
-      
+
       expect(result, false);
       expect(viewModel.errorMessage, contains('Other'));
       expect(mockCategoryRepository.deleteCalledWithId, -1);

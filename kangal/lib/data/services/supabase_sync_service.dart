@@ -92,7 +92,9 @@ class SupabaseSyncService {
   final RulesDao _rulesDao;
   final SyncLogDao _syncLogDao;
   final SupabaseAuthService _authService;
-  final SupabaseSyncRemoteDataSource _remote;
+  final SupabaseClient? _supabaseClient;
+  final SupabaseSyncRemoteDataSource? _providedRemoteDataSource;
+  SupabaseSyncRemoteDataSource? _resolvedRemoteDataSource;
 
   SupabaseSyncService({
     required TransactionsDao transactionsDao,
@@ -107,11 +109,17 @@ class SupabaseSyncService {
        _rulesDao = rulesDao,
        _syncLogDao = syncLogDao,
        _authService = authService ?? SupabaseAuthService(),
-       _remote =
-           remoteDataSource ??
-           SupabaseSyncRemoteDataSourceAdapter(
-             supabaseClient ?? Supabase.instance.client,
-           );
+       _supabaseClient = supabaseClient,
+       _providedRemoteDataSource = remoteDataSource;
+
+  SupabaseSyncRemoteDataSource get _remote {
+    if (_providedRemoteDataSource != null) {
+      return _providedRemoteDataSource;
+    }
+    return _resolvedRemoteDataSource ??= SupabaseSyncRemoteDataSourceAdapter(
+      _supabaseClient ?? Supabase.instance.client,
+    );
+  }
 
   Future<SyncResult> syncAll() async {
     try {

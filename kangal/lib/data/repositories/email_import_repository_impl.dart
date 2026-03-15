@@ -1,5 +1,3 @@
-import 'package:kangal/data/models/rule_model.dart';
-import 'package:kangal/data/models/transaction_model.dart';
 import 'package:kangal/data/repositories/email_import_repository.dart';
 import 'package:kangal/data/repositories/rule_repository.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
@@ -16,10 +14,8 @@ abstract class ImapServiceInterface {
   Future<bool> testConnection();
 }
 
-typedef ImapServiceFactory = ImapServiceInterface Function(
-  String email,
-  String appPassword,
-);
+typedef ImapServiceFactory =
+    ImapServiceInterface Function(String email, String appPassword);
 
 ImapServiceInterface _defaultImapServiceFactory(
   String email,
@@ -64,12 +60,12 @@ class EmailImportRepositoryImpl implements EmailImportRepository {
     required SecureStorageService secureStorageService,
     required AutoCategorisationService autoCategorisationService,
     ImapServiceFactory? imapServiceFactory,
-  })  : _nayaPayEmailService = nayaPayEmailService,
-        _transactionRepository = transactionRepository,
-        _ruleRepository = ruleRepository,
-        _secureStorageService = secureStorageService,
-        _autoCategorisationService = autoCategorisationService,
-        _imapServiceFactory = imapServiceFactory ?? _defaultImapServiceFactory;
+  }) : _nayaPayEmailService = nayaPayEmailService,
+       _transactionRepository = transactionRepository,
+       _ruleRepository = ruleRepository,
+       _secureStorageService = secureStorageService,
+       _autoCategorisationService = autoCategorisationService,
+       _imapServiceFactory = imapServiceFactory ?? _defaultImapServiceFactory;
 
   @override
   Future<int> importEmails() async {
@@ -105,7 +101,12 @@ class EmailImportRepositoryImpl implements EmailImportRepository {
           }
         }
 
-        final categoryId = _autoCategorisationService.applyCategoryRules(parsedTransaction, rules) ?? parsedTransaction.categoryId;
+        final categoryId =
+            _autoCategorisationService.applyCategoryRules(
+              parsedTransaction,
+              rules,
+            ) ??
+            parsedTransaction.categoryId;
         final transactionToInsert = parsedTransaction.copyWith(
           categoryId: categoryId,
         );

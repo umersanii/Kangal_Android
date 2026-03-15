@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:kangal/data/models/category_model.dart';
 import 'categories_view_model.dart';
-import 'package:kangal/data/repositories/transaction_repository.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -28,11 +27,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   }
 
   void _showDeleteConfirmation(CategoryModel category) async {
-    final transactionRepository = context.read<TransactionRepository>();
-    // Wait, the task says "showing count of transactions that will be reassigned".
-    // We need a way to get the count, but we might not have a direct method for getting count of transactions by category.
-    // Let's just say "transactions" if we don't have it, or fetch it if we can.
-    
     showDialog(
       context: context,
       builder: (context) {
@@ -63,9 +57,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Categories'),
-      ),
+      appBar: AppBar(title: const Text('Categories')),
       body: Consumer<CategoriesViewModel>(
         builder: (context, viewModel, child) {
           if (viewModel.isLoading && viewModel.categories.isEmpty) {
@@ -80,7 +72,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             itemCount: viewModel.categories.length,
             itemBuilder: (context, index) {
               final category = viewModel.categories[index];
-              final color = Color(int.parse(category.color.replaceFirst('#', '0xFF')));
+              final color = Color(
+                int.parse(category.color.replaceFirst('#', '0xFF')),
+              );
 
               return ListTile(
                 leading: CircleAvatar(
@@ -98,7 +92,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             onPressed: () => _showAddEditDialog(category),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.delete, size: 20, color: Colors.red),
+                            icon: const Icon(
+                              Icons.delete,
+                              size: 20,
+                              color: Colors.red,
+                            ),
                             onPressed: () => _showDeleteConfirmation(category),
                           ),
                         ],
@@ -132,16 +130,27 @@ class _CategoryDialogState extends State<_CategoryDialog> {
   late String _selectedColor;
 
   static const List<String> _presetColors = [
-    '#FF5733', '#3498DB', '#F1C40F', '#9B59B6', 
-    '#2ECC71', '#1ABC9C', '#E74C3C', '#27AE60', 
-    '#8E44AD', '#95A5A6', '#E67E22', '#34495E'
+    '#FF5733',
+    '#3498DB',
+    '#F1C40F',
+    '#9B59B6',
+    '#2ECC71',
+    '#1ABC9C',
+    '#E74C3C',
+    '#27AE60',
+    '#8E44AD',
+    '#95A5A6',
+    '#E67E22',
+    '#34495E',
   ];
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.category?.name ?? '');
-    _emojiController = TextEditingController(text: widget.category?.emoji ?? '📁');
+    _emojiController = TextEditingController(
+      text: widget.category?.emoji ?? '📁',
+    );
     _selectedColor = widget.category?.color ?? _presetColors.first;
   }
 
@@ -156,7 +165,7 @@ class _CategoryDialogState extends State<_CategoryDialog> {
     if (_formKey.currentState!.validate()) {
       final viewModel = context.read<CategoriesViewModel>();
       final isUpdating = widget.category != null;
-      
+
       bool success = false;
       if (isUpdating) {
         success = await viewModel.updateCategory(
@@ -177,7 +186,9 @@ class _CategoryDialogState extends State<_CategoryDialog> {
         Navigator.pop(context);
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(viewModel.errorMessage ?? 'An error occurred')),
+          SnackBar(
+            content: Text(viewModel.errorMessage ?? 'An error occurred'),
+          ),
         );
       }
     }
@@ -225,13 +236,18 @@ class _CategoryDialogState extends State<_CategoryDialog> {
                 ],
               ),
               const SizedBox(height: 24),
-              const Text('Color', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                'Color',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
                 children: _presetColors.map((colorHex) {
-                  final color = Color(int.parse(colorHex.replaceFirst('#', '0xFF')));
+                  final color = Color(
+                    int.parse(colorHex.replaceFirst('#', '0xFF')),
+                  );
                   final isSelected = _selectedColor == colorHex;
 
                   return GestureDetector(
@@ -266,10 +282,7 @@ class _CategoryDialogState extends State<_CategoryDialog> {
           onPressed: () => Navigator.pop(context),
           child: const Text('CANCEL'),
         ),
-        ElevatedButton(
-          onPressed: _save,
-          child: const Text('SAVE'),
-        ),
+        ElevatedButton(onPressed: _save, child: const Text('SAVE')),
       ],
     );
   }

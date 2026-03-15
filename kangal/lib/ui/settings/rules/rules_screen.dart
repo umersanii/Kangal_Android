@@ -23,7 +23,7 @@ class _RulesScreenState extends State<RulesScreen> {
     final viewModel = context.read<RulesViewModel>();
     final isEditing = rule != null;
     final keywordController = TextEditingController(text: rule?.keyword ?? '');
-    
+
     int? selectedCategory = rule?.categoryId;
     if (selectedCategory == null && viewModel.categories.isNotEmpty) {
       selectedCategory = viewModel.categories.first.id;
@@ -55,7 +55,7 @@ class _RulesScreenState extends State<RulesScreen> {
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<int>(
-                      value: selectedCategory,
+                      initialValue: selectedCategory,
                       decoration: const InputDecoration(labelText: 'Category'),
                       items: viewModel.categories.map((cat) {
                         return DropdownMenuItem<int>(
@@ -87,9 +87,16 @@ class _RulesScreenState extends State<RulesScreen> {
                       final keyword = keywordController.text.trim();
                       bool success;
                       if (isEditing) {
-                        success = await viewModel.updateRule(rule!.id, keyword, selectedCategory!);
+                        success = await viewModel.updateRule(
+                          rule.id,
+                          keyword,
+                          selectedCategory!,
+                        );
                       } else {
-                        success = await viewModel.addRule(keyword, selectedCategory!);
+                        success = await viewModel.addRule(
+                          keyword,
+                          selectedCategory!,
+                        );
                       }
 
                       if (success && context.mounted) {
@@ -121,7 +128,9 @@ class _RulesScreenState extends State<RulesScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
             child: const Text('Delete'),
           ),
         ],
@@ -136,9 +145,7 @@ class _RulesScreenState extends State<RulesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Rules'),
-      ),
+      appBar: AppBar(title: const Text('Rules')),
       body: Consumer<RulesViewModel>(
         builder: (context, viewModel, child) {
           if (viewModel.isLoading && viewModel.rules.isEmpty) {
@@ -165,13 +172,17 @@ class _RulesScreenState extends State<RulesScreen> {
                 child: ElevatedButton.icon(
                   onPressed: () async {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Applying rules to all transactions...')),
+                      const SnackBar(
+                        content: Text('Applying rules to all transactions...'),
+                      ),
                     );
                     final count = await viewModel.applyRulesToAllTransactions();
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Recategorised $count transactions')),
+                        SnackBar(
+                          content: Text('Recategorised $count transactions'),
+                        ),
                       );
                     }
                   },
@@ -201,18 +212,22 @@ class _RulesScreenState extends State<RulesScreen> {
                           return ListTile(
                             title: Text('Keyword: "${rule.keyword}"'),
                             subtitle: category != null
-                                ? Text('Target: ${category.emoji} ${category.name}')
+                                ? Text(
+                                    'Target: ${category.emoji} ${category.name}',
+                                  )
                                 : const Text('Unknown Category'),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
                                   icon: const Icon(Icons.edit),
-                                  onPressed: () => _showRuleDialog(context, rule: rule),
+                                  onPressed: () =>
+                                      _showRuleDialog(context, rule: rule),
                                 ),
                                 IconButton(
                                   icon: const Icon(Icons.delete),
-                                  onPressed: () => _confirmDelete(context, rule.id),
+                                  onPressed: () =>
+                                      _confirmDelete(context, rule.id),
                                 ),
                               ],
                             ),

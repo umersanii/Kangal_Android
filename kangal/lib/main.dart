@@ -21,6 +21,7 @@ import 'package:kangal/data/services/sms_inbox_service.dart';
 import 'package:kangal/data/services/sms_permission_service.dart';
 import 'package:kangal/data/services/auto_categorisation_service.dart';
 import 'package:kangal/data/services/supabase_auth_service.dart';
+import 'package:kangal/data/services/supabase_initializer.dart';
 import 'package:kangal/data/services/supabase_sync_service.dart';
 import 'package:kangal/routing/app_router.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +31,9 @@ Future<void> main() async {
 
   // Initialize background sync service for email sync tasks
   await BackgroundSyncService.initializeBackgroundSync();
+
+  // Initialize Supabase only when runtime keys are configured.
+  await SupabaseInitializer.initializeIfConfigured();
 
   final appDatabase = AppDatabase();
   final transactionRepository = DriftTransactionRepository(

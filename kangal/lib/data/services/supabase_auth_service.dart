@@ -103,10 +103,18 @@ class SupabaseAuthService {
   }
 
   String? getCurrentUserId() {
-    return _client.currentUser?.id;
+    try {
+      return _client.currentUser?.id;
+    } catch (_) {
+      return null;
+    }
   }
 
   String? getCurrentUserEmail() {
-    return _client.currentUser?.email;
+    try {
+      return _client.currentUser?.email;
+    } catch (_) {
+      return null;
+    }
   }
 }

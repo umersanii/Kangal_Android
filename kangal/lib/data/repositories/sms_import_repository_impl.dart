@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:kangal/data/models/rule_model.dart';
-import 'package:kangal/data/models/transaction_model.dart';
 import 'package:kangal/data/repositories/rule_repository.dart';
 import 'package:kangal/data/repositories/sms_import_repository.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
@@ -75,7 +74,12 @@ class SmsImportRepositoryImpl implements SmsImportRepository {
     }
 
     final rules = preloadedRules ?? await _ruleRepository.getAllRules();
-    final categoryId = _autoCategorisationService.applyCategoryRules(parsedTransaction, rules) ?? parsedTransaction.categoryId;
+    final categoryId =
+        _autoCategorisationService.applyCategoryRules(
+          parsedTransaction,
+          rules,
+        ) ??
+        parsedTransaction.categoryId;
     final transactionToInsert = parsedTransaction.copyWith(
       categoryId: categoryId,
     );

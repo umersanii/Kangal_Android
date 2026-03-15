@@ -1,0 +1,35 @@
+--- kangal/lib/data/database/daos/transactions_dao.dart
++++ kangal/lib/data/database/daos/transactions_dao.dart
+@@ -21,6 +21,30 @@
+     return rows.map(_toModel).toList();
+   }
+ 
++  Future<List<TransactionModel>> getFilteredTransactions({
++    required int limit,
++    required int offset,
++    String? searchQuery,
++    String? sourceFilter,
++    int? categoryFilter,
++    DateTime? startDate,
++    DateTime? endDate,
++  }) async {
++    final query = select(transactionsTable);
++    if (searchQuery != null && searchQuery.isNotEmpty) {
++      query.where((t) => t.beneficiary.like('%$searchQuery%') | t.note.like('%$searchQuery%') | t.subject.like('%$searchQuery%'));
++    }
++    if (sourceFilter != null && sourceFilter.isNotEmpty) {
++      query.where((t) => t.source.equals(sourceFilter));
++    }
++    if (categoryFilter != null) {
++      query.where((t) => t.categoryId.equals(categoryFilter));
++    }
++    if (startDate != null && endDate != null) {
++      query.where((t) => t.date.isBetweenValues(startDate.toIso8601String(), endDate.toIso8601String()));
++    }
++    query.orderBy([(t) => OrderingTerm(expression: t.date, mode: OrderingMode.desc)]);
++    query.limit(limit, offset: offset);
++    final rows = await query.get();
++    return rows.map(_toModel).toList();
++  }
++
+   Future<TransactionModel?> getTransactionById(int id) async {

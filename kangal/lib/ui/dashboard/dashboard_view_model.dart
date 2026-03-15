@@ -1,16 +1,10 @@
+import 'package:kangal/data/models/date_range.dart';
 import 'package:flutter/material.dart';
 import 'package:kangal/data/models/daily_spend.dart';
 import 'package:kangal/data/models/category_spend.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
 
 enum PeriodPreset { thisWeek, thisMonth, lastMonth, allTime }
-
-class DateRange {
-  final DateTime start;
-  final DateTime end;
-
-  DateRange({required this.start, required this.end});
-}
 
 class DashboardViewModel extends ChangeNotifier {
   final TransactionRepository _transactionRepository;
