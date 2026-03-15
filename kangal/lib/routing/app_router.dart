@@ -66,8 +66,13 @@ class AppRouter {
                   routes: [
                     GoRoute(
                       path: ':id',
-                      builder: (context, state) =>
-                          const TransactionDetailScreen(),
+                      builder: (context, state) {
+                        final idParam = state.pathParameters['id'];
+                        final transactionId = int.tryParse(idParam ?? '') ?? -1;
+                        return TransactionDetailScreen(
+                          transactionId: transactionId,
+                        );
+                      },
                     ),
                   ],
                 ),

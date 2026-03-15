@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:kangal/data/models/date_range.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
 import 'package:kangal/ui/core/widgets/transaction_card.dart';
+import 'package:kangal/ui/transactions/transaction_detail_screen.dart';
 import 'package:kangal/ui/transactions/transactions_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -139,6 +139,22 @@ class _TransactionsScreenBodyState extends State<_TransactionsScreenBody> {
     }
   }
 
+  Future<void> _openTransactionDetail(int transactionId) async {
+    final deleted = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (_) => TransactionDetailScreen(
+        transactionId: transactionId,
+        isBottomSheet: true,
+      ),
+    );
+
+    if (deleted == true && mounted) {
+      await context.read<TransactionsViewModel>().loadTransactions();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<TransactionsViewModel>(
@@ -256,9 +272,8 @@ class _TransactionsScreenBodyState extends State<_TransactionsScreenBody> {
                             ),
                             child: TransactionCard(
                               transaction: transaction,
-                              onTap: () => context.push(
-                                '/transactions/${transaction.id}',
-                              ),
+                              onTap: () =>
+                                  _openTransactionDetail(transaction.id),
                             ),
                           );
                         },
