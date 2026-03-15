@@ -8,6 +8,8 @@ import 'package:kangal/data/repositories/drift_transaction_repository.dart';
 import 'package:kangal/data/repositories/email_import_repository.dart';
 import 'package:kangal/data/repositories/email_import_repository_impl.dart';
 import 'package:kangal/data/repositories/rule_repository.dart';
+import 'package:kangal/data/repositories/sync_repository.dart';
+import 'package:kangal/data/repositories/sync_repository_impl.dart';
 import 'package:kangal/data/repositories/transaction_repository.dart';
 import 'package:kangal/data/repositories/sms_import_repository.dart';
 import 'package:kangal/data/repositories/sms_import_repository_impl.dart';
@@ -18,6 +20,8 @@ import 'package:kangal/data/services/secure_storage_service.dart';
 import 'package:kangal/data/services/sms_inbox_service.dart';
 import 'package:kangal/data/services/sms_permission_service.dart';
 import 'package:kangal/data/services/auto_categorisation_service.dart';
+import 'package:kangal/data/services/supabase_auth_service.dart';
+import 'package:kangal/data/services/supabase_sync_service.dart';
 import 'package:kangal/routing/app_router.dart';
 import 'package:provider/provider.dart';
 
@@ -51,6 +55,22 @@ Future<void> main() async {
 
   // Email-related services and import repository for NayaPay parsing
   final secureStorageService = SecureStorageService();
+  final supabaseAuthService = SupabaseAuthService(
+    secureStorageService: secureStorageService,
+  );
+  final supabaseSyncService = SupabaseSyncService(
+    transactionsDao: appDatabase.transactionsDao,
+    categoriesDao: appDatabase.categoriesDao,
+    rulesDao: appDatabase.rulesDao,
+    syncLogDao: appDatabase.syncLogDao,
+    authService: supabaseAuthService,
+  );
+  final syncRepository = SyncRepositoryImpl(
+    supabaseSyncService: supabaseSyncService,
+    syncLogDao: appDatabase.syncLogDao,
+    transactionsDao: appDatabase.transactionsDao,
+  );
+
   final nayaPayEmailService = NayaPayEmailService();
   final emailImportRepository = EmailImportRepositoryImpl(
     nayaPayEmailService: nayaPayEmailService,
@@ -72,10 +92,15 @@ Future<void> main() async {
         Provider<HblSmsService>.value(value: hblSmsService),
         Provider<SmsImportRepository>.value(value: smsImportRepository),
         Provider<SecureStorageService>.value(value: secureStorageService),
+        Provider<SupabaseAuthService>.value(value: supabaseAuthService),
+        Provider<SupabaseSyncService>.value(value: supabaseSyncService),
+        Provider<SyncRepository>.value(value: syncRepository),
         Provider<NayaPayEmailService>.value(value: nayaPayEmailService),
         Provider<EmailImportRepository>.value(value: emailImportRepository),
         Provider<BackgroundSyncService>.value(value: BackgroundSyncService()),
-        Provider<AutoCategorisationService>.value(value: autoCategorisationService),
+        Provider<AutoCategorisationService>.value(
+          value: autoCategorisationService,
+        ),
       ],
       child: KangalApp(router: router),
     ),

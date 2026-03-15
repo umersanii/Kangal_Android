@@ -32,12 +32,19 @@ class SyncRepositoryImpl implements SyncRepository {
 
   @override
   Future<bool> hasUnsyncedChanges() async {
+    return (await getUnsyncedChangesCount()) > 0;
+  }
+
+  @override
+  Future<int> getUnsyncedChangesCount() async {
     final transactions = await _transactionsDao.getAllTransactions(1000000, 0);
-    return transactions.any(
-      (transaction) =>
-          transaction.syncedAt == null ||
-          (transaction.syncedAt != null &&
-              transaction.updatedAt.isAfter(transaction.syncedAt!)),
-    );
+    return transactions
+        .where(
+          (transaction) =>
+              transaction.syncedAt == null ||
+              (transaction.syncedAt != null &&
+                  transaction.updatedAt.isAfter(transaction.syncedAt!)),
+        )
+        .length;
   }
 }

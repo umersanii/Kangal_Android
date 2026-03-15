@@ -15,14 +15,17 @@ class SettingsViewModel extends ChangeNotifier {
 
   DateTime? lastSyncTime;
   bool hasUnsyncedChanges = false;
+  int unsyncedChangesCount = 0;
   bool isSyncing = false;
   bool isAuthenticated = false;
+  String? authenticatedEmail;
   SyncResult? lastSyncResult;
 
   Future<void> loadSyncStatus() async {
     try {
       lastSyncTime = await _syncRepository.getLastSyncTime();
-      hasUnsyncedChanges = await _syncRepository.hasUnsyncedChanges();
+      unsyncedChangesCount = await _syncRepository.getUnsyncedChangesCount();
+      hasUnsyncedChanges = unsyncedChangesCount > 0;
       notifyListeners();
     } catch (_) {
       notifyListeners();
@@ -32,9 +35,11 @@ class SettingsViewModel extends ChangeNotifier {
   Future<void> loadAuthStatus() async {
     try {
       isAuthenticated = await _supabaseAuthService.isAuthenticated();
+      authenticatedEmail = _supabaseAuthService.getCurrentUserEmail();
       notifyListeners();
     } catch (_) {
       isAuthenticated = false;
+      authenticatedEmail = null;
       notifyListeners();
     }
   }
@@ -46,7 +51,8 @@ class SettingsViewModel extends ChangeNotifier {
     try {
       lastSyncResult = await _syncRepository.syncNow();
       lastSyncTime = await _syncRepository.getLastSyncTime();
-      hasUnsyncedChanges = await _syncRepository.hasUnsyncedChanges();
+      unsyncedChangesCount = await _syncRepository.getUnsyncedChangesCount();
+      hasUnsyncedChanges = unsyncedChangesCount > 0;
     } catch (error) {
       lastSyncResult = SyncResult(
         uploaded: 0,

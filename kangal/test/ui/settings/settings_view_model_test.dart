@@ -13,6 +13,7 @@ class _FakeSyncRepository implements SyncRepository {
   );
   DateTime? lastSyncTime;
   bool unsyncedChanges = false;
+  int unsyncedCount = 0;
   bool throwOnSync = false;
 
   @override
@@ -23,6 +24,11 @@ class _FakeSyncRepository implements SyncRepository {
   @override
   Future<bool> hasUnsyncedChanges() async {
     return unsyncedChanges;
+  }
+
+  @override
+  Future<int> getUnsyncedChangesCount() async {
+    return unsyncedCount;
   }
 
   @override
@@ -42,6 +48,11 @@ class _FakeSupabaseAuthService extends SupabaseAuthService {
   @override
   Future<bool> isAuthenticated() async {
     return authenticated;
+  }
+
+  @override
+  String? getCurrentUserEmail() {
+    return authenticated ? 'test@example.com' : null;
   }
 }
 
@@ -63,11 +74,13 @@ void main() {
     final expectedSyncTime = DateTime(2026, 3, 15, 9, 0);
     syncRepository.lastSyncTime = expectedSyncTime;
     syncRepository.unsyncedChanges = true;
+    syncRepository.unsyncedCount = 3;
 
     await viewModel.loadSyncStatus();
 
     expect(viewModel.lastSyncTime, expectedSyncTime);
     expect(viewModel.hasUnsyncedChanges, isTrue);
+    expect(viewModel.unsyncedChangesCount, 3);
   });
 
   test('loadAuthStatus updates authentication state', () async {
@@ -88,6 +101,7 @@ void main() {
     );
     syncRepository.lastSyncTime = expectedSyncTime;
     syncRepository.unsyncedChanges = false;
+    syncRepository.unsyncedCount = 0;
 
     await viewModel.syncNow();
 
@@ -97,6 +111,7 @@ void main() {
     expect(viewModel.lastSyncResult!.uploaded, 4);
     expect(viewModel.lastSyncTime, expectedSyncTime);
     expect(viewModel.hasUnsyncedChanges, isFalse);
+    expect(viewModel.unsyncedChangesCount, 0);
   });
 
   test('syncNow handles sync errors and returns failed result', () async {

@@ -11,6 +11,7 @@ import 'package:kangal/ui/settings/categories/categories_screen.dart';
 import 'package:kangal/ui/settings/email_setup/email_setup_screen.dart';
 import 'package:kangal/ui/settings/rules/rules_screen.dart';
 import 'package:kangal/ui/settings/settings_screen.dart';
+import 'package:kangal/ui/settings/supabase_auth_screen.dart';
 import 'package:kangal/ui/transactions/transaction_detail_screen.dart';
 import 'package:kangal/ui/transactions/transactions_screen.dart';
 
@@ -21,6 +22,7 @@ export 'package:kangal/ui/settings/categories/categories_screen.dart';
 export 'package:kangal/ui/settings/email_setup/email_setup_screen.dart';
 export 'package:kangal/ui/settings/rules/rules_screen.dart';
 export 'package:kangal/ui/settings/settings_screen.dart';
+export 'package:kangal/ui/settings/supabase_auth_screen.dart';
 export 'package:kangal/ui/transactions/transaction_detail_screen.dart';
 export 'package:kangal/ui/transactions/transactions_screen.dart';
 
@@ -95,6 +97,10 @@ class AppRouter {
                     GoRoute(
                       path: 'rules',
                       builder: (context, state) => const RulesScreen(),
+                    ),
+                    GoRoute(
+                      path: 'auth',
+                      builder: (context, state) => const SupabaseAuthScreen(),
                     ),
                   ],
                 ),

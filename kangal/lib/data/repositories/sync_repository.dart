@@ -4,4 +4,5 @@ abstract class SyncRepository {
   Future<SyncResult> syncNow();
   Future<DateTime?> getLastSyncTime();
   Future<bool> hasUnsyncedChanges();
+  Future<int> getUnsyncedChangesCount();
 }

@@ -174,6 +174,80 @@ void main() {
     },
   );
 
+  test('syncAll downloads a new remote transaction', () async {
+    final remote = _FakeRemoteDataSource();
+    remote.updatedRowsByTable[SupabaseSyncService.transactionsTable] = [
+      {
+        'id': 22,
+        'date': DateTime(2026, 3, 15, 14, 0, 0).toIso8601String(),
+        'amount': 1200.0,
+        'source': 'HBL',
+        'type': 'raast_received',
+        'transaction_id': 'txn-remote-new-22',
+        'beneficiary': 'Sender A',
+        'subject': 'Received',
+        'category_id': null,
+        'note': null,
+        'extra': null,
+        'synced_at': DateTime(2026, 3, 15, 14, 0, 0).toIso8601String(),
+        'updated_at': DateTime(2026, 3, 15, 14, 0, 0).toIso8601String(),
+        'created_at': DateTime(2026, 3, 15, 14, 0, 0).toIso8601String(),
+      },
+    ];
+
+    final service = SupabaseSyncService(
+      transactionsDao: db.transactionsDao,
+      categoriesDao: db.categoriesDao,
+      rulesDao: db.rulesDao,
+      syncLogDao: db.syncLogDao,
+      authService: _FakeAuthService('user-1'),
+      remoteDataSource: remote,
+    );
+
+    final result = await service.syncAll();
+
+    expect(result.success, isTrue);
+    expect(result.downloaded, greaterThanOrEqualTo(1));
+
+    final transactions = await db.transactionsDao.getAllTransactions(10, 0);
+    expect(transactions, hasLength(1));
+    expect(transactions.single.transactionId, 'txn-remote-new-22');
+    expect(transactions.single.amount, 1200.0);
+  });
+
+  test(
+    'syncAll returns zeros when there are no local or remote changes',
+    () async {
+      final categories = await db.categoriesDao.getAllCategories();
+      for (final category in categories) {
+        await db.categoriesDao.deleteCategory(category.id);
+      }
+
+      final rules = await db.rulesDao.getAllRules();
+      for (final rule in rules) {
+        await db.rulesDao.deleteRule(rule.id);
+      }
+
+      final remote = _FakeRemoteDataSource();
+
+      final service = SupabaseSyncService(
+        transactionsDao: db.transactionsDao,
+        categoriesDao: db.categoriesDao,
+        rulesDao: db.rulesDao,
+        syncLogDao: db.syncLogDao,
+        authService: _FakeAuthService('user-1'),
+        remoteDataSource: remote,
+      );
+
+      final result = await service.syncAll();
+
+      expect(result.success, isTrue);
+      expect(result.uploaded, 0);
+      expect(result.downloaded, 0);
+      expect(result.conflictsResolved, 0);
+    },
+  );
+
   test('syncAll returns failure when user is not authenticated', () async {
     final remote = _FakeRemoteDataSource();
     final service = SupabaseSyncService(

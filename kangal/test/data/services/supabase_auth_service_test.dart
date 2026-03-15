@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gotrue/gotrue.dart';
 import 'package:kangal/data/services/secure_storage_service.dart';
 import 'package:kangal/data/services/supabase_auth_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class _FakeSupabaseAuthClient implements SupabaseAuthClient {
   User? _currentUser;
@@ -10,12 +10,10 @@ class _FakeSupabaseAuthClient implements SupabaseAuthClient {
   bool signOutCalled = false;
 
   _FakeSupabaseAuthClient({
-    required AuthResponse signUpResponse,
-    required AuthResponse signInResponse,
+    required this.signUpResponse,
+    required this.signInResponse,
     User? currentUser,
-  }) : signUpResponse = signUpResponse,
-       signInResponse = signInResponse,
-       _currentUser = currentUser;
+  }) : _currentUser = currentUser;
 
   @override
   User? get currentUser => _currentUser;

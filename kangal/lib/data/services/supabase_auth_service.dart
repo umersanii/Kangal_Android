@@ -1,4 +1,3 @@
-import 'package:gotrue/gotrue.dart';
 import 'package:kangal/data/services/secure_storage_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -105,5 +104,9 @@ class SupabaseAuthService {
 
   String? getCurrentUserId() {
     return _client.currentUser?.id;
+  }
+
+  String? getCurrentUserEmail() {
+    return _client.currentUser?.email;
   }
 }

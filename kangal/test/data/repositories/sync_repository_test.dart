@@ -169,6 +169,19 @@ void main() {
     expect(result, isTrue);
   });
 
+  test('getUnsyncedChangesCount returns number of pending changes', () async {
+    final syncedAt = DateTime(2026, 3, 14, 10, 0);
+    transactionsDao.transactions = [
+      _transaction(id: 1, syncedAt: null),
+      _transaction(id: 2, syncedAt: syncedAt, updatedAt: DateTime(2026, 3, 15)),
+      _transaction(id: 3, syncedAt: syncedAt, updatedAt: syncedAt),
+    ];
+
+    final count = await repository.getUnsyncedChangesCount();
+
+    expect(count, 2);
+  });
+
   test('hasUnsyncedChanges returns true when updatedAt > syncedAt', () async {
     final syncedAt = DateTime(2026, 3, 14, 10, 0);
     final updatedAt = DateTime(2026, 3, 15, 10, 0);
