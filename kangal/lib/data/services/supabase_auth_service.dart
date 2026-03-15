@@ -1,6 +1,15 @@
 import 'package:kangal/data/services/secure_storage_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+class SupabaseAuthUnavailableException implements Exception {
+  final String message;
+
+  const SupabaseAuthUnavailableException(this.message);
+
+  @override
+  String toString() => message;
+}
+
 abstract class SupabaseAuthClient {
   User? get currentUser;
 
@@ -57,14 +66,38 @@ class SupabaseAuthService {
   }) : _authClient = authClient,
        _secureStorageService = secureStorageService ?? SecureStorageService();
 
-  SupabaseAuthClient get _client {
-    return _authClient ??= SupabaseAuthClientAdapter(
-      Supabase.instance.client.auth,
-    );
+  SupabaseAuthClient _getClientOrThrow() {
+    if (_authClient != null) {
+      return _authClient!;
+    }
+
+    try {
+      _authClient = SupabaseAuthClientAdapter(Supabase.instance.client.auth);
+      return _authClient!;
+    } on AssertionError {
+      throw const SupabaseAuthUnavailableException(
+        'Supabase is not configured. Rebuild with SUPABASE_URL and SUPABASE_ANON_KEY via --dart-define.',
+      );
+    } catch (_) {
+      throw const SupabaseAuthUnavailableException(
+        'Supabase is unavailable in this app session. Check SUPABASE_URL/SUPABASE_ANON_KEY and restart the app.',
+      );
+    }
+  }
+
+  SupabaseAuthClient? _tryGetClient() {
+    try {
+      return _getClientOrThrow();
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<AuthResponse> signUp(String email, String password) async {
-    final response = await _client.signUp(email: email, password: password);
+    final response = await _getClientOrThrow().signUp(
+      email: email,
+      password: password,
+    );
     final accessToken = response.session?.accessToken;
     if (accessToken != null && accessToken.isNotEmpty) {
       await _secureStorageService.saveSupabaseToken(accessToken);
@@ -73,7 +106,7 @@ class SupabaseAuthService {
   }
 
   Future<AuthResponse> signIn(String email, String password) async {
-    final response = await _client.signInWithPassword(
+    final response = await _getClientOrThrow().signInWithPassword(
       email: email,
       password: password,
     );
@@ -85,13 +118,14 @@ class SupabaseAuthService {
   }
 
   Future<void> signOut() async {
-    await _client.signOut();
+    await _getClientOrThrow().signOut();
     await _secureStorageService.deleteSupabaseToken();
   }
 
   Future<bool> isAuthenticated() async {
     try {
-      if (_client.currentUser != null) {
+      final client = _tryGetClient();
+      if (client?.currentUser != null) {
         return true;
       }
     } catch (_) {
@@ -104,7 +138,7 @@ class SupabaseAuthService {
 
   String? getCurrentUserId() {
     try {
-      return _client.currentUser?.id;
+      return _tryGetClient()?.currentUser?.id;
     } catch (_) {
       return null;
     }
@@ -112,7 +146,7 @@ class SupabaseAuthService {
 
   String? getCurrentUserEmail() {
     try {
-      return _client.currentUser?.email;
+      return _tryGetClient()?.currentUser?.email;
     } catch (_) {
       return null;
     }

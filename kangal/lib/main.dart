@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kangal/app.dart';
 import 'package:kangal/data/database/app_database.dart';
 import 'package:kangal/data/repositories/category_repository.dart';
@@ -29,11 +30,24 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await dotenv.load(fileName: '.env');
+
   // Initialize background sync service for email sync tasks
   await BackgroundSyncService.initializeBackgroundSync();
 
-  // Initialize Supabase only when runtime keys are configured.
-  await SupabaseInitializer.initializeIfConfigured();
+  const urlFromDefine = String.fromEnvironment('SUPABASE_URL');
+  const anonKeyFromDefine = String.fromEnvironment('SUPABASE_ANON_KEY');
+  final supabaseUrl = urlFromDefine.isNotEmpty
+      ? urlFromDefine
+      : dotenv.env['SUPABASE_URL'] ?? '';
+  final supabaseAnonKey = anonKeyFromDefine.isNotEmpty
+      ? anonKeyFromDefine
+      : dotenv.env['SUPABASE_ANON_KEY'] ?? '';
+
+  await SupabaseInitializer.initializeRequired(
+    url: supabaseUrl,
+    anonKey: supabaseAnonKey,
+  );
 
   final appDatabase = AppDatabase();
   final transactionRepository = DriftTransactionRepository(

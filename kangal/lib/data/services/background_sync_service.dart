@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:kangal/data/database/app_database.dart';
 import 'package:kangal/data/repositories/email_import_repository_impl.dart';
@@ -101,7 +102,19 @@ void callbackDispatcher() {
       }
 
       if (taskName == BackgroundSyncService.supabaseSyncTask) {
-        await SupabaseInitializer.initializeIfConfigured();
+        await dotenv.load(fileName: '.env');
+        const urlFromDefine = String.fromEnvironment('SUPABASE_URL');
+        const anonKeyFromDefine = String.fromEnvironment('SUPABASE_ANON_KEY');
+        final url = urlFromDefine.isNotEmpty
+            ? urlFromDefine
+            : dotenv.env['SUPABASE_URL'] ?? '';
+        final anonKey = anonKeyFromDefine.isNotEmpty
+            ? anonKeyFromDefine
+            : dotenv.env['SUPABASE_ANON_KEY'] ?? '';
+        await SupabaseInitializer.initializeRequired(
+          url: url,
+          anonKey: anonKey,
+        );
 
         final authService = SupabaseAuthService();
         final isAuthenticated = await authService.isAuthenticated();

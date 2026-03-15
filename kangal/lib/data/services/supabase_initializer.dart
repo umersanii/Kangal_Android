@@ -3,16 +3,29 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class SupabaseInitializer {
   static bool _initialized = false;
 
-  static Future<void> initializeIfConfigured() async {
+  static Future<void> initializeRequired({
+    required String url,
+    required String anonKey,
+  }) async {
     if (_initialized) {
       return;
     }
 
-    const url = String.fromEnvironment('SUPABASE_URL');
-    const anonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
-
     if (url.isEmpty || anonKey.isEmpty) {
-      return;
+      throw StateError(
+        'Missing Supabase configuration. Set SUPABASE_URL and SUPABASE_ANON_KEY in .env or --dart-define.',
+      );
+    }
+
+    final parsedUrl = Uri.tryParse(url);
+    final hasValidUrl =
+        parsedUrl != null &&
+        (parsedUrl.isScheme('https') || parsedUrl.isScheme('http')) &&
+        parsedUrl.host.isNotEmpty;
+    if (!hasValidUrl) {
+      throw StateError(
+        'Invalid SUPABASE_URL. Update .env with a valid URL (for example, https://<project-ref>.supabase.co).',
+      );
     }
 
     try {
